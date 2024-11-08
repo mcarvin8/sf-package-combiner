@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+  <types>
+    <members>Account</members>
+    <members>Case</members>
+    <name>customobject</name>
+  </types>
+  <types>
+    <members>Industry</members>
+    <name>standardvalueset</name>
+  </types>
+  <version>59.0</version>
+</Package>
