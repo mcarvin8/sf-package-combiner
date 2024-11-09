@@ -66,6 +66,7 @@
     "postinstall": "yarn husky install",
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
+    "prepare": "husky install",
     "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
