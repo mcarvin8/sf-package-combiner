@@ -87,7 +87,9 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       }
     }
 
-    const root = create({ version: '1.0', encoding: 'UTF-8' }).ele('Package');
+    const root = create({ version: '1.0', encoding: 'UTF-8' }).ele('Package', {
+      xmlns: 'http://soap.sforce.com/2006/04/metadata',
+    });
 
     // Create <types> for each type, properly formatting the XML
     mergedPackage.Package.types.forEach((type) => {
