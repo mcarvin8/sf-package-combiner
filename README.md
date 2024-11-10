@@ -18,10 +18,10 @@ If all packages provided don't match the expected structure, the combined packag
 
 Salesforce packages follow this structure:
 
-- <types>: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages.
-  - <members>: Lists the individual components by their API names within that type. Multiple members can be included under the same type.
-  - <name>: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject".
-- <version>: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
+- `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages.
+  - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type.
+  - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject".
+- `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
 
 ## Install
 
