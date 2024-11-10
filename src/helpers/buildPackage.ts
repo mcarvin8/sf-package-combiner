@@ -29,6 +29,7 @@ export function buildPackage(packageContents: SalesforcePackageXml[], apiVersion
       }
     }
   }
+  mergedPackage.Package.types.sort((a, b) => a.name.localeCompare(b.name));
 
   const root = create({ version: '1.0', encoding: 'UTF-8' }).ele('Package', {
     xmlns: 'http://soap.sforce.com/2006/04/metadata',
@@ -37,9 +38,11 @@ export function buildPackage(packageContents: SalesforcePackageXml[], apiVersion
   // Create <types> for each type, properly formatting the XML
   mergedPackage.Package.types.forEach((type) => {
     const typeElement = root.ele('types');
-    type.members.forEach((member) => {
-      typeElement.ele('members').txt(member).up();
-    });
+    type.members
+      .sort((a, b) => a.localeCompare(b))
+      .forEach((member) => {
+        typeElement.ele('members').txt(member).up();
+      });
     typeElement.ele('name').txt(type.name).up();
   });
 
