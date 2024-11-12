@@ -25,8 +25,12 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
       });
     }
 
-    // Handle 'version' being an array, string, or undefined
+    // Enforce a maximum of one <version> tag in the package.xml
     if (parsed.Package && Array.isArray(parsed.Package.version)) {
+      if (parsed.Package.version.length > 1) {
+        return null; // Invalid structure, more than one <version> tag
+      }
+      // Convert to a single string if only one <version> tag is present
       parsed.Package.version = parsed.Package.version[0];
     }
 
