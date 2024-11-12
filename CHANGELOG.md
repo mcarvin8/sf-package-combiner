@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.3](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.2...v1.0.3) (2024-11-12)
+
+
+### Bug Fixes
+
+* enforce maximum of 1 version element in each package ([48a87de](https://github.com/mcarvin8/sf-package-combiner/commit/48a87debcbb289d48c1a63d42b01e592883f8fdc))
+
 ## [1.0.2](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.1...v1.0.2) (2024-11-10)
 
 
