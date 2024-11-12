@@ -1,7 +1,7 @@
 {
   "name": "sf-package-combiner",
   "description": "Combines multiple Salesforce manifest files together.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "dependencies": {
     "@oclif/core": "^4",
     "@salesforce/core": "^8",
