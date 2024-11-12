@@ -13,6 +13,20 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
     // Parse the XML string to an object
     const parsed: SalesforcePackageXml = (await parser.parseStringPromise(xmlContent)) as SalesforcePackageXml;
 
+    // Ensure the root <Package> exists
+    if (!parsed.Package) {
+      return null;
+    }
+
+    // Validate that the root <Package> contains only allowed keys (<types>, <version>)
+    const allowedKeys = new Set(['types', 'version']);
+    const packageKeys = Object.keys(parsed.Package).filter((key) => key !== '$'); // Ignore the '$' key
+
+    const hasUnexpectedKeys = packageKeys.some((key) => !allowedKeys.has(key));
+    if (hasUnexpectedKeys) {
+      return null;
+    }
+
     // Normalize the structure if 'name' or 'version' are wrapped in arrays
     if (parsed.Package?.types) {
       parsed.Package.types.forEach((type) => {
