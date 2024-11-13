@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* ensure only 1 `&lt;name&gt;` element is in each `<types>` ([c452034](https://github.com/mcarvin8/sf-package-combiner/commit/c45203463501bc66c1180ee75974607d9cfb037e))
+* ensure only 1 `<name>` element is in each `<types>` ([c452034](https://github.com/mcarvin8/sf-package-combiner/commit/c45203463501bc66c1180ee75974607d9cfb037e))
 * ensure only elements in each `types` element are `name` and `members` ([2ab6e60](https://github.com/mcarvin8/sf-package-combiner/commit/2ab6e60341d7b49308a01dbb541f9b9a8751effd))
 
 ## [1.0.4](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.3...v1.0.4) (2024-11-12)
@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* enforce package root elements are `&lt;types&gt;` and `<version>` ([d0414fe](https://github.com/mcarvin8/sf-package-combiner/commit/d0414fe028141b6563b19976b5252d71aa829965))
+* enforce package root elements are `<types>` and `<version>` ([d0414fe](https://github.com/mcarvin8/sf-package-combiner/commit/d0414fe028141b6563b19976b5252d71aa829965))
 
 ## [1.0.3](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.2...v1.0.3) (2024-11-12)
 
