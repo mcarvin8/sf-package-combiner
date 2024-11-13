@@ -1799,9 +1799,9 @@
     ts-retry-promise "^0.8.1"
 
 "@salesforce/core@^8", "@salesforce/core@^8.5.1":
-  version "8.6.4"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.6.4.tgz#39a8234c816ff644e11bcef9517411495ec6039a"
-  integrity sha512-ubksHYBjjv1zfU8Xv3ylzCVftIftBrh682r6PNMzH/LgRcSo8+u4Tgib0d14d85kcIb2ElonV2wPpnbpS+2Aww==
+  version "8.7.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.7.0.tgz#6261443542ab8eeebfbfe0b50e92b0c1454f3c7a"
+  integrity sha512-14NOllXWTm9Rgn4/mcYr9Bq0GSizCQxadqjnCjPlf7sLVHWAMPFetCBxxorCqGHHiVU5kTNVZuvKBdNQJr+vtg==
   dependencies:
     "@jsforce/jsforce-node" "^3.6.1"
     "@salesforce/kit" "^3.2.2"
