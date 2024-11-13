@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable no-await-in-loop */
 import { Parser } from 'xml2js';
 
@@ -11,7 +9,7 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
     const parser = new Parser();
 
     // Parse the XML string to an object
-    const parsed: SalesforcePackageXml = (await parser.parseStringPromise(xmlContent)) as SalesforcePackageXml;
+    const parsed = (await parser.parseStringPromise(xmlContent)) as unknown as SalesforcePackageXml;
 
     // Ensure the root <Package> exists
     if (!parsed.Package) {
@@ -27,17 +25,20 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
       return null;
     }
 
-    // Normalize the structure if 'name' or 'version' are wrapped in arrays
-    if (parsed.Package?.types) {
-      parsed.Package.types.forEach((type) => {
-        if (Array.isArray(type.name)) {
-          type.name = type.name[0]; // Normalize to a single string if it's wrapped in an array
-        }
-        if (Array.isArray(type.members)) {
-          type.members = type.members.flat(); // Flatten in case members are nested
-        }
-      });
-    }
+    parsed.Package.types = parsed.Package.types.map((type) => {
+      let name = '';
+      if (Array.isArray(type.name)) {
+        name = typeof type.name[0] === 'string' ? type.name[0] : '';
+      } else if (typeof type.name === 'string') {
+        name = type.name;
+      }
+      const members = Array.isArray(type.members) ? type.members.flat() : type.members;
+      return {
+        ...type,
+        name,
+        members,
+      };
+    });
 
     // Enforce a maximum of one <version> tag in the package.xml
     if (parsed.Package && Array.isArray(parsed.Package.version)) {
@@ -45,7 +46,9 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
         return null; // Invalid structure, more than one <version> tag
       }
       // Convert to a single string if only one <version> tag is present
-      parsed.Package.version = parsed.Package.version[0];
+      if (Array.isArray(parsed.Package.version) && typeof parsed.Package.version[0] === 'string') {
+        parsed.Package.version = parsed.Package.version[0];
+      }
     }
 
     // Apply a type guard to safely assert the parsed content matches SalesforcePackageXml
