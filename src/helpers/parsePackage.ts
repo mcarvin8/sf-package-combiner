@@ -26,12 +26,11 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
     }
 
     parsed.Package.types = parsed.Package.types.map((type) => {
-      let name = '';
-      if (Array.isArray(type.name)) {
-        name = typeof type.name[0] === 'string' ? type.name[0] : '';
-      } else if (typeof type.name === 'string') {
-        name = type.name;
+      // Validate that there is exactly one <name> element
+      if (!Array.isArray(type.name) || type.name.length !== 1 || typeof type.name[0] !== 'string') {
+        throw new Error('Invalid package.xml: Each <types> block must have exactly one <name> element.');
       }
+      const name = type.name[0];
       const members = Array.isArray(type.members) ? type.members.flat() : type.members;
       return {
         ...type,
