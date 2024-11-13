@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.5](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.4...v1.0.5) (2024-11-13)
+
+
+### Bug Fixes
+
+* ensure only 1 `&lt;name&gt;` element is in each `<types>` ([c452034](https://github.com/mcarvin8/sf-package-combiner/commit/c45203463501bc66c1180ee75974607d9cfb037e))
+* ensure only elements in each `types` element are `name` and `members` ([2ab6e60](https://github.com/mcarvin8/sf-package-combiner/commit/2ab6e60341d7b49308a01dbb541f9b9a8751effd))
+
 ## [1.0.4](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.3...v1.0.4) (2024-11-12)
 
 
