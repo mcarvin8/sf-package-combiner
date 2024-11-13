@@ -30,6 +30,14 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
       if (!Array.isArray(type.name) || type.name.length !== 1 || typeof type.name[0] !== 'string') {
         throw new Error('Invalid package.xml: Each <types> block must have exactly one <name> element.');
       }
+      // Validate that only "name" and "members" keys are present
+      const allowedTypesKeys = new Set(['name', 'members']);
+      const typeKeys = Object.keys(type);
+      const hasUnexpectedTypesKeys = typeKeys.some((key) => !allowedTypesKeys.has(key));
+
+      if (hasUnexpectedTypesKeys) {
+        throw new Error('Invalid package.xml: Each <types> block must contain only <name> and <members> tags.');
+      }
       const name = type.name[0];
       const members = Array.isArray(type.members) ? type.members.flat() : type.members;
       return {
