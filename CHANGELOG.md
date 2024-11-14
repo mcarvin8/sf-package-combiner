@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.6](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.5...v1.0.6) (2024-11-14)
+
+
+### Bug Fixes
+
+* update indenting to 4 spaces and adjust empty package creation ([b0acb98](https://github.com/mcarvin8/sf-package-combiner/commit/b0acb9839f1169e7479efb18bebb69d7837f5108))
+
 ## [1.0.5](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.4...v1.0.5) (2024-11-13)
 
 
