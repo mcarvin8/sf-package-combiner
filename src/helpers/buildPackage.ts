@@ -2,6 +2,8 @@ import { create } from 'xmlbuilder2';
 
 import { SalesforcePackageXml } from './types.js';
 
+const xmlConf = { indent: '    ', newline: '\n', prettyPrint: true };
+
 export function buildPackage(packageContents: SalesforcePackageXml[], apiVersions: string[]): string {
   // Determine the maximum API version from the apiVersions array
   const maxVersion = apiVersions.reduce((max, version) => (version > max ? version : max), '0.0');
@@ -36,15 +38,20 @@ export function buildPackage(packageContents: SalesforcePackageXml[], apiVersion
   });
 
   // Create <types> for each type, properly formatting the XML
-  mergedPackage.Package.types.forEach((type) => {
-    const typeElement = root.ele('types');
-    type.members
-      .sort((a, b) => a.localeCompare(b))
-      .forEach((member) => {
-        typeElement.ele('members').txt(member).up();
-      });
-    typeElement.ele('name').txt(type.name).up();
-  });
+  if (packageContents.length > 0) {
+    mergedPackage.Package.types.forEach((type) => {
+      const typeElement = root.ele('types');
+      type.members
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((member) => {
+          typeElement.ele('members').txt(member).up();
+        });
+      typeElement.ele('name').txt(type.name).up();
+    });
+  } else {
+    root.txt('\n');
+    root.txt('\n');
+  }
 
   // Set the maximum version element
   if (maxVersion !== '0.0') {
@@ -52,5 +59,5 @@ export function buildPackage(packageContents: SalesforcePackageXml[], apiVersion
   }
 
   // Output the merged package.xml
-  return root.end({ prettyPrint: true });
+  return root.end(xmlConf);
 }
