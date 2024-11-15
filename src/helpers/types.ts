@@ -2,12 +2,15 @@ export type SfpcCombineResult = {
   path: string;
 };
 
-export type SalesforcePackageXml = {
+export type PackageTypeObject = {
+  name: string;
+  members: string[];
+};
+
+export type PackageXmlObject = {
   Package: {
-    types: Array<{
-      name: string;
-      members: string[];
-    }>;
+    '@_xmlns'?: string;
+    types: PackageTypeObject[];
     version?: string;
   };
 };

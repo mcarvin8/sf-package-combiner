@@ -2,19 +2,19 @@
 import { readFile } from 'node:fs/promises';
 
 import { parsePackageXml } from './parsePackage.js';
-import { SalesforcePackageXml } from './types.js';
+import { PackageXmlObject } from './types.js';
 
 export async function readPackageFiles(
   files: string[] | null
-): Promise<{ packageContents: SalesforcePackageXml[]; apiVersions: string[]; warnings: string[] }> {
+): Promise<{ packageContents: PackageXmlObject[]; apiVersions: string[]; warnings: string[] }> {
   const warnings: string[] = [];
-  const packageContents: SalesforcePackageXml[] = [];
+  const packageContents: PackageXmlObject[] = [];
   const apiVersions: string[] = [];
   if (files) {
     for (const filePath of files) {
       try {
         const fileContent = await readFile(filePath, 'utf-8');
-        const parsed = await parsePackageXml(fileContent);
+        const parsed = parsePackageXml(fileContent);
         if (parsed) {
           packageContents.push(parsed);
           // Add the package version to the apiVersions array

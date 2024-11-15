@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-import { SalesforcePackageXml, SfpcCombineResult } from '../../helpers/types.js';
+import { PackageXmlObject, SfpcCombineResult } from '../../helpers/types.js';
 import { buildPackage } from '../../helpers/buildPackage.js';
 import { readPackageFiles } from '../../helpers/readPackageFiles.js';
 
@@ -35,7 +35,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
 
     const files = flags['package-file'] ?? null;
     const combinedPackage = flags['combined-package'];
-    let packageContents: SalesforcePackageXml[] = [];
+    let packageContents: PackageXmlObject[] = [];
     let apiVersions: string[] = [];
     let warnings: string[] = [];
 
