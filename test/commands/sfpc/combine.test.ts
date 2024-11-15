@@ -12,8 +12,13 @@ describe('sfpc combine', () => {
   let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
   const package1 = resolve('test/samples/pack1.xml');
   const package2 = resolve('test/samples/pack2.xml');
+  const package3 = resolve('test/samples/pack3.xml');
+  const invalidPackage1 = resolve('test/samples/invalid1.xml');
+  const invalidPackage2 = resolve('test/samples/invalid2.xml');
+  const invalidPackage3 = resolve('test/samples/invalid3.xml');
   const outputPackage = resolve('package.xml');
   const baseline = resolve('test/samples/combinedPackage.xml');
+  const emptyPackageBaseline = resolve('test/samples/emptyPackage.xml');
 
   beforeEach(() => {
     sfCommandStubs = stubSfCommandUx($$.SANDBOX);
@@ -27,8 +32,8 @@ describe('sfpc combine', () => {
     await rm(outputPackage);
   });
 
-  it('combine the 2 packages together', async () => {
-    await SfpcCombine.run(['-f', package1, '-f', package2, '-c', outputPackage]);
+  it('combine the valid packages together.', async () => {
+    await SfpcCombine.run(['-f', package1, '-f', package2, '-f', package3, '-c', outputPackage]);
     const output = sfCommandStubs.log
       .getCalls()
       .flatMap((c) => c.args)
@@ -39,5 +44,71 @@ describe('sfpc combine', () => {
     const testPackage = await readFile(outputPackage, 'utf-8');
     const baselinePackage = await readFile(baseline, 'utf-8');
     strictEqual(testPackage, baselinePackage, `File content is different between ${outputPackage} and ${baseline}`);
+  });
+  it('test the invalid packages.', async () => {
+    await SfpcCombine.run(['-f', invalidPackage1, '-c', outputPackage]);
+    const output = sfCommandStubs.log
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(output).to.include(`Combined package.xml written to: ${outputPackage}`);
+    const warnings = sfCommandStubs.warn
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(warnings).to.include(`File ${invalidPackage1} does not match expected Salesforce package structure.`);
+  });
+  it('confirm the invalid XML is an empty package.', async () => {
+    const testPackage = await readFile(outputPackage, 'utf-8');
+    const baselinePackage = await readFile(emptyPackageBaseline, 'utf-8');
+    strictEqual(
+      testPackage,
+      baselinePackage,
+      `File content is different between ${outputPackage} and ${emptyPackageBaseline}`
+    );
+  });
+  it('test the invalid packages.', async () => {
+    await SfpcCombine.run(['-f', invalidPackage2, '-c', outputPackage]);
+    const output = sfCommandStubs.log
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(output).to.include(`Combined package.xml written to: ${outputPackage}`);
+    const warnings = sfCommandStubs.warn
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(warnings).to.include(`File ${invalidPackage2} does not match expected Salesforce package structure.`);
+  });
+  it('confirm the invalid XML is an empty package.', async () => {
+    const testPackage = await readFile(outputPackage, 'utf-8');
+    const baselinePackage = await readFile(emptyPackageBaseline, 'utf-8');
+    strictEqual(
+      testPackage,
+      baselinePackage,
+      `File content is different between ${outputPackage} and ${emptyPackageBaseline}`
+    );
+  });
+  it('test the invalid packages.', async () => {
+    await SfpcCombine.run(['-f', invalidPackage3, '-c', outputPackage]);
+    const output = sfCommandStubs.log
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(output).to.include(`Combined package.xml written to: ${outputPackage}`);
+    const warnings = sfCommandStubs.warn
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(warnings).to.include(`File ${invalidPackage3} does not match expected Salesforce package structure.`);
+  });
+  it('confirm the invalid XML is an empty package.', async () => {
+    const testPackage = await readFile(outputPackage, 'utf-8');
+    const baselinePackage = await readFile(emptyPackageBaseline, 'utf-8');
+    strictEqual(
+      testPackage,
+      baselinePackage,
+      `File content is different between ${outputPackage} and ${emptyPackageBaseline}`
+    );
   });
 });

@@ -29,7 +29,7 @@ Salesforce packages follow this structure:
 sf plugins install sf-package-combiner@x.y.z
 ```
 
-## Commands
+## Command
 
 <!-- commands -->
 
@@ -61,3 +61,44 @@ EXAMPLES
 ```
 
 <!-- commandsstop -->
+
+## Parsing Strings with `package.xml` contents
+
+Currently, I'm working on a feature to allow strings containing package.xml contents to be accepted through the terminal using a new command flag.
+
+Until that is implemented, you could use this simple shell script which could read a string stored in a variable which contains package.xml contents and create a temporary package.xml from that. That temporary package.xml then could be read by this plugin and overwritten as the combined package.
+
+In my 1 use case, the `$COMMIT_MSG` variable is GitLab's predefined variable named `$CI_COMMIT_MESSAGE` which contains the commit message.
+
+```bash
+#!/bin/bash
+set -e
+
+DEPLOY_PACKAGE="package.xml"
+
+# Define a function to build package.xml from commit message
+build_package_from_commit() {
+    local commit_msg="$1"
+    local output_file="$2"
+    PACKAGE_FOUND="False"
+
+    # Use sed to match and extract the XML package content
+    package_xml_content=$(echo "$commit_msg" | sed -n '/<Package xmlns=".*">/,/<\/Package>/p')
+
+    if [[ -n "$package_xml_content" ]]; then
+        echo "Found package.xml contents in the commit message."
+        echo "$package_xml_content" > "$output_file"
+        PACKAGE_FOUND="True"
+    else
+        echo "WARNING: Package.xml contents NOT found in the commit message."
+    fi
+    export PACKAGE_FOUND
+}
+
+build_package_from_commit "$COMMIT_MSG" "$DEPLOY_PACKAGE"
+
+# combines the sfdx-git-delta package.xml with the package found in the commit message
+if [[ "$PACKAGE_FOUND" == "True" ]]; then
+    sf sfpc combine -f "package/package.xml" -f "$DEPLOY_PACKAGE" -c "$DEPLOY_PACKAGE"
+fi
+```

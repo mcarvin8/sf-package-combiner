@@ -9,6 +9,7 @@ describe('sfpc combine NUTs', () => {
   let session: TestSession;
   const package1 = resolve('test/samples/pack1.xml');
   const package2 = resolve('test/samples/pack2.xml');
+  const package3 = resolve('test/samples/pack3.xml');
   const outputPackage = resolve('package.xml');
   const baseline = resolve('test/samples/combinedPackage.xml');
 
@@ -21,8 +22,8 @@ describe('sfpc combine NUTs', () => {
     await rm(outputPackage);
   });
 
-  it('combine the 2 packages together', () => {
-    const command = `sfpc combine -f ${package1} -f ${package2} -c ${outputPackage}`;
+  it('combine the valid packages together.', () => {
+    const command = `sfpc combine -f ${package1} -f ${package2} -f ${package3} -c ${outputPackage}`;
     const output = execCmd(command, { ensureExitCode: 0 }).shellOutput.stdout;
     expect(output).to.contain(`Combined package.xml written to: ${outputPackage}`);
   });

@@ -1,15 +1,21 @@
-import { create } from 'xmlbuilder2';
+import { XMLBuilder } from 'fast-xml-parser';
 
-import { SalesforcePackageXml } from './types.js';
+import { PackageXmlObject } from './types.js';
 
-const xmlConf = { indent: '    ', newline: '\n', prettyPrint: true };
+const xmlConf = {
+  format: true,
+  indentBy: '    ',
+  suppressEmptyNode: false,
+  ignoreAttributes: false,
+  attributeNamePrefix: '@_',
+};
 
-export function buildPackage(packageContents: SalesforcePackageXml[], apiVersions: string[]): string {
+export function buildPackage(packageContents: PackageXmlObject[], apiVersions: string[]): string {
   // Determine the maximum API version from the apiVersions array
   const maxVersion = apiVersions.reduce((max, version) => (version > max ? version : max), '0.0');
 
   // Combine the parsed package.xml contents
-  const mergedPackage: SalesforcePackageXml = { Package: { types: [], version: maxVersion } };
+  const mergedPackage: PackageXmlObject = { Package: { types: [], version: maxVersion } };
 
   // Process each parsed package XML
   for (const pkg of packageContents) {
@@ -33,31 +39,31 @@ export function buildPackage(packageContents: SalesforcePackageXml[], apiVersion
   }
   mergedPackage.Package.types.sort((a, b) => a.name.localeCompare(b.name));
 
-  const root = create({ version: '1.0', encoding: 'UTF-8' }).ele('Package', {
-    xmlns: 'http://soap.sforce.com/2006/04/metadata',
-  });
+  // Construct the XML data as a JSON-like object
+  const packageXmlObject: PackageXmlObject = {
+    Package: {
+      '@_xmlns': 'http://soap.sforce.com/2006/04/metadata',
+      types: mergedPackage.Package.types.map((type) => ({
+        members: type.members.sort((a, b) => a.localeCompare(b)),
+        name: type.name,
+      })),
+      version: maxVersion !== '0.0' ? maxVersion : undefined,
+    },
+  };
 
-  // Create <types> for each type, properly formatting the XML
-  if (packageContents.length > 0) {
-    mergedPackage.Package.types.forEach((type) => {
-      const typeElement = root.ele('types');
-      type.members
-        .sort((a, b) => a.localeCompare(b))
-        .forEach((member) => {
-          typeElement.ele('members').txt(member).up();
-        });
-      typeElement.ele('name').txt(type.name).up();
-    });
-  } else {
-    root.txt('\n');
-    root.txt('\n');
+  // Build the XML string
+  const builder = new XMLBuilder(xmlConf);
+  let xmlContent = builder.build(packageXmlObject) as string;
+
+  // Ensure formatting for an empty package
+  if (mergedPackage.Package.types.length === 0) {
+    xmlContent = xmlContent.replace(
+      '<Package xmlns="http://soap.sforce.com/2006/04/metadata"></Package>',
+      '<Package xmlns="http://soap.sforce.com/2006/04/metadata">\n\n</Package>'
+    );
   }
 
-  // Set the maximum version element
-  if (maxVersion !== '0.0') {
-    root.ele('version').txt(maxVersion);
-  }
-
-  // Output the merged package.xml
-  return root.end(xmlConf);
+  // Prepend the XML declaration manually
+  const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  return xmlHeader + xmlContent;
 }

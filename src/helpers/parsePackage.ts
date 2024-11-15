@@ -1,66 +1,88 @@
 /* eslint-disable no-await-in-loop */
-import { Parser } from 'xml2js';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
-import { SalesforcePackageXml } from './types.js';
+import { PackageXmlObject } from './types.js';
 
-// Safe parsing function for package XML using xml2js
-export async function parsePackageXml(xmlContent: string): Promise<SalesforcePackageXml | null> {
+const XML_PARSER_OPTION = {
+  ignoreAttributes: false,
+  attributeNamePrefix: '@_',
+  parseTagValue: false,
+  parseNodeValue: false,
+  parseAttributeValue: false,
+  trimValues: true,
+};
+
+export function parsePackageXml(xmlContent: string): PackageXmlObject | null {
   try {
-    const parser = new Parser();
-
-    // Parse the XML string to an object
-    const parsed = (await parser.parseStringPromise(xmlContent)) as unknown as SalesforcePackageXml;
-
-    // Ensure the root <Package> exists
-    if (!parsed.Package) {
+    // Validate the XML content
+    const validationResult = XMLValidator.validate(xmlContent);
+    if (validationResult !== true) {
       return null;
     }
 
-    // Validate that the root <Package> contains only allowed keys (<types>, <version>)
-    const allowedKeys = new Set(['types', 'version']);
-    const packageKeys = Object.keys(parsed.Package).filter((key) => key !== '$'); // Ignore the '$' key
+    const parser = new XMLParser(XML_PARSER_OPTION);
 
+    // Parse the XML string to an object
+    const parsed = parser.parse(xmlContent) as unknown as PackageXmlObject;
+
+    // Ensure the root <Package> exists and is of correct type
+    if (!parsed || typeof parsed !== 'object' || !parsed.Package) {
+      return null;
+    }
+
+    const packageData = parsed.Package as Partial<PackageXmlObject['Package']>;
+
+    // Validate and normalize the <types> field
+    if (!packageData.types) {
+      return null;
+    }
+    const allowedKeys = new Set(['types', 'version']);
+    const packageKeys = Object.keys(parsed.Package).filter((key) => key !== '@_xmlns');
     const hasUnexpectedKeys = packageKeys.some((key) => !allowedKeys.has(key));
     if (hasUnexpectedKeys) {
       return null;
     }
+    const normalizedTypes = Array.isArray(packageData.types) ? packageData.types : [packageData.types];
 
-    parsed.Package.types = parsed.Package.types.map((type) => {
-      // Validate that there is exactly one <name> element
-      if (!Array.isArray(type.name) || type.name.length !== 1 || typeof type.name[0] !== 'string') {
-        throw new Error('Invalid package.xml: Each <types> block must have exactly one <name> element.');
+    packageData.types = normalizedTypes.map((type): { name: string; members: string[] } => {
+      if (!type || typeof type !== 'object' || typeof type.name !== 'string') {
+        throw new Error('Invalid <types> block: Missing or invalid <name> element.');
       }
       // Validate that only "name" and "members" keys are present
       const allowedTypesKeys = new Set(['name', 'members']);
       const typeKeys = Object.keys(type);
       const hasUnexpectedTypesKeys = typeKeys.some((key) => !allowedTypesKeys.has(key));
-
       if (hasUnexpectedTypesKeys) {
         throw new Error('Invalid package.xml: Each <types> block must contain only <name> and <members> tags.');
       }
-      const name = type.name[0];
-      const members = Array.isArray(type.members) ? type.members.flat() : type.members;
+      // Ensure members is always a string array
+      let members: string[];
+
+      if (Array.isArray(type.members)) {
+        members = type.members.filter((member): member is string => typeof member === 'string');
+      } else if (typeof type.members === 'string') {
+        members = [type.members];
+      } else {
+        members = [];
+      }
+
       return {
-        ...type,
-        name,
+        name: type.name,
         members,
       };
     });
 
-    // Enforce a maximum of one <version> tag in the package.xml
-    if (parsed.Package && Array.isArray(parsed.Package.version)) {
-      if (parsed.Package.version.length > 1) {
-        return null; // Invalid structure, more than one <version> tag
+    // Ensure a maximum of one <version> tag
+    if (Array.isArray(packageData.version)) {
+      if (packageData.version.length > 1) {
+        return null;
       }
-      // Convert to a single string if only one <version> tag is present
-      if (Array.isArray(parsed.Package.version) && typeof parsed.Package.version[0] === 'string') {
-        parsed.Package.version = parsed.Package.version[0];
-      }
+      packageData.version = packageData.version[0] as string;
     }
 
-    // Apply a type guard to safely assert the parsed content matches SalesforcePackageXml
-    if (isSalesforcePackageXml(parsed)) {
-      return parsed;
+    // Validate the final structure
+    if (isPackageXmlObject({ Package: packageData })) {
+      return { Package: packageData as PackageXmlObject['Package'] };
     } else {
       return null;
     }
@@ -69,23 +91,35 @@ export async function parsePackageXml(xmlContent: string): Promise<SalesforcePac
   }
 }
 
-function isSalesforcePackageXml(obj: unknown): obj is SalesforcePackageXml {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'Package' in obj &&
-    typeof (obj as { Package: unknown }).Package === 'object' &&
-    Array.isArray((obj as { Package: { types: unknown } }).Package.types) &&
-    (obj as { Package: { types: Array<{ name: unknown; members: unknown }> } }).Package.types.every(
+function isPackageXmlObject(obj: unknown): obj is PackageXmlObject {
+  if (
+    typeof obj !== 'object' ||
+    obj === null ||
+    !('Package' in obj) ||
+    typeof (obj as { Package: unknown }).Package !== 'object'
+  ) {
+    return false;
+  }
+
+  const packageData = (obj as { Package: unknown }).Package as Partial<PackageXmlObject['Package']>;
+
+  if (
+    !Array.isArray(packageData.types) ||
+    !packageData.types.every(
       (type) =>
         typeof type === 'object' &&
         type !== null &&
         typeof type.name === 'string' &&
         Array.isArray(type.members) &&
         type.members.every((member) => typeof member === 'string')
-    ) &&
-    // Make version optional here: allow it to be a string or undefined
-    (typeof (obj as { Package: { version?: unknown } }).Package.version === 'string' ||
-      typeof (obj as { Package: { version?: unknown } }).Package.version === 'undefined')
-  );
+    )
+  ) {
+    return false;
+  }
+
+  if (packageData.version && typeof packageData.version !== 'string') {
+    return false;
+  }
+
+  return true;
 }
