@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.7](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.6...v1.0.7) (2024-11-15)
+
+
+### Bug Fixes
+
+* switch to fast-xml-parser ([a7fd1e9](https://github.com/mcarvin8/sf-package-combiner/commit/a7fd1e92a01673b2224afa9e9fdbfa331a0b85cf))
+
 ## [1.0.6](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.5...v1.0.6) (2024-11-14)
 
 
