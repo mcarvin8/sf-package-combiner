@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
+import { XMLParser } from 'fast-xml-parser';
 
 import { PackageXmlObject } from './types.js';
 
@@ -14,16 +14,10 @@ const XML_PARSER_OPTION = {
 
 export function parsePackageXml(xmlContent: string): PackageXmlObject | null {
   try {
-    // Validate the XML content
-    const validationResult = XMLValidator.validate(xmlContent);
-    if (validationResult !== true) {
-      return null;
-    }
-
     const parser = new XMLParser(XML_PARSER_OPTION);
 
     // Parse the XML string to an object
-    const parsed = parser.parse(xmlContent) as unknown as PackageXmlObject;
+    const parsed = parser.parse(xmlContent, true) as unknown as PackageXmlObject;
 
     // Ensure the root <Package> exists and is of correct type
     if (!parsed || typeof parsed !== 'object' || !parsed.Package) {
