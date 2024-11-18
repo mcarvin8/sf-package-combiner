@@ -39,7 +39,11 @@
     "sf",
     "sf-plugin",
     "sfdx",
-    "sfdx-plugin"
+    "sfdx-plugin",
+    "package.xml",
+    "manifest",
+    "combiner",
+    "deployment"
   ],
   "license": "MIT",
   "oclif": {
