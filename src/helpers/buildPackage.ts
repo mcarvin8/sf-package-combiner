@@ -1,6 +1,7 @@
 import { XMLBuilder } from 'fast-xml-parser';
 
 import { PackageXmlObject } from './types.js';
+import { sfXmlns } from './constants.js';
 
 const xmlConf = {
   format: true,
@@ -42,7 +43,7 @@ export function buildPackage(packageContents: PackageXmlObject[], apiVersions: s
   // Construct the XML data as a JSON-like object
   const packageXmlObject: PackageXmlObject = {
     Package: {
-      '@_xmlns': 'http://soap.sforce.com/2006/04/metadata',
+      '@_xmlns': sfXmlns,
       types: mergedPackage.Package.types.map((type) => ({
         members: type.members.sort((a, b) => a.localeCompare(b)),
         name: type.name,
@@ -58,8 +59,8 @@ export function buildPackage(packageContents: PackageXmlObject[], apiVersions: s
   // Ensure formatting for an empty package
   if (mergedPackage.Package.types.length === 0) {
     xmlContent = xmlContent.replace(
-      '<Package xmlns="http://soap.sforce.com/2006/04/metadata"></Package>',
-      '<Package xmlns="http://soap.sforce.com/2006/04/metadata">\n\n</Package>'
+      `<Package xmlns="${sfXmlns}"></Package>`,
+      `<Package xmlns="${sfXmlns}">\n\n</Package>`
     );
   }
 

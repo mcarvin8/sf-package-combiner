@@ -2,6 +2,7 @@
 import { XMLParser } from 'fast-xml-parser';
 
 import { PackageXmlObject } from './types.js';
+import { sfXmlns } from './constants.js';
 
 const XML_PARSER_OPTION = {
   ignoreAttributes: false,
@@ -30,8 +31,8 @@ export function parsePackageXml(xmlContent: string): PackageXmlObject | null {
     if (!packageData.types) {
       return null;
     }
-    const allowedKeys = new Set(['types', 'version']);
-    const packageKeys = Object.keys(parsed.Package).filter((key) => key !== '@_xmlns');
+    const allowedKeys = new Set(['types', 'version', '@_xmlns']);
+    const packageKeys = Object.keys(parsed.Package);
     const hasUnexpectedKeys = packageKeys.some((key) => !allowedKeys.has(key));
     if (hasUnexpectedKeys) {
       return null;
@@ -72,6 +73,10 @@ export function parsePackageXml(xmlContent: string): PackageXmlObject | null {
         return null;
       }
       packageData.version = packageData.version[0] as string;
+    }
+
+    if (packageData['@_xmlns'] !== sfXmlns) {
+      return null;
     }
 
     // Validate the final structure
