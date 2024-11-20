@@ -41,10 +41,12 @@ Combine Salesforce manifest files together.
 
 ```
 USAGE
-  $ sf sfpc combine [--json] [-f <value>]
+  $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [--json]
 
 FLAGS
   -f, --package-file=<value> The path to an existing package.xml file. This flag can be specified multiple times.
+  -d, --directory=<value> The path to an existing directory with package.xml files. Only XML files in the immediate directory will be scanned.
+                          This flag can be specified multiple times.
   -c, --combined-package=<value> The path to save the combined package.xml to.
                                  Default name is "combinedPackage.xml" in the running directory.
 
@@ -58,6 +60,10 @@ EXAMPLES
   Combine pack1.xml and pack2.xml into package.xml
 
     $ sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
+
+  Combine pack1.xml, pack2.xml, and a directory with package XML files into package.xml
+
+    $ sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
 ```
 
 <!-- commandsstop -->

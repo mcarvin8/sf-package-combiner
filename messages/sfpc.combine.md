@@ -9,6 +9,7 @@ Read multiple package.xml files, then parse them and combine them to create 1 fi
 # examples
 
 - sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
+- sf sfpc combine -f pack1.xml -d "test/directory" -c package.xml
 
 # flags.package-file.summary
 
@@ -17,3 +18,7 @@ Path to a package.xml file.
 # flags.combined-package.summary
 
 Combined package file path.
+
+# flags.directory.summary
+
+Directory to look for package.xml files in.
