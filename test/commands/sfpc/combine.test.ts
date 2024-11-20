@@ -19,6 +19,9 @@ describe('sfpc combine', () => {
   const outputPackage = resolve('package.xml');
   const baseline = resolve('test/samples/combinedPackage.xml');
   const emptyPackageBaseline = resolve('test/samples/emptyPackage.xml');
+  const packageDir = resolve('test/samples/dir_sample');
+  const invalidDirPackage = resolve('test/samples/dir_sample/invalid1.xml');
+  const dirBaseline = resolve('test/samples/combinedPackageDir.xml');
 
   beforeEach(() => {
     sfCommandStubs = stubSfCommandUx($$.SANDBOX);
@@ -110,5 +113,23 @@ describe('sfpc combine', () => {
       baselinePackage,
       `File content is different between ${outputPackage} and ${emptyPackageBaseline}`
     );
+  });
+  it('combine the valid packages together including the ones in a directory.', async () => {
+    await SfpcCombine.run(['-f', package1, '-f', package2, '-f', package3, '-d', packageDir, '-c', outputPackage]);
+    const output = sfCommandStubs.log
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(output).to.include(`Combined package.xml written to: ${outputPackage}`);
+    const warnings = sfCommandStubs.warn
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(warnings).to.include(`File ${invalidDirPackage} does not match expected Salesforce package structure.`);
+  });
+  it('confirm the package created in the previous test using a directory is the same as the baseline.', async () => {
+    const testPackage = await readFile(outputPackage, 'utf-8');
+    const baselinePackage = await readFile(dirBaseline, 'utf-8');
+    strictEqual(testPackage, baselinePackage, `File content is different between ${outputPackage} and ${dirBaseline}`);
   });
 });
