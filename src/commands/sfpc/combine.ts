@@ -27,7 +27,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       summary: messages.getMessage('flags.combined-package.summary'),
       char: 'c',
       exists: false,
-      default: 'combinedPackage.xml',
+      default: 'package.xml',
     }),
     directory: Flags.directory({
       summary: messages.getMessage('flags.directory.summary'),
