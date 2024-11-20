@@ -5,6 +5,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.8...v1.1.0) (2024-11-20)
+
+
+### Features
+
+* add directory flag to read XMLs in immediate directory ([f43ae18](https://github.com/mcarvin8/sf-package-combiner/commit/f43ae18aa096713df4ae910e879c204f6551edbf))
+
+
+### Bug Fixes
+
+* change default value for combined package to `package.xml` ([6c43cd6](https://github.com/mcarvin8/sf-package-combiner/commit/6c43cd6d908bd6ce57fdbb824048b3fc0420963d))
+
 ## [1.0.8](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.7...v1.0.8) (2024-11-18)
 
 
