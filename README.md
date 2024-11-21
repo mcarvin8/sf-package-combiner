@@ -19,9 +19,9 @@ If all packages provided don't match the expected structure, the combined packag
 Salesforce packages follow this structure:
 
 - `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`: Root element must be `Package` with the Salesforce namespace.
-    - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages.
-      - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type.
-      - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject".
+    - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times, but must be declared at least once.
+      - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type but at least 1 member must be declared in each `<types>`.
+      - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject". Must be declared only once in each `<types>` element.
     - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
 
 ## Install
