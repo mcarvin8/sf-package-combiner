@@ -18,10 +18,11 @@ If all packages provided don't match the expected structure, the combined packag
 
 Salesforce packages follow this structure:
 
-- `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages.
-  - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type.
-  - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject".
-- `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
+- `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`: Root element must be `Package` with the Salesforce namespace.
+    - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages.
+      - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type.
+      - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject".
+    - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
 
 ## Install
 
@@ -44,8 +45,10 @@ USAGE
   $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [--json]
 
 FLAGS
-  -f, --package-file=<value>     The path to an existing package.xml file. This flag can be specified multiple times.
-  -d, --directory=<value>        The path to an existing directory with package.xml files. Only XML files in the immediate directory will be scanned.
+  -f, --package-file=<value>     The path to an existing package.xml file. 
+                                 This flag can be specified multiple times.
+  -d, --directory=<value>        The path to an existing directory with package.xml files. 
+                                 Only XML files in the immediate directory will be scanned.
                                  This flag can be specified multiple times.
   -c, --combined-package=<value> The path to save the combined package.xml to.
                                  If this value matches one of the input packages, it will overwrite the file.
