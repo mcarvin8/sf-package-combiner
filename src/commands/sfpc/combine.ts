@@ -35,6 +35,12 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       multiple: true,
       exists: true,
     }),
+    'api-version': Flags.integer({
+      summary: messages.getMessage('flags.api-version.summary'),
+      char: 'v',
+      required: false,
+      multiple: false,
+    }),
   };
 
   public async run(): Promise<SfpcCombineResult> {
@@ -43,6 +49,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     const files = flags['package-file'] ?? [];
     const combinedPackage = flags['combined-package'];
     const directories = flags['directory'] ?? null;
+    const userApiVersion = flags['api-version'] ?? null;
     let packageContents: PackageXmlObject[] = [];
     let apiVersions: string[] = [];
     const warnings: string[] = [];
@@ -68,7 +75,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       });
     }
 
-    const xmlString = buildPackage(packageContents, apiVersions);
+    const xmlString = buildPackage(packageContents, apiVersions, userApiVersion);
     this.log(`Combined package.xml written to: ${combinedPackage}`);
     await writeFile(combinedPackage, xmlString);
     return { path: combinedPackage };

@@ -36,14 +36,17 @@ Combine Salesforce manifest files together.
 
 ```
 USAGE
-  $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [--json]
+  $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [-v <value>] [--json]
 
 FLAGS
-  -f, --package-file=<value>     The path to an existing package.xml file. 
+  -f, --package-file=<value>     The path to an existing package.xml file.
                                  This flag can be specified multiple times.
-  -d, --directory=<value>        The path to an existing directory with package.xml files. 
+  -d, --directory=<value>        The path to an existing directory with package.xml files.
                                  Only XML files in the immediate directory will be scanned.
                                  This flag can be specified multiple times.
+  -v, --api-version=<value>      Specify the API version to use in the combined package.xml.
+                                 Must be an integer.
+                                 Optional. If not declared, it will default to the max API version found in all inputs.
   -c, --combined-package=<value> The path to save the combined package.xml to.
                                  If this value matches one of the input packages, it will overwrite the file.
                                  Default name is "package.xml" in the running directory.
@@ -62,6 +65,10 @@ EXAMPLES
   Combine pack1.xml, pack2.xml, and a directory with package XML files into package.xml
 
     $ sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
+
+  Combine pack1.xml and pack2.xml into package.xml set at API version 62.0
+
+    $ sf sfpc combine -f pack1.xml -f pack2.xml -v "62" -c package.xml
 ```
 
 <!-- commandsstop -->
@@ -70,7 +77,7 @@ EXAMPLES
 
 When the packages are combined, the `<name>` elements with the metadata name will be converted to lower-case, ex: `<name>customobject</name>`. This ensures that multiple members of the same metadata name are grouped together in the combined package and that duplicate members are only declared once. The `<name>` elements are case insensitive when read by the Salesforce CLI. However, the `<members>` elements are case sensitive and their cases must match their API names in Salesforce. This tool will not convert the cases of the `<members>` elements, just the `<name>` elements.
 
-The combined package.xml will use the maximum `<version>` tag found in all packages. If none of the packages provided have `<version>`, it will omit this from the combined package.xml. When you deploy a package.xml without an API version, it will check the `sfdx-project.json` file for the `sourceApiVersion`. If both files do not have an API version, it will follow the [sourceApiVersion: Order of Precedence](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_apiversion.htm).
+By default, the combined package.xml will use the maximum `<version>` tag found in all packages. If none of the packages provided have `<version>`, it will omit this from the combined package.xml. When you deploy a package.xml without an API version, it will check the `sfdx-project.json` file for the `sourceApiVersion`. If both files do not have an API version, it will follow the [sourceApiVersion: Order of Precedence](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_apiversion.htm). If you'd like to override this default behavior, supply the optional `--api-version`/`-v` flag, which accepts an integer, to explicity set the API verison to use in the combined package.xml.
 
 The packages provided must match the expected Salesforce package.xml structure. If you provide an XML which doesn't match the expected structure, it will print this warning and not add it to the output:
 
@@ -82,7 +89,7 @@ If all packages provided don't match the expected structure, the combined packag
 
 You can avoid deploying an empty package by searching the package for any `<types>` elements in it.
 
-``` bash
+```bash
 # run deploy command only if the combined package contains metadata
 sf sfpc -f package/package.xml -f package.xml -c package.xml
 if grep -q '<types>' ./package.xml ; then
@@ -98,10 +105,10 @@ fi
 Salesforce packages follow this structure:
 
 - `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`: Root element must be `Package` with the Salesforce namespace.
-    - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times, but must be declared at least once.
-      - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type but at least 1 member must be declared in each `<types>`.
-      - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject". Must be declared only once in each `<types>` element.
-    - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
+  - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times, but must be declared at least once.
+    - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type but at least 1 member must be declared in each `<types>`.
+    - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject". Must be declared only once in each `<types>` element.
+  - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
 
 ## Parsing Strings with Package Contents
 

@@ -11,12 +11,21 @@ const xmlConf = {
   attributeNamePrefix: '@_',
 };
 
-export function buildPackage(packageContents: PackageXmlObject[], apiVersions: string[]): string {
-  // Determine the maximum API version from the apiVersions array
-  const maxVersion = apiVersions.reduce((max, version) => (version > max ? version : max), '0.0');
+export function buildPackage(
+  packageContents: PackageXmlObject[],
+  apiVersions: string[],
+  userApiVersion: number | null
+): string {
+  // If user does not provide an API version flag, determine the maximum API version from the apiVersions array
+  let apiVersion: string;
+  if (!userApiVersion) {
+    apiVersion = apiVersions.reduce((max, version) => (version > max ? version : max), '0.0');
+  } else {
+    apiVersion = userApiVersion.toFixed(1);
+  }
 
   // Combine the parsed package.xml contents
-  const mergedPackage: PackageXmlObject = { Package: { types: [], version: maxVersion } };
+  const mergedPackage: PackageXmlObject = { Package: { types: [], version: apiVersion } };
 
   // Process each parsed package XML
   for (const pkg of packageContents) {
@@ -48,7 +57,7 @@ export function buildPackage(packageContents: PackageXmlObject[], apiVersions: s
         members: type.members.sort((a, b) => a.localeCompare(b)),
         name: type.name,
       })),
-      version: maxVersion !== '0.0' ? maxVersion : undefined,
+      version: apiVersion !== '0.0' ? apiVersion : undefined,
     },
   };
 
