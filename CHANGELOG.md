@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/mcarvin8/sf-package-combiner/compare/v1.1.0...v1.2.0) (2024-11-22)
+
+
+### Features
+
+* add optional `api-version` flag ([ff05d2e](https://github.com/mcarvin8/sf-package-combiner/commit/ff05d2e47c5f2fe7277ef715365b7728d3a5f865))
+
 ## [1.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v1.0.8...v1.1.0) (2024-11-20)
 
 
