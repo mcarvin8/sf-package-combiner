@@ -10,6 +10,7 @@ Read multiple package.xml files, then parse them and combine them to create 1 fi
 
 - sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
 - sf sfpc combine -f pack1.xml -d "test/directory" -c package.xml
+- sf sfpc combine -f packag1.xml -f pack2.xml -v 60 -c package.xml
 
 # flags.package-file.summary
 
@@ -22,3 +23,7 @@ Combined package file path.
 # flags.directory.summary
 
 Directory to look for package.xml files in.
+
+# flags.api-version.summary
+
+Sets the API version to use in the combined package.xml.
