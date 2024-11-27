@@ -18,7 +18,7 @@ export function buildPackage(
 ): string {
   // If user does not provide an API version flag, determine the maximum API version from the apiVersions array
   let apiVersion: string;
-  if (!userApiVersion) {
+  if (userApiVersion === null || userApiVersion < 0) {
     apiVersion = apiVersions.reduce((max, version) => (version > max ? version : max), '0.0');
   } else {
     apiVersion = userApiVersion.toFixed(1);
