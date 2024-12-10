@@ -21,7 +21,6 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       summary: messages.getMessage('flags.package-file.summary'),
       char: 'f',
       multiple: true,
-      exists: true,
     }),
     'combined-package': Flags.file({
       summary: messages.getMessage('flags.combined-package.summary'),
@@ -33,7 +32,6 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       summary: messages.getMessage('flags.directory.summary'),
       char: 'd',
       multiple: true,
-      exists: true,
     }),
     'api-version': Flags.integer({
       summary: messages.getMessage('flags.api-version.summary'),
