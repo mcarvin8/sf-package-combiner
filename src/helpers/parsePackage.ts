@@ -27,45 +27,46 @@ export function parsePackageXml(xmlContent: string): PackageXmlObject | null {
 
     const packageData = parsed.Package as Partial<PackageXmlObject['Package']>;
 
-    // Validate and normalize the <types> field
-    if (!packageData.types) {
-      return null;
-    }
     const allowedKeys = new Set(['types', 'version', '@_xmlns']);
     const packageKeys = Object.keys(parsed.Package);
     const hasUnexpectedKeys = packageKeys.some((key) => !allowedKeys.has(key));
     if (hasUnexpectedKeys) {
       return null;
     }
-    const normalizedTypes = Array.isArray(packageData.types) ? packageData.types : [packageData.types];
 
-    packageData.types = normalizedTypes.map((type): { name: string; members: string[] } => {
-      if (!type || typeof type !== 'object' || typeof type.name !== 'string') {
-        throw new Error('Invalid <types> block: Missing or invalid <name> element.');
-      }
-      // Validate that only "name" and "members" keys are present
-      const allowedTypesKeys = new Set(['name', 'members']);
-      const typeKeys = Object.keys(type);
-      const hasUnexpectedTypesKeys = typeKeys.some((key) => !allowedTypesKeys.has(key));
-      if (hasUnexpectedTypesKeys) {
-        throw new Error('Invalid package.xml: Each <types> block must contain only <name> and <members> tags.');
-      }
-      // Ensure members is always a string array
-      let members: string[];
+    if (packageData.types) {
+      const normalizedTypes = Array.isArray(packageData.types) ? packageData.types : [packageData.types];
 
-      if (Array.isArray(type.members)) {
-        members = type.members.filter((member): member is string => typeof member === 'string');
-      } else if (typeof type.members === 'string') {
-        members = [type.members];
-      } else {
-        members = [];
-      }
+      packageData.types = normalizedTypes.map((type): { name: string; members: string[] } => {
+        if (!type || typeof type !== 'object' || typeof type.name !== 'string') {
+          throw new Error('Invalid <types> block: Missing or invalid <name> element.');
+        }
+        // Validate that only "name" and "members" keys are present
+        const allowedTypesKeys = new Set(['name', 'members']);
+        const typeKeys = Object.keys(type);
+        const hasUnexpectedTypesKeys = typeKeys.some((key) => !allowedTypesKeys.has(key));
+        if (hasUnexpectedTypesKeys) {
+          throw new Error('Invalid package.xml: Each <types> block must contain only <name> and <members> tags.');
+        }
+        // Ensure members is always a string array
+        let members: string[];
 
-      return {
-        name: type.name,
-        members,
-      };
-    });
+        if (Array.isArray(type.members)) {
+          members = type.members.filter((member): member is string => typeof member === 'string');
+        } else if (typeof type.members === 'string') {
+          members = [type.members];
+        } else {
+          members = [];
+        }
+
+        return {
+          name: type.name,
+          members,
+        };
+      });
+    } else {
+      packageData.types = [];
+    }
 
     // Ensure a maximum of one <version> tag
     if (Array.isArray(packageData.version)) {
@@ -103,15 +104,16 @@ function isPackageXmlObject(obj: unknown): obj is PackageXmlObject {
   const packageData = (obj as { Package: unknown }).Package as Partial<PackageXmlObject['Package']>;
 
   if (
-    !Array.isArray(packageData.types) ||
-    !packageData.types.every(
-      (type) =>
-        typeof type === 'object' &&
-        type !== null &&
-        typeof type.name === 'string' &&
-        Array.isArray(type.members) &&
-        type.members.every((member) => typeof member === 'string')
-    )
+    packageData.types &&
+    (!Array.isArray(packageData.types) ||
+      !packageData.types.every(
+        (type) =>
+          typeof type === 'object' &&
+          type !== null &&
+          typeof type.name === 'string' &&
+          Array.isArray(type.members) &&
+          type.members.every((member) => typeof member === 'string')
+      ))
   ) {
     return false;
   }
