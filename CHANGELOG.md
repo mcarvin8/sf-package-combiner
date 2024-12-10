@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.2](https://github.com/mcarvin8/sf-package-combiner/compare/v1.2.1...v1.2.2) (2024-12-10)
+
+
+### Bug Fixes
+
+* warn instead of fail when file or directory does not exist ([e6dd8a4](https://github.com/mcarvin8/sf-package-combiner/commit/e6dd8a465b9cf6232fd05fbcb02b312511522db0))
+
 ## [1.2.1](https://github.com/mcarvin8/sf-package-combiner/compare/v1.2.0...v1.2.1) (2024-11-27)
 
 
