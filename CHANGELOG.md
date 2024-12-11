@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * add types/node peer dependency ([98f5c81](https://github.com/mcarvin8/sf-package-combiner/commit/98f5c818924ac63afa48a305ff8f0ccedc620d95))
-* allow packages with no `&lt;types&gt;` to be parsed ([fcbf1ec](https://github.com/mcarvin8/sf-package-combiner/commit/fcbf1ecfd3b051c40432cbb7a9fc807af30a8137))
+* allow packages with no `<types>` to be parsed ([fcbf1ec](https://github.com/mcarvin8/sf-package-combiner/commit/fcbf1ecfd3b051c40432cbb7a9fc807af30a8137))
 
 ## [1.2.2](https://github.com/mcarvin8/sf-package-combiner/compare/v1.2.1...v1.2.2) (2024-12-10)
 
