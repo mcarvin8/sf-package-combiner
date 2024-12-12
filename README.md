@@ -11,7 +11,7 @@
   - [`sf-sfpc-combine`](#sf-sfpc-combine)
 - [How the Packages Are Combined](#how-the-packages-are-combined)
 - [Salesforce Package Structure](#salesforce-package-structure)
-- [Parsing Strings with Package Contents](#parsing-strings-with-package-contents)
+- [Parsing Strings for Package Contents](#parsing-strings-for-package-contents)
 - [Issues](#issues)
 - [License](#license)
 </details>
@@ -45,7 +45,8 @@ FLAGS
                                  Only XML files in the immediate directory will be scanned.
                                  This flag can be specified multiple times.
   -v, --api-version=<value>      Specify the API version to use in the combined package.xml.
-                                 Must be a positive integer.
+                                 Must be a positive integer or 0.
+                                 If set to 0, it will intentionally omit the API version in the combined package.xml
                                  Optional. If not declared, it will default to the max API version found in all inputs.
   -c, --combined-package=<value> The path to save the combined package.xml to.
                                  If this value matches one of the input packages, it will overwrite the file.
@@ -62,7 +63,7 @@ EXAMPLES
 
     $ sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
 
-  Combine pack1.xml, pack2.xml, and a directory with package XML files into package.xml
+  Combine pack1.xml, pack2.xml, and all package XML files in a directory into package.xml
 
     $ sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
 
@@ -75,9 +76,9 @@ EXAMPLES
 
 ## How the Packages Are Combined
 
-When the packages are combined, the `<name>` elements with the metadata name will be converted to lower-case, ex: `<name>customobject</name>`. This ensures that multiple members of the same metadata name are grouped together in the combined package and that duplicate members are only declared once. The `<name>` elements are case insensitive when read by the Salesforce CLI. However, the `<members>` elements are case sensitive and their cases must match their API names in Salesforce. This tool will not convert the cases of the `<members>` elements, just the `<name>` elements.
+When the packages are combined, the `<name>` elements with the metadata type are converted to lowercase, e.g., `<name>customobject</name>`. This ensures that multiple members of the same metadata name are grouped together in the combined package and that duplicate members are only declared once. The `<name>` elements are case insensitive when read by the Salesforce CLI. However, the `<members>` elements are case sensitive and their cases must match their API names in Salesforce. This tool will not convert the cases of the `<members>` elements, just the `<name>` elements.
 
-By default, the combined package.xml will use the maximum `<version>` tag found in all packages. If none of the packages provided have `<version>`, it will omit this from the combined package.xml. When you deploy a package.xml without an API version, it will check the `sfdx-project.json` file for the `sourceApiVersion`. If both files do not have an API version, it will follow the [sourceApiVersion: Order of Precedence](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_apiversion.htm). If you'd like to override this default behavior, supply the optional `--api-version`/`-v` flag, which accepts a positive integer, to explicity set the API verison to use in the combined package.xml.
+By default, the combined package.xml will use the maximum `<version>` tag found in all packages. If none of the packages provided have `<version>`, it will omit this from the combined package.xml. When you deploy a package.xml without an API version, it will check the `sfdx-project.json` file for the `sourceApiVersion`. If both files do not have an API version, it will follow the [sourceApiVersion: Order of Precedence](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_apiversion.htm). If you'd like to override this default behavior, supply the optional `--api-version`/`-v` flag, which accepts a positive integer, to explicitly set the API version to use in the combined package.xml.
 
 If you'd like to intentionally omit the `<version>` tag in the combined package, set the `--api-version`/`-v` flag to "0".
 
@@ -107,18 +108,18 @@ fi
 Salesforce packages follow this structure:
 
 - `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`: Root element must be `Package` with the Salesforce namespace.
-  - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times, but must be declared at least once.
+  - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times.
     - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type but at least 1 member must be declared in each `<types>`.
     - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject". Must be declared only once in each `<types>` element.
   - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
 
-## Parsing Strings with Package Contents
+## Parsing Strings for Package Contents
 
 Currently, I'm working on a feature to allow strings containing package.xml contents to be accepted through the terminal using a new command flag.
 
 Until that is implemented, you could use this simple shell script which could read a string stored in a variable which contains package.xml contents and create a temporary package.xml from that. That temporary package.xml then could be read by this plugin and overwritten as the combined package.
 
-In my 1 use case, the `$COMMIT_MSG` variable is GitLab's predefined variable named `$CI_COMMIT_MESSAGE` which contains the commit message.
+In my use case, the $COMMIT_MSG variable corresponds to GitLab's predefined $CI_COMMIT_MESSAGE, which contains the commit message.
 
 ```bash
 #!/bin/bash
@@ -140,7 +141,7 @@ build_package_from_commit() {
         echo "$package_xml_content" > "$output_file"
         PACKAGE_FOUND="True"
     else
-        echo "WARNING: Package.xml contents NOT found in the commit message."
+        echo "WARNING: No package.xml contents found in the commit message."
     fi
     export PACKAGE_FOUND
 }
