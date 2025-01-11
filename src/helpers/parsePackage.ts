@@ -2,16 +2,7 @@
 import { XMLParser } from 'fast-xml-parser';
 
 import { PackageXmlObject } from './types.js';
-import { sfXmlns } from './constants.js';
-
-const XML_PARSER_OPTION = {
-  ignoreAttributes: false,
-  attributeNamePrefix: '@_',
-  parseTagValue: false,
-  parseNodeValue: false,
-  parseAttributeValue: false,
-  trimValues: true,
-};
+import { sfXmlns, XML_PARSER_OPTION } from './constants.js';
 
 export function parsePackageXml(xmlContent: string): PackageXmlObject | null {
   try {
