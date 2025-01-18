@@ -1,11 +1,11 @@
-/* eslint-disable no-await-in-loop */
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 export async function findFilesInDirectory(directories: string[]): Promise<{ files: string[]; warnings: string[] }> {
   const files: string[] = [];
   const warnings: string[] = [];
-  for (const dir of directories) {
+
+  const promises = directories.map(async (dir) => {
     try {
       const dirFiles = await readdir(dir, { withFileTypes: true });
       const xmlFiles = dirFiles
@@ -15,7 +15,9 @@ export async function findFilesInDirectory(directories: string[]): Promise<{ fil
     } catch (error) {
       warnings.push(`Failed to read directory ${dir}`);
     }
-  }
+  });
+
+  await Promise.all(promises);
 
   return { files, warnings };
 }

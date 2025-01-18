@@ -1,6 +1,4 @@
-/* eslint-disable no-await-in-loop */
 import { readFile } from 'node:fs/promises';
-
 import { parsePackageXml } from './parsePackage.js';
 import { PackageXmlObject } from './types.js';
 
@@ -10,8 +8,9 @@ export async function readPackageFiles(
   const warnings: string[] = [];
   const packageContents: PackageXmlObject[] = [];
   const apiVersions: string[] = [];
+
   if (files) {
-    for (const filePath of files) {
+    const promises = files.map(async (filePath) => {
       try {
         const fileContent = await readFile(filePath, 'utf-8');
         const parsed = parsePackageXml(fileContent);
@@ -27,7 +26,9 @@ export async function readPackageFiles(
       } catch (error) {
         warnings.push(`Error reading or parsing file ${filePath}`);
       }
-    }
+    });
+
+    await Promise.all(promises);
   }
 
   return { packageContents, apiVersions, warnings };

@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import { XMLParser } from 'fast-xml-parser';
 
 import { PackageXmlObject } from './types.js';
