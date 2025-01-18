@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.0...v2.0.1) (2025-01-18)
+
+
+### Bug Fixes
+
+* remove awaits in loops ([f9cbe61](https://github.com/mcarvin8/sf-package-combiner/commit/f9cbe617cbec4eb7d7d2b9a39f2c7e99d7ae1743))
+
 ## [2.0.0](https://github.com/mcarvin8/sf-package-combiner/compare/v1.2.3...v2.0.0) (2025-01-11)
 
 
