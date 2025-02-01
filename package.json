@@ -6,7 +6,7 @@
     "@oclif/core": "^4",
     "@salesforce/core": "^8",
     "@salesforce/sf-plugins-core": "^12",
-    "fast-xml-parser": "^4.5.0"
+    "fast-xml-parser": "^4.5.1"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.1.9",
