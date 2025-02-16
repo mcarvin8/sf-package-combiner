@@ -10,7 +10,7 @@
 - [Command](#command)
   - [`sf-sfpc-combine`](#sf-sfpc-combine)
 - [Usage](#usage)
-- [Manifest-Structure](#manifest-structure)
+- [Manifest Structure](#manifest-structure)
 - [Use Case](#use-case)
 - [Issues](#issues)
 - [License](#license)
