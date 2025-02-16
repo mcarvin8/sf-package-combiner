@@ -9,9 +9,9 @@
 - [Install](#install)
 - [Command](#command)
   - [`sf-sfpc-combine`](#sf-sfpc-combine)
-- [How the Packages Are Combined](#how-the-packages-are-combined)
-- [Salesforce Package Structure](#salesforce-package-structure)
-- [Parsing Strings for Package Contents](#parsing-strings-for-package-contents)
+- [Usage](#usage)
+- [Manifest-Structure](#manifest-structure)
+- [Use Case](#use-case)
 - [Issues](#issues)
 - [License](#license)
 </details>
@@ -80,7 +80,7 @@ EXAMPLES
 
 <!-- commandsstop -->
 
-## How the Packages Are Combined
+## Usage
 
 When the packages are combined, the `<name>` elements with the metadata type are converted to lowercase, e.g., `<name>customobject</name>`. This ensures that multiple members of the same metadata name are grouped together in the combined package and that duplicate members are only declared once. The `<name>` elements are case insensitive when read by the Salesforce CLI. However, the `<members>` elements are case sensitive and their cases must match their API names in Salesforce. This tool will not convert the cases of the `<members>` elements, just the `<name>` elements.
 
@@ -113,9 +113,9 @@ else
 fi
 ```
 
-## Salesforce Package Structure
+## Manifest Structure
 
-Salesforce packages follow this structure:
+Salesforce manifests follow this structure:
 
 - `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`: Root element must be `Package` with the Salesforce namespace.
   - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times.
@@ -123,11 +123,11 @@ Salesforce packages follow this structure:
     - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject". Must be declared only once in each `<types>` element.
   - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
 
-## Parsing Strings for Package Contents
+## Use Case
 
-You could use this simple shell script which could read a string stored in a variable which contains package.xml contents and create a temporary package.xml from that. That temporary package.xml then could be read by this plugin and overwritten as the combined package.
+In the following use-case, there's a need to use `sfdx-git-delta` to create an incremental manifest file but still allow developers to manually provide additional manifest types which may not be covered in the diff. The additional manifest files are provided in the git commit message.
 
-In my use case, the $COMMIT_MSG variable corresponds to GitLab's predefined $CI_COMMIT_MESSAGE, which contains the commit message.
+The shell script below is used to read the commit message and create a temporary package.xml from that. Then, `sf-package-combiner` will combine the `sfdx-git-delta` package and the temporary package into the final package.xml to be deployed.
 
 ```bash
 #!/bin/bash
