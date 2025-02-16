@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.2...v2.0.3) (2025-02-16)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/core from 8.8.0 to 8.8.2 ([961e2ae](https://github.com/mcarvin8/sf-package-combiner/commit/961e2ae2f3b6f3f57a2f7524ece2236203586892))
+* **deps:** bump @salesforce/sf-plugins-core from 12.0.11 to 12.1.4 ([158a745](https://github.com/mcarvin8/sf-package-combiner/commit/158a745d59b56b9ac1c205dd0419774dae487b4b))
+
 ## [2.0.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.1...v2.0.2) (2025-02-01)
 
 
