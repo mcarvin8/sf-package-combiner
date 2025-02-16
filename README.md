@@ -92,7 +92,7 @@ You can override the default API version behavior in 1 of 2 ways:
    - This must be a supported API version or else the command will fail with `Error (RetiredApiVersionError)` or `Error (InvalidApiVersionError)`.
 2. Supply the optional Boolean flag `--no-api-version`/`-n` to intentionally omit the API version in the combined package.xml.
 
-The packages provided must match the expected Salesforce package.xml structure. If you provide an XML which doesn't match the expected structure, it will print this warning and not add it to the output:
+The packages provided must match the expected [Salesforce package.xml structure](#manifest-structure). If you provide an XML which doesn't match the expected structure, it will print this warning and not add it to the output:
 
 ```
 Warning: File .\test\samples\pack2.xml does not match expected Salesforce package structure.
