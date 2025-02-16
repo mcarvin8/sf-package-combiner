@@ -40,19 +40,18 @@ USAGE
 
 FLAGS
   -f, --package-file=<value>     The path to an existing package.xml file.
-                                 This flag can be specified multiple times.
+                                 Can be specified multiple times.
   -d, --directory=<value>        The path to an existing directory with package.xml files.
                                  Only XML files in the immediate directory will be scanned.
-                                 This flag can be specified multiple times.
+                                 Can be specified multiple times.
   -v, --api-version=<value>      Specify the API version to use in the combined package.xml.
                                  Must be a float value (e.g., '62.0') and be an active API version.
-                                 Optional. If not declared, it will default to the max API version found in all inputs.
+                                 If not declared, it will default to the max API version found in all inputs.
   -n, --no-api-version           Intentionally omit the API version in the combined package.xml.
-                                 Boolean flag.
-                                 Optional. If not declared, it will default to the max API version found in all inputs.
+                                 If not declared, it will default to the max API version found in all inputs.
   -c, --combined-package=<value> The path to save the combined package.xml to.
                                  If this value matches one of the input packages, it will overwrite the file.
-                                 Default name is "package.xml" in the running directory.
+                                 Default is "package.xml".
 
 GLOBAL FLAGS
   --json  Format output as json.
