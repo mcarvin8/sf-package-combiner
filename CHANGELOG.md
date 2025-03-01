@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.4](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.3...v2.0.4) (2025-03-01)
+
+
+### Bug Fixes
+
+* **deps:** bump @oclif/core from 4.2.6 to 4.2.8 ([24fc768](https://github.com/mcarvin8/sf-package-combiner/commit/24fc768cb9437f8de51c2cfba1071bcc950e5e12))
+
 ## [2.0.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.2...v2.0.3) (2025-02-16)
 
 
