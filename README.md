@@ -10,6 +10,7 @@
 - [Command](#command)
   - [`sf-sfpc-combine`](#sf-sfpc-combine)
 - [Usage](#usage)
+- [Example: Merging Manifests](#example-merging-manifests)
 - [Manifest Structure](#manifest-structure)
 - [Use Case](#use-case)
 - [Issues](#issues)
@@ -79,54 +80,92 @@ EXAMPLES
 
 <!-- commandsstop -->
 
-## Usage
+## Usage  
 
-When the packages are combined, the `<name>` elements with the metadata type are converted to lowercase, e.g., `<name>customobject</name>`. This ensures that multiple members of the same metadata name are grouped together in the combined package and that duplicate members are only declared once. The `<name>` elements are case insensitive when read by the Salesforce CLI. However, the `<members>` elements are case sensitive and their cases must match their API names in Salesforce. This tool will not convert the cases of the `<members>` elements, just the `<name>` elements.
+### How it Works  
 
-By default, the combined package.xml will use the maximum `<version>` tag found in all packages. If none of the packages provided have `<version>`, it will omit this from the combined package.xml. When you deploy a package.xml without an API version, it will check the `sfdx-project.json` file for the `sourceApiVersion`. If both files do not have an API version, it will follow the [sourceApiVersion: Order of Precedence](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_apiversion.htm).
+- The `<name>` elements (metadata types) are **converted to lowercase** to ensure consistency and avoid duplicates.  
+- The `<members>` elements **retain their original case**, as Salesforce treats them as case-sensitive.  
+- By default, the **highest API version** found in the input manifests is used.  
+- If no `<version>` tag is found, it is omitted from the final `package.xml`.  
 
-You can override the default API version behavior in 1 of 2 ways:
+**To override the API version behavior:**  
+- Use `-v <version>` to **set a specific API version**.  
+- Use `-n` to **omit the API version entirely**.  
 
-1. Supply the optional `--api-version`/`-v` flag, which accepts a float value (e.g. `62.0`), to explicitly set the API version to use in the combined package.xml.
-   - This must be a supported API version or else the command will fail with `Error (RetiredApiVersionError)` or `Error (InvalidApiVersionError)`.
-2. Supply the optional Boolean flag `--no-api-version`/`-n` to intentionally omit the API version in the combined package.xml.
+### Handling Invalid `package.xml` Files  
 
-The packages provided must match the expected [Salesforce package.xml structure](#manifest-structure). If you provide an XML which doesn't match the expected structure, it will print this warning and not add it to the output:
+If a file doesn't match the expected structure, it is skipped with a warning:  
 
+```plaintext
+Warning: File ./test/samples/pack2.xml does not match expected Salesforce package structure.
 ```
-Warning: File .\test\samples\pack2.xml does not match expected Salesforce package structure.
+
+---
+
+## Example: Merging Manifests  
+
+### Input  
+
+#### `package1.xml`  
+
+```xml
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+  <types>
+    <members>MyApexClass</members>
+    <name>ApexClass</name>
+  </types>
+  <version>60.0</version>
+</Package>
 ```
 
-If all packages provided don't match the expected structure, the combined package.xml will be an empty package.
+#### `package2.xml`  
 
-You can avoid deploying an empty package by searching the package for any `<types>` elements in it.
+```xml
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+  <types>
+    <members>MyTrigger</members>
+    <name>ApexTrigger</name>
+  </types>
+  <version>62.0</version>
+</Package>
+```
+
+### Command  
 
 ```bash
-# run deploy command only if the combined package contains metadata
-sf sfpc -f package/package.xml -f package.xml -c package.xml
-if grep -q '<types>' ./package.xml ; then
-  echo "---- Deploying added and modified metadata ----"
-  sf project deploy start -x package.xml
-else
-  echo "---- No changes to deploy ----"
-fi
+sf sfpc combine -f package1.xml -f package2.xml -c merged.xml
+```
+
+### Output (`merged.xml`)  
+
+```xml
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+  <types>
+    <members>MyApexClass</members>
+    <name>apexclass</name>
+  </types>
+  <types>
+    <members>MyTrigger</members>
+    <name>apextrigger</name>
+  </types>
+  <version>62.0</version>
+</Package>
 ```
 
 ## Manifest Structure
 
-Salesforce manifests follow this structure:
+Salesforce `package.xml` files follow this structure:  
 
-- `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`: Root element must be `Package` with the Salesforce namespace.
-  - `<types>`: This element defines a specific type of metadata component. It is used to group components of the same type, such as Apex classes, triggers, or Visualforce pages. Can be declared multiple times.
-    - `<members>`: Lists the individual components by their API names within that type. Multiple members can be included under the same type but at least 1 member must be declared in each `<types>`.
-    - `<name>`: Specifies the type of metadata, such as "ApexClass", "ApexTrigger", or "CustomObject". Must be declared only once in each `<types>` element.
-  - `<version>`: This optional element specifies the API version of Salesforce metadata that you are working with. It helps ensure compatibility between your metadata and the version of Salesforce you're interacting with. This can only be declared once.
+- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
+- **Metadata Types:** `<types>` contains:  
+  - `<members>`: Lists metadata items.  
+  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
+- **API Version (Optional):** `<version>` specifies the metadata API version.  
 
 ## Use Case
 
-In the following use-case, there's a need to use `sfdx-git-delta` to create an incremental manifest file but still allow developers to manually provide additional manifest types which may not be covered in the diff. The additional manifest files are provided in the git commit message.
-
-The shell script below is used to read the commit message and create a temporary package.xml from that. Then, `sf-package-combiner` will combine the `sfdx-git-delta` package and the temporary package into the final package.xml to be deployed.
+Integrate `sf-package-combiner` with `sfdx-git-delta` to generate an incremental package.xml and merge additional metadata manually added in a commit message:  
 
 ```bash
 #!/bin/bash
