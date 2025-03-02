@@ -17,7 +17,11 @@
 - [License](#license)
 </details>
 
-A Salesforce CLI plugin to combine multiple manifest files (package.xml) into 1 file that can be used for deployments.
+A Salesforce CLI plugin that **combines multiple `package.xml` files into a single manifest** for deployments. This is useful when:  
+
+- Using tools like `sfdx-git-delta` to generate incremental package.xml files  
+- Merging different package.xml files from various sources  
+- Ensuring a streamlined deployment process in CI/CD workflows  
 
 ## Install
 
