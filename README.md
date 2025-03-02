@@ -114,6 +114,7 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 #### `package1.xml`  
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
   <types>
     <members>MyApexClass</members>
@@ -126,6 +127,7 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 #### `package2.xml`  
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
   <types>
     <members>MyTrigger</members>
@@ -144,6 +146,7 @@ sf sfpc combine -f package1.xml -f package2.xml -c merged.xml
 ### Output (`merged.xml`)  
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
   <types>
     <members>MyApexClass</members>
@@ -206,7 +209,11 @@ fi
 
 ## Issues
 
-If you encounter any issues, please create an issue in the repository's [issue tracker](https://github.com/mcarvin8/sf-package-combiner/issues).
+If you encounter issues, [open a GitHub issue](https://github.com/mcarvin8/sf-package-combiner/issues) and include:  
+
+- The exact command run  
+- A sample of your `package.xml` files (if possible)  
+- Any error messages or logs
 
 ## License
 
