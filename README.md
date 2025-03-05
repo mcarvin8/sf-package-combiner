@@ -111,7 +111,7 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 The example below demonstrates the following use-case:
 1. Run `sfdx-git-delta` to generate an incremental `package/package.xml` 
 2. Declare additional metadata in a commit message and create a temporary `package.xml`
-3. Run `sf-package-combiner` to merge 
+3. Run `sf-package-combiner` to merge both packages into `package.xml`
 
 ### Input  
 
@@ -144,7 +144,7 @@ The example below demonstrates the following use-case:
 ### Command  
 
 ```bash
-sf sfpc combine -f package1.xml -f package2.xml -c package.xml
+sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml"
 ```
 
 ### Output (`package.xml`)
