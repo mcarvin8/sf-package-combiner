@@ -10,9 +10,8 @@
 - [Command](#command)
   - [`sf-sfpc-combine`](#sf-sfpc-combine)
 - [Usage](#usage)
-- [Example: Merging Manifests](#example-merging-manifests)
+- [Example](#example)
 - [Manifest Structure](#manifest-structure)
-- [Use Case](#use-case)
 - [Issues](#issues)
 - [License](#license)
 </details>
@@ -107,11 +106,16 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 
 ---
 
-## Example: Merging Manifests  
+## Example  
+
+The example below demonstrates the following use-case:
+1. Run `sfdx-git-delta` to generate an incremental `package/package.xml` 
+2. Declare additional metadata in a commit message and create a temporary `package.xml`
+3. Run `sf-package-combiner` to merge 
 
 ### Input  
 
-#### `package1.xml`  
+#### `package/package.xml` - incremental package
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -124,7 +128,7 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 </Package>
 ```
 
-#### `package2.xml`  
+#### `package.xml` - commit message
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -143,7 +147,7 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 sf sfpc combine -f package1.xml -f package2.xml -c package.xml
 ```
 
-### Output (`package.xml`)  
+### Output (`package.xml`)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -159,20 +163,6 @@ sf sfpc combine -f package1.xml -f package2.xml -c package.xml
   <version>62.0</version>
 </Package>
 ```
-
-## Manifest Structure
-
-Salesforce `package.xml` files follow this structure:  
-
-- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
-- **Metadata Types:** `<types>` contains:  
-  - `<members>`: Lists metadata item(s) via their API names.  
-  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
-- **API Version (Optional):** `<version>` specifies the metadata API version.  
-
-## Use Case
-
-Integrate `sf-package-combiner` with `sfdx-git-delta` to generate an incremental `package.xml` and merge additional metadata manually declared in a commit message:  
 
 ```bash
 #!/bin/bash
@@ -202,11 +192,21 @@ build_package_from_commit() {
 build_package_from_commit "$COMMIT_MSG" "$DEPLOY_PACKAGE"
 # create incremental package in default locations
 sf sgd source delta --to "HEAD" --from "HEAD~1" --output-dir "."
-# combines the sfdx-git-delta package.xml with the package found in the commit message
+# combines the sfdx-git-delta package.xml with the package found in the commit message, overwriting the commit message package
 if [[ "$PACKAGE_FOUND" == "True" ]]; then
     sf sfpc combine -f "package/package.xml" -f "$DEPLOY_PACKAGE" -c "$DEPLOY_PACKAGE"
 fi
 ```
+
+## Manifest Structure
+
+Salesforce `package.xml` files follow this structure:  
+
+- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
+- **Metadata Types:** `<types>` contains:  
+  - `<members>`: Lists metadata item(s) via their API names.  
+  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
+- **API Version (Optional):** `<version>` specifies the metadata API version.
 
 ## Issues
 
