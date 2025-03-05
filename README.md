@@ -17,7 +17,7 @@
 - [License](#license)
 </details>
 
-A Salesforce CLI plugin that **combines multiple `package.xml` files into a single manifest** for deployments. This is useful when:  
+**Combine multiple Salesforce `package.xml` files into a single manifest** for deployments. This is useful when:  
 
 - Using tools like `sfdx-git-delta` to generate incremental package.xml files  
 - Merging different package.xml files from various sources  
@@ -140,10 +140,10 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 ### Command  
 
 ```bash
-sf sfpc combine -f package1.xml -f package2.xml -c merged.xml
+sf sfpc combine -f package1.xml -f package2.xml -c package.xml
 ```
 
-### Output (`merged.xml`)  
+### Output (`package.xml`)  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -166,13 +166,13 @@ Salesforce `package.xml` files follow this structure:
 
 - **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
 - **Metadata Types:** `<types>` contains:  
-  - `<members>`: Lists metadata items.  
+  - `<members>`: Lists metadata item(s) via their API names.  
   - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
 - **API Version (Optional):** `<version>` specifies the metadata API version.  
 
 ## Use Case
 
-Integrate `sf-package-combiner` with `sfdx-git-delta` to generate an incremental package.xml and merge additional metadata manually added in a commit message:  
+Integrate `sf-package-combiner` with `sfdx-git-delta` to generate an incremental `package.xml` and merge additional metadata manually declared in a commit message:  
 
 ```bash
 #!/bin/bash
@@ -200,7 +200,8 @@ build_package_from_commit() {
 }
 
 build_package_from_commit "$COMMIT_MSG" "$DEPLOY_PACKAGE"
-
+# create incremental package in default locations
+sf sgd source delta --to "HEAD" --from "HEAD~1" --output-dir "."
 # combines the sfdx-git-delta package.xml with the package found in the commit message
 if [[ "$PACKAGE_FOUND" == "True" ]]; then
     sf sfpc combine -f "package/package.xml" -f "$DEPLOY_PACKAGE" -c "$DEPLOY_PACKAGE"
