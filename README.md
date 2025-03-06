@@ -98,7 +98,7 @@ EXAMPLES
 
 ### Handling Invalid `package.xml` Files  
 
-If a file doesn't match the expected structure, it is skipped with a warning:  
+If a file doesn't match the expected [structure](#manifest-structure), it is skipped with a warning:  
 
 ```plaintext
 Warning: File ./test/samples/pack2.xml does not match expected Salesforce package structure.
