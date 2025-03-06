@@ -10,8 +10,8 @@
 - [Command](#command)
   - [`sf-sfpc-combine`](#sf-sfpc-combine)
 - [Usage](#usage)
-- [Example](#example)
 - [Manifest Structure](#manifest-structure)
+- [Example](#example)
 - [Issues](#issues)
 - [License](#license)
 </details>
@@ -106,6 +106,16 @@ Warning: File ./test/samples/pack2.xml does not match expected Salesforce packag
 
 ---
 
+## Manifest Structure
+
+Salesforce `package.xml` files follow this structure:  
+
+- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
+- **Metadata Types:** `<types>` contains:  
+  - `<members>`: Lists metadata item(s) via their API names.  
+  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
+- **API Version (Optional):** `<version>` specifies the metadata API version.
+
 ## Example  
 
 The example below demonstrates the following use-case:
@@ -197,16 +207,6 @@ if [[ "$PACKAGE_FOUND" == "True" ]]; then
     sf sfpc combine -f "package/package.xml" -f "$DEPLOY_PACKAGE" -c "$DEPLOY_PACKAGE"
 fi
 ```
-
-## Manifest Structure
-
-Salesforce `package.xml` files follow this structure:  
-
-- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
-- **Metadata Types:** `<types>` contains:  
-  - `<members>`: Lists metadata item(s) via their API names.  
-  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
-- **API Version (Optional):** `<version>` specifies the metadata API version.
 
 ## Issues
 
