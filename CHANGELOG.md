@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.4...v2.1.0) (2025-03-10)
+
+
+### Features
+
+* use manifest resolver from salesforce sdr ([6ae91aa](https://github.com/mcarvin8/sf-package-combiner/commit/6ae91aa002af1bacadd171efc58a1ab17085d032))
+
 ## [2.0.4](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.3...v2.0.4) (2025-03-01)
 
 
