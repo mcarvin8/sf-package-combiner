@@ -1,8 +1,8 @@
-import { PackageTypeObject } from './types.js';
+import { PackageTypeMembers } from '@salesforce/source-deploy-retrieve';
 import { ensureArray } from './ensureArray.js';
 
 export function mergeType(
-  existingTypes: PackageTypeObject[],
+  existingTypes: PackageTypeMembers[],
   type: { name: string; members: string | string[] }
 ): void {
   const typeName = type.name.toLowerCase();

@@ -1,12 +1,10 @@
-import { ManifestResolver } from '@salesforce/source-deploy-retrieve';
-
-import { PackageXmlObject } from './types.js';
+import { ManifestResolver, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
 export async function readPackageFiles(
   files: string[] | null
-): Promise<{ packageContents: PackageXmlObject[]; apiVersions: string[]; warnings: string[] }> {
+): Promise<{ packageContents: PackageManifestObject[]; apiVersions: string[]; warnings: string[] }> {
   const warnings: string[] = [];
-  const packageContents: PackageXmlObject[] = [];
+  const packageContents: PackageManifestObject[] = [];
   const apiVersions: string[] = [];
   const resolver = new ManifestResolver();
 
@@ -37,12 +35,13 @@ export async function readPackageFiles(
         }
 
         // Construct parsed package object
-        const parsedPackage: PackageXmlObject = {
+        const parsedPackage: PackageManifestObject = {
           Package: {
             types: Array.from(metadataTypes.entries()).map(([name, members]) => ({
               name,
               members,
             })),
+            version: resolvedManifest.apiVersion,
           },
         };
 

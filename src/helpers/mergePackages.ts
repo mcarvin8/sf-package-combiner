@@ -1,9 +1,9 @@
-import { PackageXmlObject } from './types.js';
+import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 import { mergeType } from './mergeType.js';
 import { ensureArray } from './ensureArray.js';
 
-export function mergePackages(packageContents: PackageXmlObject[], apiVersion: string): PackageXmlObject {
-  const mergedPackage: PackageXmlObject = { Package: { types: [], version: apiVersion } };
+export function mergePackages(packageContents: PackageManifestObject[], apiVersion: string): PackageManifestObject {
+  const mergedPackage: PackageManifestObject = { Package: { types: [], version: apiVersion } };
 
   for (const pkg of packageContents) {
     if (!pkg.Package?.types) continue;
