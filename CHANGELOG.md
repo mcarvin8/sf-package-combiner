@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.1.0...v2.1.1) (2025-03-10)
+
+
+### Bug Fixes
+
+* use sdr types ([3ed6eba](https://github.com/mcarvin8/sf-package-combiner/commit/3ed6ebac534e732ffb49481abb408aa2e75c83ec))
+
 ## [2.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.0.4...v2.1.0) (2025-03-10)
 
 
