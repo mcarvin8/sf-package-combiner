@@ -224,11 +224,8 @@ fi
 
 ## Issues
 
-If you encounter issues, [open a GitHub issue](https://github.com/mcarvin8/sf-package-combiner/issues) and include:
+If you encounter any issues or would like to suggest features, please create an [issue](https://github.com/mcarvin8/sf-package-combiner/issues) and include:
 
-- The exact command run
-- A sample of your `package.xml` files (if possible)
-- Any error messages or logs
 
 ## License
 
