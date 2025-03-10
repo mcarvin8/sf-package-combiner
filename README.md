@@ -224,7 +224,7 @@ fi
 
 ## Issues
 
-If you encounter any issues or would like to suggest features, please create an [issue](https://github.com/mcarvin8/sf-package-combiner/issues) and include:
+If you encounter any issues or would like to suggest features, please create an [issue](https://github.com/mcarvin8/sf-package-combiner/issues).
 
 
 ## License
