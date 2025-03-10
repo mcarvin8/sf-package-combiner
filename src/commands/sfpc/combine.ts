@@ -2,14 +2,18 @@ import { writeFile } from 'node:fs/promises';
 
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
+import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
-import { PackageXmlObject, SfpcCombineResult } from '../../helpers/types.js';
 import { buildPackage } from '../../helpers/buildPackage.js';
 import { readPackageFiles } from '../../helpers/readPackageFiles.js';
 import { findFilesInDirectory } from '../../helpers/findFilesinDirectory.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('sf-package-combiner', 'sfpc.combine');
+
+export type SfpcCombineResult = {
+  path: string;
+};
 
 export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
   public static readonly summary = messages.getMessage('summary');
@@ -55,7 +59,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     const directories = flags['directory'] ?? null;
     const userApiVersion = flags['api-version'] ?? null;
     const noApiVersion = flags['no-api-version'];
-    let packageContents: PackageXmlObject[] = [];
+    let packageContents: PackageManifestObject[] = [];
     let apiVersions: string[] = [];
     const warnings: string[] = [];
 
