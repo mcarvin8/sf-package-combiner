@@ -59,7 +59,7 @@ describe('sfpc combine', () => {
       .getCalls()
       .flatMap((c) => c.args)
       .join('\n');
-    expect(warnings).to.include(`File ${invalidPackage1} does not match expected Salesforce package structure.`);
+    expect(warnings).to.include(`Invalid or empty package.xml: ${invalidPackage1}`);
   });
   it('confirm the invalid XML is an empty package.', async () => {
     const testPackage = await readFile(outputPackage, 'utf-8');
@@ -81,7 +81,7 @@ describe('sfpc combine', () => {
       .getCalls()
       .flatMap((c) => c.args)
       .join('\n');
-    expect(warnings).to.include(`File ${invalidPackage2} does not match expected Salesforce package structure.`);
+    expect(warnings).to.include(`Invalid or empty package.xml: ${invalidPackage2}`);
   });
   it('confirm the invalid XML is an empty package.', async () => {
     const testPackage = await readFile(outputPackage, 'utf-8');
@@ -103,7 +103,7 @@ describe('sfpc combine', () => {
       .getCalls()
       .flatMap((c) => c.args)
       .join('\n');
-    expect(warnings).to.include(`File ${invalidPackage3} does not match expected Salesforce package structure.`);
+    expect(warnings).to.include(`Invalid or empty package.xml: ${invalidPackage3}`);
   });
   it('confirm the invalid XML is an empty package.', async () => {
     const testPackage = await readFile(outputPackage, 'utf-8');
@@ -125,7 +125,7 @@ describe('sfpc combine', () => {
       .getCalls()
       .flatMap((c) => c.args)
       .join('\n');
-    expect(warnings).to.include(`File ${invalidDirPackage} does not match expected Salesforce package structure.`);
+    expect(warnings).to.include(`Invalid or empty package.xml: ${invalidDirPackage}`);
   });
   it('confirm the package created in the previous test using a directory is the same as the baseline.', async () => {
     const testPackage = await readFile(outputPackage, 'utf-8');
