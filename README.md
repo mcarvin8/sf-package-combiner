@@ -16,11 +16,11 @@
 - [License](#license)
 </details>
 
-**Combine multiple Salesforce `package.xml` files into a single manifest** for deployments. This is useful when:  
+**Combine multiple Salesforce `package.xml` files into a single manifest** for deployments. This is useful when:
 
-- Using tools like `sfdx-git-delta` to generate incremental package.xml files  
-- Merging different package.xml files from various sources  
-- Ensuring a streamlined deployment process in CI/CD workflows  
+- Using tools like `sfdx-git-delta` to generate incremental package.xml files
+- Merging different package.xml files from various sources
+- Ensuring a streamlined deployment process in CI/CD workflows
 
 ## Install
 
@@ -83,47 +83,61 @@ EXAMPLES
 
 <!-- commandsstop -->
 
-## Usage  
+## Usage
 
-### How it Works  
+### How it Works
 
-- The `<name>` elements (metadata types) are **converted to lowercase** to ensure consistency and avoid duplicates.  
-- The `<members>` elements **retain their original case**, as Salesforce treats them as case-sensitive.  
-- By default, the **highest API version** found in the input manifests is used.  
-- If no `<version>` tag is found, it is omitted from the final `package.xml`.  
+- The `<name>` elements (metadata types) are **converted to lowercase** to ensure consistency and avoid duplicates.
+- The `<members>` elements **retain their original case**, as Salesforce treats them as case-sensitive.
+- By default, the **highest API version** found in the input manifests is used.
+- If no `<version>` tag is found, it is omitted from the final `package.xml`.
 
-**To override the API version behavior:**  
-- Use `-v <version>` to **set a specific API version**.  
-- Use `-n` to **omit the API version entirely**.  
+**To override the API version behavior:**
 
-### Handling Invalid `package.xml` Files  
+- Use `-v <version>` to **set a specific API version**.
+- Use `-n` to **omit the API version entirely**.
 
-If a file doesn't match the expected [structure](#manifest-structure), it is skipped with a warning:  
+### Handling Invalid `package.xml` Files
+
+If a file doesn't match the expected [structure](#manifest-structure) or has no `<types>` in it, it is skipped with a warning:
 
 ```plaintext
-Warning: File ./test/samples/pack2.xml does not match expected Salesforce package structure.
+Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml
+```
+
+If all packages are invalid or empty, the combined package.xml will be an empty package (no `<types>`). You can avoid deploying an empty package by searching the manifest for any `<types>` in it before running the deploy command.
+
+```bash
+sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml"
+if grep -q '<types>' ./package.xml ; then
+  echo "---- Deploying added and modified metadata ----"
+  sf project deploy start -x package.xml
+else
+  echo "---- No changes to deploy ----"
+fi
 ```
 
 ---
 
 ## Manifest Structure
 
-Salesforce `package.xml` files follow this structure:  
+Salesforce `package.xml` files follow this structure:
 
-- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`  
-- **Metadata Types:** `<types>` contains:  
-  - `<members>`: Lists metadata item(s) via their API names.  
-  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).  
+- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`
+- **Metadata Types:** `<types>` contains:
+  - `<members>`: Lists metadata item(s) via their API names.
+  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).
 - **API Version (Optional):** `<version>` specifies the metadata API version.
 
-## Example  
+## Example
 
 The example below demonstrates the following use-case:
-1. Run `sfdx-git-delta` to generate an incremental `package/package.xml` 
+
+1. Run `sfdx-git-delta` to generate an incremental `package/package.xml`
 2. Declare additional metadata in a commit message and create a temporary `package.xml`
 3. Run `sf-package-combiner` to merge both packages into `package.xml`
 
-### Input  
+### Input
 
 #### `package/package.xml` - incremental package
 
@@ -151,7 +165,7 @@ The example below demonstrates the following use-case:
 </Package>
 ```
 
-### Command  
+### Command
 
 ```bash
 sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml"
@@ -210,10 +224,10 @@ fi
 
 ## Issues
 
-If you encounter issues, [open a GitHub issue](https://github.com/mcarvin8/sf-package-combiner/issues) and include:  
+If you encounter issues, [open a GitHub issue](https://github.com/mcarvin8/sf-package-combiner/issues) and include:
 
-- The exact command run  
-- A sample of your `package.xml` files (if possible)  
+- The exact command run
+- A sample of your `package.xml` files (if possible)
 - Any error messages or logs
 
 ## License

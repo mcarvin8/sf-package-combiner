@@ -1,5 +1,5 @@
-import { readFile } from 'node:fs/promises';
-import { parsePackageXml } from './parsePackage.js';
+import { ManifestResolver } from '@salesforce/source-deploy-retrieve';
+
 import { PackageXmlObject } from './types.js';
 
 export async function readPackageFiles(
@@ -8,23 +8,47 @@ export async function readPackageFiles(
   const warnings: string[] = [];
   const packageContents: PackageXmlObject[] = [];
   const apiVersions: string[] = [];
+  const resolver = new ManifestResolver();
 
   if (files) {
     const promises = files.map(async (filePath) => {
       try {
-        const fileContent = await readFile(filePath, 'utf-8');
-        const parsed = parsePackageXml(fileContent);
-        if (parsed) {
-          packageContents.push(parsed);
-          // Add the package version to the apiVersions array
-          if (parsed.Package?.version) {
-            apiVersions.push(parsed.Package.version);
-          }
-        } else {
-          warnings.push(`File ${filePath} does not match expected Salesforce package structure.`);
+        // Resolve the manifest file using SDR, which ensures it's a valid package.xml
+        const resolvedManifest = await resolver.resolve(filePath);
+
+        if (!resolvedManifest || resolvedManifest.components.length === 0) {
+          warnings.push(`Invalid or empty package.xml: ${filePath}`);
+          return;
         }
+
+        // push api version to array if found
+        if (resolvedManifest.apiVersion) {
+          apiVersions.push(resolvedManifest.apiVersion);
+        }
+
+        // Extract metadata components and API versions
+        const metadataTypes = new Map<string, string[]>(); // Type -> Full Names
+
+        for (const component of resolvedManifest.components) {
+          if (!metadataTypes.has(component.type.name)) {
+            metadataTypes.set(component.type.name, []);
+          }
+          metadataTypes.get(component.type.name)!.push(component.fullName);
+        }
+
+        // Construct parsed package object
+        const parsedPackage: PackageXmlObject = {
+          Package: {
+            types: Array.from(metadataTypes.entries()).map(([name, members]) => ({
+              name,
+              members,
+            })),
+          },
+        };
+
+        packageContents.push(parsedPackage);
       } catch (error) {
-        warnings.push(`Error reading or parsing file ${filePath}`);
+        warnings.push(`Invalid or empty package.xml: ${filePath}`);
       }
     });
 
