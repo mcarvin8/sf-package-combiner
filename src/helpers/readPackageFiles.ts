@@ -1,4 +1,7 @@
 import { ManifestResolver, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
+import { mapLimit } from 'async';
+
+import { getConcurrencyThreshold } from './getConcurrencyThreshold.js';
 
 export async function readPackageFiles(
   files: string[] | null
@@ -7,9 +10,10 @@ export async function readPackageFiles(
   const packageContents: PackageManifestObject[] = [];
   const apiVersions: string[] = [];
   const resolver = new ManifestResolver();
+  const concurrencyLimit = getConcurrencyThreshold();
 
   if (files) {
-    const promises = files.map(async (filePath) => {
+    await mapLimit(files, concurrencyLimit, async (filePath: string) => {
       try {
         // Resolve the manifest file using SDR, which ensures it's a valid package.xml
         const resolvedManifest = await resolver.resolve(filePath);
@@ -50,8 +54,6 @@ export async function readPackageFiles(
         warnings.push(`Invalid or empty package.xml: ${filePath}`);
       }
     });
-
-    await Promise.all(promises);
   }
 
   return { packageContents, apiVersions, warnings };

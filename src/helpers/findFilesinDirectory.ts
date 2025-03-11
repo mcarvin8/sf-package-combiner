@@ -1,11 +1,15 @@
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
+import { mapLimit } from 'async';
+
+import { getConcurrencyThreshold } from './getConcurrencyThreshold.js';
 
 export async function findFilesInDirectory(directories: string[]): Promise<{ files: string[]; warnings: string[] }> {
   const files: string[] = [];
   const warnings: string[] = [];
+  const concurrencyLimit = getConcurrencyThreshold();
 
-  const promises = directories.map(async (dir) => {
+  await mapLimit(directories, concurrencyLimit, async (dir: string) => {
     try {
       const dirFiles = await readdir(dir, { withFileTypes: true });
       const xmlFiles = dirFiles
@@ -16,8 +20,6 @@ export async function findFilesInDirectory(directories: string[]): Promise<{ fil
       warnings.push(`Failed to read directory ${dir}`);
     }
   });
-
-  await Promise.all(promises);
 
   return { files, warnings };
 }
