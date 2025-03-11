@@ -220,12 +220,18 @@ sf sgd source delta --to "HEAD" --from "HEAD~1" --output-dir "."
 if [[ "$PACKAGE_FOUND" == "True" ]]; then
     sf sfpc combine -f "package/package.xml" -f "$DEPLOY_PACKAGE" -c "$DEPLOY_PACKAGE"
 fi
+
+if grep -q '<types>' ./package.xml ; then
+  echo "---- Deploying added and modified metadata ----"
+  sf project deploy start -x package.xml
+else
+  echo "---- No changes to deploy ----"
+fi
 ```
 
 ## Issues
 
 If you encounter any issues or would like to suggest features, please create an [issue](https://github.com/mcarvin8/sf-package-combiner/issues).
-
 
 ## License
 
