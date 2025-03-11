@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.1.1...v2.2.0) (2025-03-11)
+
+
+### Features
+
+* add async library to limit parallel processing ([e946e20](https://github.com/mcarvin8/sf-package-combiner/commit/e946e200f3b95c27e22342b3b0affb2dbf4fc1b0))
+
 ## [2.1.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.1.0...v2.1.1) (2025-03-10)
 
 
