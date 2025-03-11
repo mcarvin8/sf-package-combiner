@@ -1,18 +1,20 @@
 {
   "name": "sf-package-combiner",
-  "description": "Combines multiple Salesforce manifest files together.",
+  "description": "Combine multiple Salesforce manifest files (package.xml) into 1 file for deployments.",
   "version": "2.1.1",
   "dependencies": {
     "@oclif/core": "^4",
     "@salesforce/core": "^8",
     "@salesforce/sf-plugins-core": "^12",
     "@salesforce/source-deploy-retrieve": "^12.16.5",
+    "async": "^3.2.6",
     "fast-xml-parser": "^4.5.1"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.2.36",
     "@salesforce/cli-plugins-testkit": "^5.3.39",
     "@salesforce/dev-scripts": "^10",
+    "@types/async": "^3.2.24",
     "@types/mocha": "^10.0.9",
     "@types/node": "18",
     "eslint-plugin-sf-plugin": "^1.20.15",
