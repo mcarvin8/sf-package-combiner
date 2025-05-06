@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.2.1...v2.2.2) (2025-05-06)
+
+
+### Bug Fixes
+
+* **deps:** bump @oclif/core from 4.2.10 to 4.3.0 ([512dd5e](https://github.com/mcarvin8/sf-package-combiner/commit/512dd5e88af62abb30e1b3bd525f07898d7474e8))
+* **deps:** bump @salesforce/sf-plugins-core from 12.1.4 to 12.2.1 ([c6f029a](https://github.com/mcarvin8/sf-package-combiner/commit/c6f029ace0b741e352330b9b75219e1c96d7fdaf))
+
 ## [2.2.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.2.0...v2.2.1) (2025-04-01)
 
 
