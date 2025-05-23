@@ -1,5 +1,5 @@
 import { PackageTypeMembers } from '@salesforce/source-deploy-retrieve';
-import { ensureArray } from './ensureArray.js';
+import { ensureArray } from '../utils/ensureArray.js';
 
 export function mergeType(
   existingTypes: PackageTypeMembers[],

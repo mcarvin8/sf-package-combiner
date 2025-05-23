@@ -1,6 +1,6 @@
 import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
+import { ensureArray } from '../utils/ensureArray.js';
 import { mergeType } from './mergeType.js';
-import { ensureArray } from './ensureArray.js';
 
 export function mergePackages(packageContents: PackageManifestObject[], apiVersion: string): PackageManifestObject {
   const mergedPackage: PackageManifestObject = { Package: { types: [], version: apiVersion } };
