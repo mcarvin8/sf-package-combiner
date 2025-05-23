@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.2.2...v2.2.3) (2025-05-23)
+
+
+### Bug Fixes
+
+* reduce complexity when reading files ([39f0227](https://github.com/mcarvin8/sf-package-combiner/commit/39f02270211b807ebb0eae1cebfa3fc845cc0e97))
+
 ## [2.2.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.2.1...v2.2.2) (2025-05-06)
 
 
