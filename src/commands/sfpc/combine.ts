@@ -4,9 +4,9 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
-import { buildPackage } from '../../helpers/buildPackage.js';
-import { readPackageFiles } from '../../helpers/readPackageFiles.js';
-import { findFilesInDirectory } from '../../helpers/findFilesinDirectory.js';
+import { buildPackage } from '../../core/buildPackage.js';
+import { readPackageFiles } from '../../core/readPackageFiles.js';
+import { findFilesInDirectory } from '../../utils/findFilesinDirectory.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('sf-package-combiner', 'sfpc.combine');

@@ -1,7 +1,7 @@
 import { XMLBuilder } from 'fast-xml-parser';
 import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
-import { sfXmlns, xmlConf } from './constants.js';
+import { sfXmlns, xmlConf } from '../utils/constants.js';
 import { determineApiVersion } from './determineApiVersion.js';
 import { mergePackages } from './mergePackages.js';
 
