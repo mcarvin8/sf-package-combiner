@@ -84,8 +84,8 @@ EXAMPLES
 
 ### How it Works
 
-- The `<name>` elements (metadata types) are **converted to lowercase** to ensure consistency and avoid duplicates.
-- The `<members>` elements **retain their original case**, as Salesforce treats them as case-sensitive.
+- Metadata `<name>` elements (types) are automatically normalized by Salesforce's metadata registry via `ComponentSet`, ensuring correct casing and avoiding duplicates.
+- `<members>` elements retain their original case, as Salesforce treats them as case-sensitive.
 - By default, the **highest API version** found in the input manifests is used.
 - If no `<version>` tag is found, it is omitted from the final `package.xml`.
 

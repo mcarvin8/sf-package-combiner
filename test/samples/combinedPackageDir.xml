@@ -2,18 +2,18 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>Auto</members>
-        <name>customlabel</name>
+        <name>CustomLabel</name>
     </types>
     <types>
         <members>ABC</members>
         <members>Account</members>
         <members>Case</members>
-        <name>customobject</name>
+        <name>CustomObject</name>
     </types>
     <types>
         <members>Glengarry_Leadz</members>
         <members>Industry</members>
-        <name>standardvalueset</name>
+        <name>StandardValueSet</name>
     </types>
     <version>59.0</version>
 </Package>
