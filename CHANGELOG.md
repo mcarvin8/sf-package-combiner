@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.2.3...v2.3.0) (2025-05-26)
+
+
+### Features
+
+* use component set to merge packages together ([#84](https://github.com/mcarvin8/sf-package-combiner/issues/84)) ([8c4bbb0](https://github.com/mcarvin8/sf-package-combiner/commit/8c4bbb0f252577c85c5ee4f332118058822eb852))
+
 ## [2.2.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.2.2...v2.2.3) (2025-05-23)
 
 
