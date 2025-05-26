@@ -3,7 +3,6 @@ import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
 import { sfXmlns, xmlConf } from '../utils/constants.js';
 import { determineApiVersion } from './determineApiVersion.js';
-import { mergePackages } from './mergePackages.js';
 
 export function buildPackage(
   packageContents: PackageManifestObject[],
@@ -12,7 +11,11 @@ export function buildPackage(
   noApiVersion: boolean
 ): string {
   const apiVersion = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
-  const mergedPackage = mergePackages(packageContents, apiVersion);
+
+  const mergedPackage = packageContents[0] ?? {
+    Package: { types: [], version: apiVersion },
+  };
+
   const packageXmlObject = constructPackageManifestObject(mergedPackage, apiVersion);
 
   return generateXmlString(packageXmlObject, mergedPackage);
@@ -29,7 +32,9 @@ function generateXmlString(packageXmlObject: PackageManifestObject, mergedPackag
     );
   }
 
-  if (mergedPackage.Package.version === '0.0') {
+  // eslint-disable-next-line no-console
+  console.log(mergedPackage.Package.version);
+  if (mergedPackage.Package.version === '0.0' || !mergedPackage.Package.version) {
     xmlContent = xmlContent.replace(/^\s*<version>0\.0<\/version>\s*\r?\n?/gm, '');
   }
 
