@@ -1,30 +1,10 @@
+import { writeFile } from 'node:fs/promises';
 import { XMLBuilder } from 'fast-xml-parser';
 import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
 import { sfXmlns, xmlConf } from '../utils/constants.js';
-import { determineApiVersion } from './determineApiVersion.js';
 
-export function buildPackage(
-  packageContents: PackageManifestObject,
-  apiVersions: string[],
-  userApiVersion: string | null,
-  noApiVersion: boolean
-): string {
-  const apiVersion = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
-  const finalPackage: PackageManifestObject = {
-    Package: {
-      '@_xmlns': sfXmlns,
-      types: (packageContents.Package.types ?? []).map((type) => ({
-        members: type.members,
-        name: type.name,
-      })),
-      version: apiVersion,
-    },
-  };
-  return generateXmlString(finalPackage);
-}
-
-function generateXmlString(packageXmlObject: PackageManifestObject): string {
+export async function writePackage(packageXmlObject: PackageManifestObject, combinedPackage: string): Promise<void> {
   const builder = new XMLBuilder(xmlConf);
   let xmlContent = builder.build(packageXmlObject) as string;
 
@@ -40,5 +20,5 @@ function generateXmlString(packageXmlObject: PackageManifestObject): string {
   }
 
   const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
-  return xmlHeader + xmlContent;
+  await writeFile(combinedPackage, xmlHeader + xmlContent);
 }

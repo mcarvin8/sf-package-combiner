@@ -1,25 +1,22 @@
 import { ComponentSet, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 import { mapLimit } from 'async';
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
+import { sfXmlns } from '../utils/constants.js';
+import { determineApiVersion } from './determineApiVersion.js';
+import { writePackage } from './writePackage.js';
 
-export async function readPackageFiles(
-  files: string[] | null
-): Promise<{ packageContents: PackageManifestObject; apiVersions: string[]; warnings: string[] }> {
+export async function mergePackageXmlFiles(
+  files: string[] | null,
+  combinedPackage: string,
+  userApiVersion: string | null,
+  noApiVersion: boolean
+): Promise<string[]> {
   const warnings: string[] = [];
   const apiVersions: string[] = [];
   const concurrencyLimit = getConcurrencyThreshold();
 
   if (!files) {
-    return {
-      packageContents: {
-        Package: {
-          types: [],
-          version: '0.0',
-        },
-      },
-      apiVersions,
-      warnings,
-    };
+    return warnings;
   }
 
   const combinedSet = new ComponentSet();
@@ -47,20 +44,21 @@ export async function readPackageFiles(
 
   const metadataTypes = groupComponentsByType(combinedSet.toArray());
 
-  const version = apiVersions[0] ?? '0.0';
+  const version = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
   const packageContents: PackageManifestObject = {
     Package: {
+      '@_xmlns': sfXmlns,
       types: Array.from(metadataTypes.entries())
         .map(([name, members]) => ({
-          name,
           members: Array.from(new Set(members)).sort((a, b) => a.localeCompare(b)),
+          name, // Place name after members
         }))
         .sort((a, b) => a.name.localeCompare(b.name)),
       version,
     },
   };
-
-  return { packageContents, apiVersions, warnings };
+  await writePackage(packageContents, combinedPackage);
+  return warnings;
 }
 
 function groupComponentsByType(components: ReturnType<ComponentSet['toArray']>): Map<string, string[]> {
