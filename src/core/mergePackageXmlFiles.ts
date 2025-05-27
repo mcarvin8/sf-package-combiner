@@ -14,33 +14,30 @@ export async function mergePackageXmlFiles(
   const warnings: string[] = [];
   const apiVersions: string[] = [];
   const concurrencyLimit = getConcurrencyThreshold();
-
-  if (!files) {
-    return warnings;
-  }
-
   const combinedSet = new ComponentSet();
 
-  await mapLimit(files, concurrencyLimit, async (filePath: string) => {
-    try {
-      const componentSet = await ComponentSet.fromManifest({ manifestPath: filePath });
-      if (componentSet.size === 0) {
+  if (files) {
+    await mapLimit(files, concurrencyLimit, async (filePath: string) => {
+      try {
+        const componentSet = await ComponentSet.fromManifest({ manifestPath: filePath });
+        if (componentSet.size === 0) {
+          warnings.push(`Invalid or empty package.xml: ${filePath}`);
+          return;
+        }
+
+        for (const component of componentSet.toArray()) {
+          combinedSet.add(component);
+        }
+
+        const version = componentSet.sourceApiVersion;
+        if (version && !apiVersions.includes(version)) {
+          apiVersions.push(version);
+        }
+      } catch {
         warnings.push(`Invalid or empty package.xml: ${filePath}`);
-        return;
       }
-
-      for (const component of componentSet.toArray()) {
-        combinedSet.add(component);
-      }
-
-      const version = componentSet.sourceApiVersion;
-      if (version && !apiVersions.includes(version)) {
-        apiVersions.push(version);
-      }
-    } catch {
-      warnings.push(`Invalid or empty package.xml: ${filePath}`);
-    }
-  });
+    });
+  }
 
   const metadataTypes = groupComponentsByType(combinedSet.toArray());
 
@@ -51,7 +48,7 @@ export async function mergePackageXmlFiles(
       types: Array.from(metadataTypes.entries())
         .map(([name, members]) => ({
           members: Array.from(new Set(members)).sort((a, b) => a.localeCompare(b)),
-          name, // Place name after members
+          name,
         }))
         .sort((a, b) => a.name.localeCompare(b.name)),
       version,
