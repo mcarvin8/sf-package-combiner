@@ -11,23 +11,16 @@ export function buildPackage(
   noApiVersion: boolean
 ): string {
   const apiVersion = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
-
-  const originalPackage = packageContents ?? {
-    Package: { types: [], version: apiVersion },
-  };
-
-  // Override API version if needed
   const finalPackage: PackageManifestObject = {
     Package: {
       '@_xmlns': sfXmlns,
-      types: originalPackage.Package.types.map((type) => ({
+      types: (packageContents.Package.types ?? []).map((type) => ({
         members: type.members,
         name: type.name,
       })),
-      version: apiVersion !== '0.0' ? apiVersion : '0.0',
+      version: apiVersion,
     },
   };
-
   return generateXmlString(finalPackage);
 }
 
