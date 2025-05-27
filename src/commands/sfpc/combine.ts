@@ -1,10 +1,7 @@
-import { writeFile } from 'node:fs/promises';
-
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-import { buildPackage } from '../../core/buildPackage.js';
-import { readPackageFiles } from '../../core/readPackageFiles.js';
+import { mergePackageXmlFiles } from '../../core/mergePackageXmlFiles.js';
 import { findFilesInDirectory } from '../../utils/findFilesinDirectory.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -58,7 +55,6 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     const directories = flags['directory'] ?? null;
     const userApiVersion = flags['api-version'] ?? null;
     const noApiVersion = flags['no-api-version'];
-    let apiVersions: string[] = [];
     const warnings: string[] = [];
 
     // Search directories for XML files
@@ -70,10 +66,8 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     }
 
     // Load XML content from each file
-    const result = await readPackageFiles(files);
-    const packageContents = result.packageContents;
-    apiVersions = result.apiVersions;
-    warnings.push(...result.warnings);
+    const result = await mergePackageXmlFiles(files, combinedPackage, userApiVersion, noApiVersion);
+    warnings.push(...result);
 
     // Print warnings if any
     if (warnings.length > 0) {
@@ -82,9 +76,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       });
     }
 
-    const xmlString = buildPackage(packageContents, apiVersions, userApiVersion, noApiVersion);
     this.log(`Combined package.xml written to: ${combinedPackage}`);
-    await writeFile(combinedPackage, xmlString);
     return { path: combinedPackage };
   }
 }
