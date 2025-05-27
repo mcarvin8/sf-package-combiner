@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.1...v2.3.2) (2025-05-27)
+
+
+### Bug Fixes
+
+* simplify buildPackage function ([#87](https://github.com/mcarvin8/sf-package-combiner/issues/87)) ([2652e59](https://github.com/mcarvin8/sf-package-combiner/commit/2652e59e6391c5c9be464ab2bb782f3da7c1074e))
+
 ## [2.3.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.0...v2.3.1) (2025-05-27)
 
 
