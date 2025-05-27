@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.4](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.3...v2.3.4) (2025-05-27)
+
+
+### Bug Fixes
+
+* create empty package by default if no files ([6f3e87e](https://github.com/mcarvin8/sf-package-combiner/commit/6f3e87e5219ed7e89d50c75f705d331434daadcd))
+* remove dead code ([78dc614](https://github.com/mcarvin8/sf-package-combiner/commit/78dc614168701171b0a3d0f3b5b39126c24763dd))
+
 ## [2.3.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.2...v2.3.3) (2025-05-27)
 
 
