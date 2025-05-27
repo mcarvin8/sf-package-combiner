@@ -5,14 +5,14 @@ import { sfXmlns, xmlConf } from '../utils/constants.js';
 import { determineApiVersion } from './determineApiVersion.js';
 
 export function buildPackage(
-  packageContents: PackageManifestObject[],
+  packageContents: PackageManifestObject,
   apiVersions: string[],
   userApiVersion: string | null,
   noApiVersion: boolean
 ): string {
   const apiVersion = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
 
-  const originalPackage = packageContents[0] ?? {
+  const originalPackage = packageContents ?? {
     Package: { types: [], version: apiVersion },
   };
 

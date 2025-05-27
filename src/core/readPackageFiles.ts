@@ -1,18 +1,25 @@
 import { ComponentSet, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 import { mapLimit } from 'async';
-
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 
 export async function readPackageFiles(
   files: string[] | null
-): Promise<{ packageContents: PackageManifestObject[]; apiVersions: string[]; warnings: string[] }> {
+): Promise<{ packageContents: PackageManifestObject; apiVersions: string[]; warnings: string[] }> {
   const warnings: string[] = [];
-  const packageContents: PackageManifestObject[] = [];
   const apiVersions: string[] = [];
   const concurrencyLimit = getConcurrencyThreshold();
 
   if (!files) {
-    return { packageContents, apiVersions, warnings };
+    return {
+      packageContents: {
+        Package: {
+          types: [],
+          version: '0.0',
+        },
+      },
+      apiVersions,
+      warnings,
+    };
   }
 
   const combinedSet = new ComponentSet();
@@ -29,7 +36,6 @@ export async function readPackageFiles(
         combinedSet.add(component);
       }
 
-      // Optionally collect versions
       const version = componentSet.sourceApiVersion;
       if (version && !apiVersions.includes(version)) {
         apiVersions.push(version);
@@ -41,21 +47,18 @@ export async function readPackageFiles(
 
   const metadataTypes = groupComponentsByType(combinedSet.toArray());
 
-  if (metadataTypes.size > 0) {
-    const version = apiVersions[0]; // choose the first available version, or implement a smarter merge strategy
-    const parsedPackage: PackageManifestObject = {
-      Package: {
-        types: Array.from(metadataTypes.entries())
-          .map(([name, members]) => ({
-            name,
-            members: Array.from(new Set(members)).sort((a, b) => a.localeCompare(b)),
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name)),
-        version,
-      },
-    };
-    packageContents.push(parsedPackage);
-  }
+  const version = apiVersions[0] ?? '0.0';
+  const packageContents: PackageManifestObject = {
+    Package: {
+      types: Array.from(metadataTypes.entries())
+        .map(([name, members]) => ({
+          name,
+          members: Array.from(new Set(members)).sort((a, b) => a.localeCompare(b)),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+      version,
+    },
+  };
 
   return { packageContents, apiVersions, warnings };
 }

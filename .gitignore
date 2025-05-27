@@ -49,3 +49,5 @@ node_modules
 # os specific files
 .DS_Store
 .idea
+
+package.xml

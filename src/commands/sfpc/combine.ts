@@ -2,7 +2,6 @@ import { writeFile } from 'node:fs/promises';
 
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 
 import { buildPackage } from '../../core/buildPackage.js';
 import { readPackageFiles } from '../../core/readPackageFiles.js';
@@ -59,7 +58,6 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     const directories = flags['directory'] ?? null;
     const userApiVersion = flags['api-version'] ?? null;
     const noApiVersion = flags['no-api-version'];
-    let packageContents: PackageManifestObject[] = [];
     let apiVersions: string[] = [];
     const warnings: string[] = [];
 
@@ -73,7 +71,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
 
     // Load XML content from each file
     const result = await readPackageFiles(files);
-    packageContents = result.packageContents;
+    const packageContents = result.packageContents;
     apiVersions = result.apiVersions;
     warnings.push(...result.warnings);
 
