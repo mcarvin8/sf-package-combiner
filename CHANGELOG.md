@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.5](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.4...v2.3.5) (2025-06-01)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/core from 8.10.2 to 8.11.4 ([#97](https://github.com/mcarvin8/sf-package-combiner/issues/97)) ([e4ef014](https://github.com/mcarvin8/sf-package-combiner/commit/e4ef014c3757dc950adc6515827012419dcd8264))
+* **deps:** bump fast-xml-parser from 4.5.1 to 4.5.3 ([#95](https://github.com/mcarvin8/sf-package-combiner/issues/95)) ([1ddef67](https://github.com/mcarvin8/sf-package-combiner/commit/1ddef672eb0e7a1844afc715b39dbeb22d1f0977))
+
 ## [2.3.4](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.3...v2.3.4) (2025-05-27)
 
 
