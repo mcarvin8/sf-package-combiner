@@ -17,7 +17,7 @@
     "@types/async": "^3.2.24",
     "@types/mocha": "^10.0.9",
     "@types/node": "18",
-    "eslint-plugin-sf-plugin": "^1.20.22",
+    "eslint-plugin-sf-plugin": "^1.20.24",
     "husky": "^9.1.7",
     "mocha": "^10.8.2",
     "nyc": "^17.1.0",
