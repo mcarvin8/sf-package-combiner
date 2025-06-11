@@ -12,11 +12,11 @@ export type SfpcCombineResult = {
 };
 
 export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
-  public static readonly summary = messages.getMessage('summary');
-  public static readonly description = messages.getMessage('description');
-  public static readonly examples = messages.getMessages('examples');
+  public static override readonly summary = messages.getMessage('summary');
+  public static override readonly description = messages.getMessage('description');
+  public static override readonly examples = messages.getMessages('examples');
 
-  public static readonly flags = {
+  public static override readonly flags = {
     'package-file': Flags.file({
       summary: messages.getMessage('flags.package-file.summary'),
       char: 'f',
