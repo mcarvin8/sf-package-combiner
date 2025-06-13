@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "lib",
     "module": "Node16",
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": ["jest", "chai"]
   },
   "include": ["./src/**/*.ts"]
 }
