@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.7](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.6...v2.3.7) (2025-06-13)
+
+
+### Bug Fixes
+
+* migrate logic from command into function ([#102](https://github.com/mcarvin8/sf-package-combiner/issues/102)) ([9f8d619](https://github.com/mcarvin8/sf-package-combiner/commit/9f8d6193211b9d2025a2d87d576654a2851b31de))
+
 ## [2.3.6](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.5...v2.3.6) (2025-06-02)
 
 
