@@ -1,22 +1,18 @@
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-import { mergePackageXmlFiles } from '../../core/mergePackageXmlFiles.js';
-import { findFilesInDirectory } from '../../utils/findFilesinDirectory.js';
+import { combinePackages } from '../../core/combinePackages.js';
+import { SfpcCombineResult } from '../../core/types.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('sf-package-combiner', 'sfpc.combine');
 
-export type SfpcCombineResult = {
-  path: string;
-};
-
 export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
-  public static readonly summary = messages.getMessage('summary');
-  public static readonly description = messages.getMessage('description');
-  public static readonly examples = messages.getMessages('examples');
+  public static override readonly summary = messages.getMessage('summary');
+  public static override readonly description = messages.getMessage('description');
+  public static override readonly examples = messages.getMessages('examples');
 
-  public static readonly flags = {
+  public static override readonly flags = {
     'package-file': Flags.file({
       summary: messages.getMessage('flags.package-file.summary'),
       char: 'f',
@@ -37,12 +33,10 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       summary: messages.getMessage('flags.api-version.summary'),
       char: 'v',
       required: false,
-      multiple: false,
     }),
     'no-api-version': Flags.boolean({
       summary: messages.getMessage('flags.no-api-version.summary'),
       char: 'n',
-      required: false,
       default: false,
     }),
   };
@@ -50,33 +44,16 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
   public async run(): Promise<SfpcCombineResult> {
     const { flags } = await this.parse(SfpcCombine);
 
-    const files = flags['package-file'] ?? [];
-    const combinedPackage = flags['combined-package'];
-    const directories = flags['directory'] ?? null;
-    const userApiVersion = flags['api-version'] ?? null;
-    const noApiVersion = flags['no-api-version'];
-    const warnings: string[] = [];
+    const path = await combinePackages({
+      packageFiles: flags['package-file'],
+      combinedPackage: flags['combined-package'],
+      directories: flags['directory'],
+      userApiVersion: flags['api-version'],
+      noApiVersion: flags['no-api-version'],
+      warn: this.warn.bind(this),
+    });
 
-    // Search directories for XML files
-    // Process directories to find XML files
-    if (directories && directories.length > 0) {
-      const { files: dirFiles, warnings: dirWarnings } = await findFilesInDirectory(directories);
-      files.push(...dirFiles);
-      warnings.push(...dirWarnings);
-    }
-
-    // Load XML content from each file
-    const result = await mergePackageXmlFiles(files, combinedPackage, userApiVersion, noApiVersion);
-    warnings.push(...result);
-
-    // Print warnings if any
-    if (warnings.length > 0) {
-      warnings.forEach((warning) => {
-        this.warn(warning);
-      });
-    }
-
-    this.log(`Combined package.xml written to: ${combinedPackage}`);
-    return { path: combinedPackage };
+    this.log(`Combined package.xml written to: ${path}`);
+    return { path };
   }
 }
