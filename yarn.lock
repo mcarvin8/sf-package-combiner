@@ -1605,7 +1605,7 @@
     "@inquirer/type" "^3.0.7"
     ansi-escapes "^4.3.2"
 
-"@inquirer/prompts@^7.5.2":
+"@inquirer/prompts@^7.5.3":
   version "7.5.3"
   resolved "https://registry.yarnpkg.com/@inquirer/prompts/-/prompts-7.5.3.tgz#2b4c705a79658cf534fc5a5dba780a153f3cd83d"
   integrity sha512-8YL0WiV7J86hVAxrh3fE5mDCzcTDe1670unmJRz6ArDgN+DBK1a0+rbnNWp4DUB5rPMwqD5ZP6YHl9KK1mbZRg==
@@ -2055,10 +2055,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oclif/core@^4", "@oclif/core@^4.2.10":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-4.3.0.tgz#9a2951f05f81a4c7ae5ffcc00b2d720cca0898e6"
-  integrity sha512-lIzHY+JMP6evrS5E/sGijNnwrCoNtGy8703jWXcMuPOYKiFhWoAqnIm1BGgoRgmxczkbSfRsHUL/lwsSgh74Lw==
+"@oclif/core@^4", "@oclif/core@^4.2.10", "@oclif/core@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-4.4.0.tgz#82fb972822270c8e585587bd1c8a01ffbac588e2"
+  integrity sha512-wH5g3SLmbRutnr7UzQBSozRFEAZ7U9YGB/wFuBRr0ZghTgv5DE+KQaf6ZtU7iFb9pvkvoVRnT5XheNAtbjRDaQ==
   dependencies:
     ansi-escapes "^4.3.2"
     ansis "^3.17.0"
@@ -2067,7 +2067,6 @@
     debug "^4.4.0"
     ejs "^3.1.10"
     get-package-type "^0.1.0"
-    globby "^11.1.0"
     indent-string "^4.0.0"
     is-wsl "^2.2.0"
     lilconfig "^3.1.3"
@@ -2075,6 +2074,7 @@
     semver "^7.6.3"
     string-width "^4.2.3"
     supports-color "^8"
+    tinyglobby "^0.2.14"
     widest-line "^3.1.0"
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
@@ -2094,27 +2094,27 @@
     semver "^7.7.2"
     ts-json-schema-generator "^1.5.1"
 
-"@oclif/plugin-help@^6.2.27":
-  version "6.2.28"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-6.2.28.tgz#acb361d7577008b0b6e3dd028bfd9f052b2dc217"
-  integrity sha512-eFLP2yjiK+xMRGcv9k9jOWV08HB+/Cgg1ND91zS4Uwgp1krMoL39Is+hIqnZOKkmiEMtiv8k5EDqCVv+DTRywg==
+"@oclif/plugin-help@^6.2.29":
+  version "6.2.29"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-6.2.29.tgz#6c349de65f5a7fee5f94032137fc872ac829d259"
+  integrity sha512-90DMOngEHiQw1I7oylVE1Hco991OkeDFJMx3CNJ2M3g5F1dhXgscjbaIlYHdiuNyVs0mTkKevdiMs911suD4yA==
   dependencies:
     "@oclif/core" "^4"
 
-"@oclif/plugin-not-found@^3.2.48":
-  version "3.2.54"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-3.2.54.tgz#a0fc654e6fb6e5b1da3c2845876d979fedb32056"
-  integrity sha512-5UARYjv91+aD30XaSw9vb6IgOvMMNA7DlnHVyt+u2OkK8TlyBflpaasvC7xSLnP+DKDQIgxTuGqJI/ZbcNAFxQ==
+"@oclif/plugin-not-found@^3.2.57":
+  version "3.2.57"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-3.2.57.tgz#315f032e908eb4094446866629c1bbba70be67ba"
+  integrity sha512-HtDnLIcR7ojRgdeH4G6MMUIu1Dgub/iiFEA4srZcQVKUIPA/6nF117W7rBXZMlHcbch90OCoGkSP3ty55nGKDw==
   dependencies:
-    "@inquirer/prompts" "^7.5.2"
+    "@inquirer/prompts" "^7.5.3"
     "@oclif/core" "^4"
     ansis "^3.17.0"
     fast-levenshtein "^3.0.0"
 
-"@oclif/plugin-warn-if-update-available@^3.1.38":
-  version "3.1.40"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-3.1.40.tgz#eb00fd7f199e6d08e6e4897560126b3570ecd5cb"
-  integrity sha512-k5FBGxjXsSj56075MFVx5I9MAJa082evyPqLUBOjXL9w91q3k/89U+kTCfFNTQga8DykxhMP/7UTuDFV+d/Dhg==
+"@oclif/plugin-warn-if-update-available@^3.1.41":
+  version "3.1.42"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-3.1.42.tgz#c03e4a9c1b4bca301524d26bf3d94bf5515a08e8"
+  integrity sha512-bcBfON81gYCx6x50HjrcL7gRiz7bEuLdQNifMsMcBtBq3IpOifyS8/l5R3REEy9kHJ1qdcSYehtopMvS4ov9lA==
   dependencies:
     "@oclif/core" "^4"
     ansis "^3.17.0"
@@ -3553,7 +3553,7 @@ ansi-styles@^6.0.0, ansi-styles@^6.1.0, ansi-styles@^6.2.1:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
 
-ansis@^3.17.0, ansis@^3.3.2:
+ansis@^3.16.0, ansis@^3.17.0, ansis@^3.3.2:
   version "3.17.0"
   resolved "https://registry.yarnpkg.com/ansis/-/ansis-3.17.0.tgz#fa8d9c2a93fe7d1177e0c17f9eeb562a58a832d7"
   integrity sha512-0qWUglt9JEqLFr3w1I1pbrChn1grhaiAR2ocX1PP/flRmxgtwTzPFFFnfIlD6aMOLQZgSuCRlidD70lvx8yhzg==
@@ -4055,7 +4055,7 @@ chalk@^2.4.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-chalk@^4, chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.2:
+chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
   integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==
@@ -5242,6 +5242,11 @@ fdir@^6.4.2:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/fdir/-/fdir-6.4.3.tgz#011cdacf837eca9b811c89dbb902df714273db72"
   integrity sha512-PMXmW2y1hDDfTSRc9gaXIuCCRpuoz3Kaz8cUelp3smouvfT632ozg2vrT6lJsHKKOF59YLbOGfAWGUcKEfRMQw==
+
+fdir@^6.4.4:
+  version "6.4.6"
+  resolved "https://registry.yarnpkg.com/fdir/-/fdir-6.4.6.tgz#2b268c0232697063111bbf3f64810a2a741ba281"
+  integrity sha512-hiFoqpyZcfNm1yc4u8oWCf9A2c4D3QjCrks3zmoVKVxpQRzmPNar1hUJcBG2RQHvEVGDN+Jm81ZheVLAQMK6+w==
 
 file-entry-cache@^6.0.1:
   version "6.0.1"
@@ -7681,22 +7686,22 @@ object.values@^1.1.7:
     define-properties "^1.2.0"
     es-abstract "^1.22.1"
 
-oclif@^4.17.46:
-  version "4.17.46"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-4.17.46.tgz#c7bd4315ae4903ad5f9893f6d6e7b3b78c4209fb"
-  integrity sha512-huMvamv0zzIXrCbW5sgy40P1L6fJjPe4IfZKSmkmuPNGSpTy+fcNZ0gYwIuMlxiT3RarLYxYie+RVTyJLE3zXw==
+oclif@^4.20.1:
+  version "4.20.1"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-4.20.1.tgz#26caab0b2cd7c6548f3ff94abc1287b17fa04bf8"
+  integrity sha512-XsC6MaYTEtIjkq43sXIrGiq+wtuzxCYWv43gIaFAg8KszOutojqlACwrz1dgCgUAwanwv+BNBNJLnvwQ84dpjg==
   dependencies:
     "@aws-sdk/client-cloudfront" "^3.787.0"
     "@aws-sdk/client-s3" "^3.787.0"
     "@inquirer/confirm" "^3.1.22"
     "@inquirer/input" "^2.2.4"
     "@inquirer/select" "^2.5.0"
-    "@oclif/core" "^4.2.10"
-    "@oclif/plugin-help" "^6.2.27"
-    "@oclif/plugin-not-found" "^3.2.48"
-    "@oclif/plugin-warn-if-update-available" "^3.1.38"
+    "@oclif/core" "^4.4.0"
+    "@oclif/plugin-help" "^6.2.29"
+    "@oclif/plugin-not-found" "^3.2.57"
+    "@oclif/plugin-warn-if-update-available" "^3.1.41"
+    ansis "^3.16.0"
     async-retry "^1.3.3"
-    chalk "^4"
     change-case "^4"
     debug "^4.4.0"
     ejs "^3.1.10"
@@ -9053,6 +9058,14 @@ tiny-jsonc@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/tiny-jsonc/-/tiny-jsonc-1.0.2.tgz#208df4c437684199cc724f31c2b91ee39c349678"
   integrity sha512-f5QDAfLq6zIVSyCZQZhhyl0QS6MvAyTxgz4X4x3+EoCktNWEYJ6PeoEA97fyb98njpBNNi88ybpD7m+BDFXaCw==
+
+tinyglobby@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/tinyglobby/-/tinyglobby-0.2.14.tgz#5280b0cf3f972b050e74ae88406c0a6a58f4079d"
+  integrity sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==
+  dependencies:
+    fdir "^6.4.4"
+    picomatch "^4.0.2"
 
 tinyglobby@^0.2.9:
   version "0.2.10"
