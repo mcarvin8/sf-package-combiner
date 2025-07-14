@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.9](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.8...v2.3.9) (2025-07-14)
+
+
+### Bug Fixes
+
+* upgrade node requirement to 20 ([aa1d744](https://github.com/mcarvin8/sf-package-combiner/commit/aa1d744bfe2942a02529c35e656615275ed4f5c0))
+
 ## [2.3.8](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.7...v2.3.8) (2025-07-09)
 
 
