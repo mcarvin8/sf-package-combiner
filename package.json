@@ -3,7 +3,7 @@
   "description": "Combine multiple Salesforce manifest files (package.xml) into 1 file for deployments.",
   "version": "2.3.9",
   "dependencies": {
-    "@oclif/core": "^4",
+    "@oclif/core": "^4.4.1",
     "@salesforce/core": "^8",
     "@salesforce/sf-plugins-core": "^12",
     "@salesforce/source-deploy-retrieve": "^12.19.10",
