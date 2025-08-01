@@ -6,7 +6,7 @@
     "@oclif/core": "^4",
     "@salesforce/core": "^8",
     "@salesforce/sf-plugins-core": "^12",
-    "@salesforce/source-deploy-retrieve": "^12.19.10",
+    "@salesforce/source-deploy-retrieve": "^12.22.1",
     "async": "^3.2.6",
     "fast-xml-parser": "^4.5.3"
   },
