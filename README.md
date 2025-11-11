@@ -5,7 +5,6 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/mcarvin8/sf-package-combiner/refs/heads/main/LICENSE.md)
 [![Maintainability](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/maintainability.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 [![Code Coverage](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/test_coverage.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
-[![Known Vulnerabilities](https://snyk.io//test/github/mcarvin8/sf-package-combiner/badge.svg?targetFile=package.json)](https://snyk.io//test/github/mcarvin8/sf-package-combiner?targetFile=package.json)
 
 <!-- TABLE OF CONTENTS -->
 <details>
