@@ -172,11 +172,11 @@ sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
   <types>
     <members>MyApexClass</members>
-    <name>apexclass</name>
+    <name>ApexClass</name>
   </types>
   <types>
     <members>MyTrigger</members>
-    <name>apextrigger</name>
+    <name>ApexTrigger</name>
   </types>
   <version>62.0</version>
 </Package>
