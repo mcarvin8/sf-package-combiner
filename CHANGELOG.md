@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.9...v2.4.0) (2026-01-30)
+
+
+### Features
+
+* sort CustomObject first in combined package.xml ([39cfe13](https://github.com/mcarvin8/sf-package-combiner/commit/39cfe139e559d589970867e9eabb64162238e9e4))
+* sort CustomObject first in combined package.xml ([e68199c](https://github.com/mcarvin8/sf-package-combiner/commit/e68199c55995af528be8d6b916481d930a610aae))
+
 ## [2.3.9](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.8...v2.3.9) (2025-07-14)
 
 
