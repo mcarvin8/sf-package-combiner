@@ -1,0 +1,29 @@
+src/core/mergePackageXmlFiles.ts
+  e87f138984e0a0b4 53,61-68
+README.md
+  e87f138984e0a0b4 95
+test/samples/combinedPackage.xml
+  e87f138984e0a0b4 8-10
+test/samples/combinedPackageDir.xml
+  e87f138984e0a0b4 9-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.40",
+  "base_commit_sha": "e68199c55995af528be8d6b916481d930a610aae",
+  "prompts": {
+    "e87f138984e0a0b4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "7feebfb6-dad0-48b8-b1d8-ddbfe8cb3ce4",
+        "model": "default"
+      },
+      "human_author": "Matt Carvin <90224411+mcarvin8@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 9,
+      "accepted_lines": 21,
+      "overriden_lines": 0
+    }
+  }
+}
