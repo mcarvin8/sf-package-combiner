@@ -1,7 +1,7 @@
 {
   "name": "sf-package-combiner",
   "description": "Combine multiple Salesforce manifest files (package.xml) into 1 file for deployments.",
-  "version": "2.3.9",
+  "version": "2.4.0",
   "dependencies": {
     "@oclif/core": "^4",
     "@salesforce/core": "^8",
