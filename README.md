@@ -1,4 +1,4 @@
-# `sf-package-combiner`
+# sf-package-combiner
 
 [![NPM](https://img.shields.io/npm/v/sf-package-combiner.svg?label=sf-package-combiner)](https://www.npmjs.com/package/sf-package-combiner)
 [![Downloads/week](https://img.shields.io/npm/dw/sf-package-combiner.svg)](https://npmjs.org/package/sf-package-combiner)
@@ -6,134 +6,109 @@
 [![Maintainability](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/maintainability.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 [![Code Coverage](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/test_coverage.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 
+A [Salesforce CLI](https://developer.salesforce.com/tools/sf) plugin that merges multiple `package.xml` manifests into a single file—ideal for combining incremental manifests (e.g. from [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)) or multiple sources before deploy.
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
 
-- [Install](#install)
-- [Command](#command)
-  - [`sf-sfpc-combine`](#sf-sfpc-combine)
-- [Usage](#usage)
-- [Manifest Structure](#manifest-structure)
+- [Quick start](#quick-start)
+- [Why use this](#why-use-this)
+- [Command reference](#command-reference)
+- [Usage details](#usage-details)
+- [Manifest structure](#manifest-structure)
 - [Example](#example)
+- [Invalid package.xml files](#invalid-packagexml-files)
+- [Requirements](#requirements)
 - [Issues](#issues)
 - [License](#license)
 </details>
 
-**Combine multiple Salesforce `package.xml` files into a single manifest** for deployments. This is useful when:
+---
 
-- Using tools like `sfdx-git-delta` to generate incremental package.xml files
-- Merging different package.xml files from various sources
-- Ensuring a streamlined deployment process in CI/CD workflows
-
-## Install
+## Quick start
 
 ```bash
+# Install (use a specific version in place of x.y.z)
 sf plugins install sf-package-combiner@x.y.z
+
+# Combine two manifests into one
+sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
 ```
 
-## Command
+You can mix files and directories: use `-f` for specific files and `-d` for directories that contain `package.xml` files.
 
-<!-- commands -->
+---
 
-- [`sf sfpc combine`](#sf-sfpc-combine)
+## Why use this
 
-## `sf sfpc combine`
+- **Merge incremental manifests** — Combine output from tools like sfdx-git-delta with other package.xml files before deploying.
+- **Single deploy manifest** — One `package.xml` from many sources (scripts, manual lists, other tools).
+- **CI/CD friendly** — Generate a combined manifest in pipelines and deploy with `sf project deploy start -x package.xml`.
 
-Combine Salesforce manifest files together.
+---
+
+## Command reference
+
+### `sf sfpc combine`
+
+Combine Salesforce manifest files into one `package.xml`.
 
 ```
 USAGE
   $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [-v <value>] [-n] [--json]
 
 FLAGS
-  -f, --package-file=<value>     The path to an existing package.xml file.
-                                 Can be specified multiple times.
-  -d, --directory=<value>        The path to an existing directory with package.xml files.
-                                 Can be specified multiple times.
-  -v, --api-version=<value>      Specify the API version (e.g., '62.0') to use in the combined package.xml.
-  -n, --no-api-version           Intentionally omit the API version in the combined package.xml.
-  -c, --combined-package=<value> The path to save the combined package.xml to.
-                                 If this value matches one of the input packages, it will overwrite the file.
-                                 Default is "package.xml".
+  -f, --package-file=<value>     Path to a package.xml file. Can be repeated.
+  -d, --directory=<value>       Path to a directory containing package.xml files. Can be repeated.
+  -c, --combined-package=<value> Path for the output file. Default: package.xml
+  -v, --api-version=<value>     API version for the combined package (e.g. 62.0).
+  -n, --no-api-version          Omit the <version> element in the output.
 
 GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Combine multiple package files into 1 file.
-
-EXAMPLES
-  Combine pack1.xml and pack2.xml into package.xml
-
-    $ sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
-
-  Combine pack1.xml, pack2.xml, and all package XML files in a directory into package.xml
-
-    $ sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
-
-  Combine pack1.xml and pack2.xml into package.xml set at API version 62.0
-
-    $ sf sfpc combine -f pack1.xml -f pack2.xml -v "62.0" -c package.xml
-
-  Combine pack1.xml and pack2.xml into package.xml with no API version declared
-
-    $ sf sfpc combine -f pack1.xml -f pack2.xml -n -c package.xml
+  --json  Output as JSON.
 ```
 
-<!-- commandsstop -->
-
-## Usage
-
-### How it Works
-
-- Metadata `<name>` elements (types) are automatically normalized by Salesforce's metadata registry via `ComponentSet`, ensuring correct casing and avoiding duplicates.
-- `<members>` elements retain their original case, as Salesforce treats them as case-sensitive.
-- By default, the **highest API version** found in the input manifests is used.
-- If no `<version>` tag is found, it is omitted from the final `package.xml`.
-
-**To override the API version behavior:**
-
-- Use `-v <version>` to **set a specific API version**.
-- Use `-n` to **omit the API version entirely**.
-
-### Handling Invalid `package.xml` Files
-
-If a file doesn't match the expected [structure](#manifest-structure) or has no `<types>` in it, it is skipped with a warning:
-
-```plaintext
-Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml
-```
-
-If all packages are invalid or empty, the combined package.xml will be an empty package (no `<types>`). You can avoid deploying an empty package by searching the manifest for any `<types>` in it before running the deploy command.
+**Examples**
 
 ```bash
-sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml"
-if grep -q '<types>' ./package.xml ; then
-  echo "---- Deploying added and modified metadata ----"
-  sf project deploy start -x package.xml
-else
-  echo "---- No changes to deploy ----"
-fi
+# Two files → package.xml
+sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
+
+# Files + directory
+sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
+
+# Pin API version
+sf sfpc combine -f pack1.xml -f pack2.xml -v "62.0" -c package.xml
+
+# No version in output
+sf sfpc combine -f pack1.xml -f pack2.xml -n -c package.xml
 ```
 
 ---
 
-## Manifest Structure
+## Usage details
 
-Salesforce `package.xml` files follow this structure:
+### How it works
 
-- **Root:** `<Package xmlns="http://soap.sforce.com/2006/04/metadata">`
-- **Metadata Types:** `<types>` contains:
-  - `<members>`: Lists metadata item(s) via their API names.
-  - `<name>`: Metadata type (e.g., `ApexClass`, `CustomObject`).
-- **API Version (Optional):** `<version>` specifies the metadata API version.
+- **Metadata types** — `<name>` (type) values are normalized via Salesforce’s metadata registry (e.g. correct casing, deduped).
+- **Members** — `<members>` values keep their original case (Salesforce is case-sensitive for these).
+- **API version** — By default, the **highest** `<version>` from the input manifests is used. If none have a version, it is omitted.
+- **Overrides:** use `-v <version>` to set a specific version, or `-n` to omit version entirely.
+
+### Manifest structure
+
+Salesforce `package.xml` format:
+
+- **Root:** `Package` with `xmlns="http://soap.sforce.com/2006/04/metadata"`.
+- **Types:** Each `<types>` block has `<members>` (API names) and `<name>` (metadata type, e.g. `ApexClass`, `CustomObject`).
+- **Version (optional):** `<version>` for the Metadata API version.
+
+---
 
 ## Example
 
-### Inputs
-
-#### `package1.xml`
+**Input: `package1.xml`**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -146,7 +121,7 @@ Salesforce `package.xml` files follow this structure:
 </Package>
 ```
 
-#### `package2.xml`
+**Input: `package2.xml`**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -159,13 +134,13 @@ Salesforce `package.xml` files follow this structure:
 </Package>
 ```
 
-### Command
+**Command**
 
 ```bash
 sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
 ```
 
-### Output (`package.xml`)
+**Output: `package.xml`**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -182,10 +157,45 @@ sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
 </Package>
 ```
 
+(Highest input version `62.0` is used.)
+
+---
+
+## Invalid package.xml files
+
+Files that don’t match the expected [manifest structure](#manifest-structure) or have no `<types>` are **skipped** with a warning:
+
+```
+Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml
+```
+
+If every input is invalid or empty, the combined file will have no `<types>`. To avoid deploying an empty package, check for `<types>` before deploying:
+
+```bash
+sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml"
+if grep -q '<types>' ./package.xml; then
+  echo "---- Deploying added and modified metadata ----"
+  sf project deploy start -x package.xml
+else
+  echo "---- No changes to deploy ----"
+fi
+```
+
+---
+
+## Requirements
+
+- [Salesforce CLI](https://developer.salesforce.com/tools/sf) (`sf`)
+- Node.js **20.x or later** (for the plugin)
+
+---
+
 ## Issues
 
-If you encounter any issues or would like to suggest features, please create an [issue](https://github.com/mcarvin8/sf-package-combiner/issues).
+Bugs and feature requests: [GitHub Issues](https://github.com/mcarvin8/sf-package-combiner/issues).
+
+---
 
 ## License
 
-This project is licensed under the MIT license. Please see the [LICENSE](https://raw.githubusercontent.com/mcarvin8/sf-package-combiner/main/LICENSE.md) file for details.
+MIT. See [LICENSE](LICENSE.md) in this repo.
