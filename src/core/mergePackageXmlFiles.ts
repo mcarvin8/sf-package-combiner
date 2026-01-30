@@ -50,12 +50,20 @@ export async function mergePackageXmlFiles(
           members: Array.from(new Set(members)).sort((a, b) => a.localeCompare(b)),
           name,
         }))
-        .sort((a, b) => a.name.localeCompare(b.name)),
+        .sort(sortTypesWithCustomObjectFirst),
       version,
     },
   };
   await writePackage(packageContents, combinedPackage);
   return warnings;
+}
+
+const CUSTOM_OBJECT_TYPE = 'CustomObject';
+
+function sortTypesWithCustomObjectFirst(a: { name: string }, b: { name: string }): number {
+  if (a.name === CUSTOM_OBJECT_TYPE && b.name !== CUSTOM_OBJECT_TYPE) return -1;
+  if (a.name !== CUSTOM_OBJECT_TYPE && b.name === CUSTOM_OBJECT_TYPE) return 1;
+  return a.name.localeCompare(b.name);
 }
 
 function groupComponentsByType(components: ReturnType<ComponentSet['toArray']>): Map<string, string[]> {

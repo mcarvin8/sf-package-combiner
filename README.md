@@ -92,6 +92,7 @@ sf sfpc combine -f pack1.xml -f pack2.xml -n -c package.xml
 ### How it works
 
 - **Metadata types** — `<name>` (type) values are normalized via Salesforce’s metadata registry (e.g. correct casing, deduped).
+- **Type order** — `CustomObject` is always listed before any other types in the combined manifest; all other types are sorted alphabetically. This ordering avoids deployment issues when combining manifests (see [scolladon/sfdx-git-delta#76](https://github.com/scolladon/sfdx-git-delta/pull/76)).
 - **Members** — `<members>` values keep their original case (Salesforce is case-sensitive for these).
 - **API version** — By default, the **highest** `<version>` from the input manifests is used. If none have a version, it is omitted.
 - **Overrides:** use `-v <version>` to set a specific version, or `-n` to omit version entirely.
