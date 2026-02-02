@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.4.0...v2.4.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* upgrade dependencies ([b0230e8](https://github.com/mcarvin8/sf-package-combiner/commit/b0230e8b58dce764a29a89ee62591a5712f933ee))
+
 ## [2.4.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.3.9...v2.4.0) (2026-01-30)
 
 
