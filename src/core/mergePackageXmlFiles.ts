@@ -58,9 +58,9 @@ export async function mergePackageXmlFiles(
   return warnings;
 }
 
-const CUSTOM_OBJECT_TYPE = 'CustomObject';
+export const CUSTOM_OBJECT_TYPE = 'CustomObject';
 
-function sortTypesWithCustomObjectFirst(a: { name: string }, b: { name: string }): number {
+export function sortTypesWithCustomObjectFirst(a: { name: string }, b: { name: string }): number {
   if (a.name === CUSTOM_OBJECT_TYPE && b.name !== CUSTOM_OBJECT_TYPE) return -1;
   if (a.name !== CUSTOM_OBJECT_TYPE && b.name === CUSTOM_OBJECT_TYPE) return 1;
   return a.name.localeCompare(b.name);

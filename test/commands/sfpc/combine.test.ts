@@ -3,7 +3,11 @@ import { resolve } from 'node:path';
 import { describe, it, expect } from '@jest/globals';
 
 import { combinePackages } from '../../../src/core/combinePackages.js';
-import { mergePackageXmlFiles } from '../../../src/core/mergePackageXmlFiles.js';
+import {
+  mergePackageXmlFiles,
+  sortTypesWithCustomObjectFirst,
+  CUSTOM_OBJECT_TYPE,
+} from '../../../src/core/mergePackageXmlFiles.js';
 
 describe('sfpc combine', () => {
   const package1 = resolve('test/samples/package-account-only.xml');
@@ -133,5 +137,29 @@ describe('sfpc combine', () => {
   it('returns no warnings when files is null (skips processing)', async () => {
     const warnings = await mergePackageXmlFiles(null, 'package.xml', null, false);
     expect(warnings).toEqual([]);
+  });
+
+  it('sorts non-CustomObject types alphabetically (branch coverage for sortTypesWithCustomObjectFirst)', async () => {
+    const packageNonObjectTypes = resolve('test/samples/package-non-object-types.xml');
+    await mergePackageXmlFiles([packageNonObjectTypes], outputPackage, null, false);
+
+    const output = await readFile(outputPackage, 'utf-8');
+    // CustomLabel comes before StandardValueSet alphabetically when neither is CustomObject
+    expect(output.indexOf('CustomLabel')).toBeLessThan(output.indexOf('StandardValueSet'));
+  });
+
+  describe('sortTypesWithCustomObjectFirst', () => {
+    it('returns -1 when a is CustomObject and b is not (CustomObject first)', () => {
+      expect(sortTypesWithCustomObjectFirst({ name: CUSTOM_OBJECT_TYPE }, { name: 'CustomLabel' })).toBe(-1);
+    });
+    it('returns 1 when a is not CustomObject and b is (CustomObject first)', () => {
+      expect(sortTypesWithCustomObjectFirst({ name: 'CustomLabel' }, { name: CUSTOM_OBJECT_TYPE })).toBe(1);
+    });
+    it('returns localeCompare result when neither is CustomObject', () => {
+      expect(sortTypesWithCustomObjectFirst({ name: 'CustomLabel' }, { name: 'StandardValueSet' })).toBeLessThan(0); // CustomLabel < StandardValueSet
+    });
+    it('returns localeCompare result when both are CustomObject', () => {
+      expect(sortTypesWithCustomObjectFirst({ name: CUSTOM_OBJECT_TYPE }, { name: CUSTOM_OBJECT_TYPE })).toBe(0);
+    });
   });
 });
