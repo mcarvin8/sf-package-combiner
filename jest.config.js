@@ -16,7 +16,8 @@ export default {
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    '(.+)\\.js': '$1',
+    // Only strip .js from relative imports (./ or ../) - avoid matching node_modules packages like glob-to-regex.js
+    '^(\\.\\.*/.*)\\.js$': '$1',
     '^lodash-es$': 'lodash',
   },
   testEnvironment: 'node',

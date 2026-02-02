@@ -4,6 +4,7 @@
     "outDir": "lib",
     "module": "Node16",
     "rootDir": "src",
+    "resolveJsonModule": true,
     "types": ["jest", "chai"]
   },
   "include": ["./src/**/*.ts"]

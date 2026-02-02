@@ -6,7 +6,7 @@ import { xmlConf } from '../utils/constants.js';
 
 export async function writePackage(packageXmlObject: PackageManifestObject, combinedPackage: string): Promise<void> {
   const builder = new XMLBuilder(xmlConf);
-  let xmlContent = builder.build(packageXmlObject) as string;
+  let xmlContent = builder.build(packageXmlObject);
 
   if (packageXmlObject.Package.version === '0.0') {
     xmlContent = xmlContent.replace(/^\s*<version>0\.0<\/version>\s*\r?\n?/gm, '');
