@@ -1,0 +1,23 @@
+src/core/mergePackageXmlFiles.ts
+  b21e891b4fd8f410 36-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "7e688fd90765a1b2ab5ae4a76fa883987ae830c0",
+  "prompts": {
+    "b21e891b4fd8f410": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ce4f4e13-100f-443b-82cb-cb92430c3e3a",
+        "model": "default"
+      },
+      "human_author": "Matt Carvin <90224411+mcarvin8@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 69,
+      "total_deletions": 16,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
