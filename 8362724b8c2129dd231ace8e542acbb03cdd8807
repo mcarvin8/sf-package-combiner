@@ -1,0 +1,49 @@
+test/samples/invalid-wrong-tag.xml
+  32c4edec03d02d1e 1-9
+test/samples/package-custom-label.xml
+  32c4edec03d02d1e 1-7
+test/samples/package-empty.xml
+  32c4edec03d02d1e 1-3
+test/samples/dir_sample/package-abc-object.xml
+  32c4edec03d02d1e 1-8
+test/samples/expected-combined.xml
+  32c4edec03d02d1e 1-17
+test/samples/dir_sample/package-standard-values.xml
+  32c4edec03d02d1e 1-8
+test/samples/invalid-duplicate-name.xml
+  32c4edec03d02d1e 1-9
+test/samples/dir_sample/invalid-wrong-tag.xml
+  32c4edec03d02d1e 1-10
+test/samples/package-account-only.xml
+  32c4edec03d02d1e 1-7
+test/samples/expected-combined-with-dir.xml
+  32c4edec03d02d1e 1-19
+test/commands/sfpc/combine.test.ts
+  32c4edec03d02d1e 9-14,17-18,20-21
+test/commands/sfpc/combine.nut.ts
+  32c4edec03d02d1e 10-12,14
+test/samples/invalid-duplicate-version.xml
+  32c4edec03d02d1e 1-6
+test/samples/package-mixed-types.xml
+  32c4edec03d02d1e 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "8362724b8c2129dd231ace8e542acbb03cdd8807",
+  "prompts": {
+    "32c4edec03d02d1e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "13ef1d89-0481-47b4-b4a4-4576d6dc9683",
+        "model": "default"
+      },
+      "human_author": "Matt Carvin <90224411+mcarvin8@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 133,
+      "total_deletions": 14,
+      "accepted_lines": 133,
+      "overriden_lines": 0
+    }
+  }
+}
