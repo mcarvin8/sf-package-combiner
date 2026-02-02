@@ -1,0 +1,27 @@
+src/core/writePackage.ts
+  32c4edec03d02d1e 9
+tsconfig.json
+  32c4edec03d02d1e 7
+jest.config.js
+  32c4edec03d02d1e 19-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "b0230e8b58dce764a29a89ee62591a5712f933ee",
+  "prompts": {
+    "32c4edec03d02d1e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "13ef1d89-0481-47b4-b4a4-4576d6dc9683",
+        "model": "default"
+      },
+      "human_author": "Matt Carvin <90224411+mcarvin8@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 3,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    }
+  }
+}
