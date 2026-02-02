@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.4.1...v2.5.0) (2026-02-02)
+
+
+### Features
+
+* enhance logging package errors from source-deploy-retrieve ([7e688fd](https://github.com/mcarvin8/sf-package-combiner/commit/7e688fd90765a1b2ab5ae4a76fa883987ae830c0))
+
 ## [2.4.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.4.0...v2.4.1) (2026-02-02)
 
 
