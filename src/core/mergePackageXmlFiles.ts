@@ -33,8 +33,9 @@ export async function mergePackageXmlFiles(
         if (version && !apiVersions.includes(version)) {
           apiVersions.push(version);
         }
-      } catch {
-        warnings.push(`Invalid or empty package.xml: ${filePath}`);
+      } catch (err) {
+        const sdrMessage = err instanceof Error ? err.message : String(err);
+        warnings.push(`Invalid or empty package.xml: ${filePath}. [SDR] ${sdrMessage}`);
       }
     });
   }

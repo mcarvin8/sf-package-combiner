@@ -6,7 +6,7 @@
 [![Maintainability](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/maintainability.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 [![Code Coverage](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/test_coverage.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 
-A [Salesforce CLI](https://developer.salesforce.com/tools/sf) plugin that merges multiple `package.xml` manifests into a single file—ideal for combining incremental manifests (e.g. from [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)) or multiple sources before deploy.
+A Salesforce CLI plugin that merges multiple `package.xml` manifests into a single file—ideal for combining incremental manifests (e.g. from [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)) or multiple sources before deploy.
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -164,10 +164,10 @@ sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
 
 ## Invalid package.xml files
 
-Files that don’t match the expected [manifest structure](#manifest-structure) or have no `<types>` are **skipped** with a warning:
+Files that don’t match the expected [manifest structure](#manifest-structure) or have no `<types>` are **skipped** with a warning. When processing fails, the underlying error from @salesforce/source-deploy-retrieve (e.g. unknown metadata types not in the registry) is appended:
 
 ```
-Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml
+Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. [SDR] Missing metadata type definition in registry: CustomFields
 ```
 
 If every input is invalid or empty, the combined file will have no `<types>`. To avoid deploying an empty package, check for `<types>` before deploying:
