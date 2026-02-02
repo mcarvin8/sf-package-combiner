@@ -6,19 +6,19 @@ import { combinePackages } from '../../../src/core/combinePackages.js';
 import { mergePackageXmlFiles } from '../../../src/core/mergePackageXmlFiles.js';
 
 describe('sfpc combine', () => {
-  const package1 = resolve('test/samples/pack1.xml');
-  const package2 = resolve('test/samples/pack2.xml');
-  const package3 = resolve('test/samples/pack3.xml');
-  const invalidPackage1 = resolve('test/samples/invalid1.xml');
-  const invalidPackage2 = resolve('test/samples/invalid2.xml');
-  const invalidPackage3 = resolve('test/samples/invalid3.xml');
+  const package1 = resolve('test/samples/package-account-only.xml');
+  const package2 = resolve('test/samples/package-mixed-types.xml');
+  const package3 = resolve('test/samples/package-custom-label.xml');
+  const invalidPackage1 = resolve('test/samples/invalid-wrong-tag.xml');
+  const invalidPackage2 = resolve('test/samples/invalid-duplicate-version.xml');
+  const invalidPackage3 = resolve('test/samples/invalid-duplicate-name.xml');
   const invalidDir = resolve('test/invalid');
   const outputPackage = resolve('package.xml');
-  const baseline = resolve('test/samples/combinedPackage.xml');
-  const emptyPackageBaseline = resolve('test/samples/emptyPackage.xml');
+  const baseline = resolve('test/samples/expected-combined.xml');
+  const emptyPackageBaseline = resolve('test/samples/package-empty.xml');
   const packageDir = resolve('test/samples/dir_sample');
-  const invalidDirPackage = resolve('test/samples/dir_sample/invalid1.xml');
-  const dirBaseline = resolve('test/samples/combinedPackageDir.xml');
+  const invalidDirPackage = resolve('test/samples/dir_sample/invalid-wrong-tag.xml');
+  const dirBaseline = resolve('test/samples/expected-combined-with-dir.xml');
 
   it('combines valid packages together', async () => {
     const warnings: string[] = [];

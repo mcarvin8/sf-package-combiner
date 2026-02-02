@@ -7,11 +7,11 @@ import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 
 describe('sfpc combine NUTs', () => {
   let session: TestSession;
-  const package1 = resolve('test/samples/pack1.xml');
-  const package2 = resolve('test/samples/pack2.xml');
-  const package3 = resolve('test/samples/pack3.xml');
+  const package1 = resolve('test/samples/package-account-only.xml');
+  const package2 = resolve('test/samples/package-mixed-types.xml');
+  const package3 = resolve('test/samples/package-custom-label.xml');
   const outputPackage = resolve('package.xml');
-  const baseline = resolve('test/samples/combinedPackage.xml');
+  const baseline = resolve('test/samples/expected-combined.xml');
 
   beforeAll(async () => {
     session = await TestSession.create({ devhubAuthStrategy: 'NONE' });
