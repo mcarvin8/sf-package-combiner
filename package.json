@@ -73,7 +73,7 @@
     "link-check": "wireit",
     "lint": "wireit",
     "postpack": "sf-clean --ignore-signing-artifacts",
-    "prepack": "sf-prepack",
+    "prepack": "wireit",
     "prepare": "husky install",
     "test": "wireit",
     "test:nuts": "oclif manifest && vitest run --config ./vitest.nut.config.ts",
@@ -191,6 +191,21 @@
         "messages/**/*.md"
       ],
       "output": []
+    },
+    "prepack": {
+      "command": "oclif manifest && oclif readme",
+      "files": [
+        "src/commands/sfpc/combine.ts",
+        "messages/sfpc.combine.md",
+        "README.md"
+      ],
+      "dependencies": [
+        "build"
+      ],
+      "output": [
+        "README.md"
+      ],
+      "clean": false
     }
   },
   "exports": "./lib/index.js",
