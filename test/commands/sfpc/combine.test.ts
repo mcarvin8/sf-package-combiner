@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect, vi } from 'vitest';
+import { ComponentSet } from '@salesforce/source-deploy-retrieve';
 
 import { combinePackages } from '../../../src/core/combinePackages.js';
 import {
@@ -137,6 +138,18 @@ describe('sfpc combine', () => {
   it('returns no warnings when files is null (skips processing)', async () => {
     const warnings = await mergePackageXmlFiles(null, 'package.xml', null, false);
     expect(warnings).toEqual([]);
+  });
+
+  it('formats non-Error thrown values using String(err) in warning message', async () => {
+    const spy = vi.spyOn(ComponentSet, 'fromManifest').mockRejectedValueOnce('boom-string-error');
+    try {
+      const warnings = await mergePackageXmlFiles([invalidPackage1], outputPackage, null, false);
+      expect(warnings.join('\n')).toContain(
+        `Invalid or empty package.xml: ${invalidPackage1}. [SDR] boom-string-error`
+      );
+    } finally {
+      spy.mockRestore();
+    }
   });
 
   it('sorts non-CustomObject types alphabetically (branch coverage for sortTypesWithCustomObjectFirst)', async () => {
