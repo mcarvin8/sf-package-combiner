@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.5.2...v2.5.3) (2026-04-22)
+
+
+### Bug Fixes
+
+* prepack steps after switching to npm ([b649fb7](https://github.com/mcarvin8/sf-package-combiner/commit/b649fb76d7edea509c86bce801b1f12910137336))
+* regenerate package-lock.json ([01741e1](https://github.com/mcarvin8/sf-package-combiner/commit/01741e1666699e281724e48d768b9058dbd1727e))
+
 ## [2.5.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.5.1...v2.5.2) (2026-04-22)
 
 
