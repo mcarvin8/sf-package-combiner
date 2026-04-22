@@ -196,7 +196,6 @@
   "exports": "./lib/index.js",
   "type": "module",
   "author": "Matt Carvin",
-  "packageManager": "yarn@1.22.21",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mcarvin8/sf-package-combiner.git"
