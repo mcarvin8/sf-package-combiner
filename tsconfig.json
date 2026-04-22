@@ -5,7 +5,14 @@
     "module": "Node16",
     "rootDir": "src",
     "resolveJsonModule": true,
-    "types": ["jest", "chai"]
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedParameters": true
   },
   "include": ["./src/**/*.ts"]
 }

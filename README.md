@@ -4,7 +4,7 @@
 [![Downloads/week](https://img.shields.io/npm/dw/sf-package-combiner.svg)](https://npmjs.org/package/sf-package-combiner)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/mcarvin8/sf-package-combiner/refs/heads/main/LICENSE.md)
 [![Maintainability](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/maintainability.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
-[![Code Coverage](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/test_coverage.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
+[![codecov](https://codecov.io/gh/mcarvin8/sf-package-combiner/graph/badge.svg?token=7YH0L48X3E)](https://codecov.io/gh/mcarvin8/sf-package-combiner)
 
 A Salesforce CLI plugin that merges multiple `package.xml` manifests into a single file—ideal for combining incremental manifests (e.g. from [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)) or multiple sources before deploy.
 
@@ -12,17 +12,20 @@ A Salesforce CLI plugin that merges multiple `package.xml` manifests into a sing
 <details>
   <summary>Table of Contents</summary>
 
-- [Quick start](#quick-start)
-- [Why use this](#why-use-this)
-- [Command reference](#command-reference)
-- [Usage details](#usage-details)
-- [Manifest structure](#manifest-structure)
-- [Example](#example)
-- [Invalid package.xml files](#invalid-packagexml-files)
-- [Requirements](#requirements)
-- [Issues](#issues)
-- [License](#license)
-</details>
+- [sf-package-combiner](#sf-package-combiner)
+  - [Quick start](#quick-start)
+  - [Why use this](#why-use-this)
+  - [Command reference](#command-reference)
+    - [`sf sfpc combine`](#sf-sfpc-combine)
+  - [Usage details](#usage-details)
+    - [How it works](#how-it-works)
+    - [Manifest structure](#manifest-structure)
+  - [Example](#example)
+  - [Invalid package.xml files](#invalid-packagexml-files)
+  - [Requirements](#requirements)
+  - [Issues](#issues)
+  - [License](#license)
+  </details>
 
 ---
 

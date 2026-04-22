@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    versioning-strategy: increase
+    commit-message:
+      prefix: 'feat(metadata)'
+    allow:
+      - dependency-name: '@salesforce/source-deploy-retrieve'
