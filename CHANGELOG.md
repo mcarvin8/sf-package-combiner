@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.5.1...v2.5.2) (2026-04-22)
+
+
+### Bug Fixes
+
+* remove packageManager field from package.json ([6dd6597](https://github.com/mcarvin8/sf-package-combiner/commit/6dd6597d51483675b80a778c9cff27e4b8ee7b0f))
+
 ## [2.5.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.5.0...v2.5.1) (2026-04-22)
 
 
