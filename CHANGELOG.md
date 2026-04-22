@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.4](https://github.com/mcarvin8/sf-package-combiner/compare/v2.5.3...v2.5.4) (2026-04-22)
+
+
+### Bug Fixes
+
+* regenerate package-lock and add shx for packing steps ([#150](https://github.com/mcarvin8/sf-package-combiner/issues/150)) ([1af01c5](https://github.com/mcarvin8/sf-package-combiner/commit/1af01c5dcc3ef76674fefe8c6e7baad4ae9348ea))
+
 ## [2.5.3](https://github.com/mcarvin8/sf-package-combiner/compare/v2.5.2...v2.5.3) (2026-04-22)
 
 
