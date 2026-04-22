@@ -1,1 +1,1 @@
-yarn lint && yarn pretty-quick --staged
+npm run lint && npx pretty-quick --staged && npm run build
