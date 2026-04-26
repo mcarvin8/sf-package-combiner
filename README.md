@@ -62,10 +62,10 @@ USAGE
 
 FLAGS
   -f, --package-file=<value>     Path to a package.xml file. Can be repeated.
-  -d, --directory=<value>       Path to a directory containing package.xml files. Can be repeated.
+  -d, --directory=<value>        Path to a directory containing package.xml files. Can be repeated.
   -c, --combined-package=<value> Path for the output file. Default: package.xml
-  -v, --api-version=<value>     API version for the combined package (e.g. 62.0).
-  -n, --no-api-version          Omit the <version> element in the output.
+  -v, --api-version=<value>      API version for the combined package (e.g. 62.0).
+  -n, --no-api-version           Omit the <version> element in the output.
 
 GLOBAL FLAGS
   --json  Output as JSON.
@@ -74,8 +74,8 @@ GLOBAL FLAGS
 **Examples**
 
 ```bash
-# Two files → package.xml
-sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
+# Two files → package.xml (overwrites the input)
+sf sfpc combine -f package.xml -f pack2.xml -c package.xml
 
 # Files + directory
 sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
@@ -190,14 +190,14 @@ fi
 
 ## Requirements
 
-- [Salesforce CLI](https://developer.salesforce.com/tools/sf) (`sf`)
+- [Salesforce `sf` CLI](https://developer.salesforce.com/tools/sf)
 - Node.js **20.x or later**
 
 ---
 
 ## Issues
 
-Bugs and feature requests? Submit an [issue](https://github.com/mcarvin8/sf-package-combiner/issues).
+Bugs or feature requests? Submit an [issue](https://github.com/mcarvin8/sf-package-combiner/issues).
 
 ---
 
