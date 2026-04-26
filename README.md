@@ -172,7 +172,7 @@ Files that don’t match the expected [manifest structure](#manifest-structure) 
 Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. [SDR] Missing metadata type definition in registry: CustomFields
 ```
 
-> **Note:** A missing metadata type definition can also occur if the type is newer than the SDR version bundled with this plugin. Upgrading the plugin may resolve the issue for newly released metadata types. Dependabot checks for SDR updates once a week and will auto-merge updates if the metadata regsitry has been updated.
+> **Note:** A missing metadata type definition can also occur if the metadata type is newer than the SDR version bundled with this plugin. Dependabot checks for SDR updates once a week and will auto-merge updates if the metadata registry has been updated.
 
 If every input is invalid or empty, the combined file will have no `<types>`. To avoid deploying an empty package, check for `<types>` before deploying:
 
