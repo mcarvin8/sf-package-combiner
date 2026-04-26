@@ -166,13 +166,13 @@ sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
 
 ## Invalid package.xml files
 
-Files that don’t match the expected [manifest structure](#manifest-structure) or have no `<types>` are **skipped** with a warning. When processing fails, the underlying error from @salesforce/source-deploy-retrieve (e.g. unknown metadata types not in the registry) is appended:
+Files that don’t match the expected [manifest structure](#manifest-structure) or have no `<types>` are **skipped** with a warning. When processing fails, the underlying error from `@salesforce/source-deploy-retrieve` (SDR) is appended:
 
 ```
 Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. [SDR] Missing metadata type definition in registry: CustomFields
 ```
 
-> **Note:** A missing metadata type definition can also occur if the type is newer than the @salesforce/source-deploy-retrieve version bundled with this plugin. Upgrading the plugin may resolve the issue for newly released metadata types.
+> **Note:** A missing metadata type definition can also occur if the type is newer than the SDR version bundled with this plugin. Upgrading the plugin may resolve the issue for newly released metadata types. Dependabot checks for SDR updates once a week and will auto-merge updates if the metadata regsitry has been updated.
 
 If every input is invalid or empty, the combined file will have no `<types>`. To avoid deploying an empty package, check for `<types>` before deploying:
 
