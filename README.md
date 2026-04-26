@@ -6,15 +6,14 @@
 [![Maintainability](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/maintainability.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 [![codecov](https://codecov.io/gh/mcarvin8/sf-package-combiner/graph/badge.svg?token=7YH0L48X3E)](https://codecov.io/gh/mcarvin8/sf-package-combiner)
 
-A Salesforce CLI plugin that merges multiple `package.xml` manifests into a single file—ideal for combining incremental manifests (e.g. from [sfdx-git-delta](https://github.com/scolladon/sfdx-git-delta)) or multiple sources before deploy.
+A Salesforce CLI plugin that merges multiple `package.xml` manifests into a single file—ideal for combining incremental manifests from multiple sources before deploy.
 
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
 
-- [sf-package-combiner](#sf-package-combiner)
   - [Quick start](#quick-start)
-  - [Why use this](#why-use-this)
+  - [Why use this?](#why-use-this)
   - [Command reference](#command-reference)
     - [`sf sfpc combine`](#sf-sfpc-combine)
   - [Usage details](#usage-details)
@@ -32,10 +31,10 @@ A Salesforce CLI plugin that merges multiple `package.xml` manifests into a sing
 ## Quick start
 
 ```bash
-# Install (use a specific version in place of x.y.z)
-sf plugins install sf-package-combiner@x.y.z
+# Install
+sf plugins install sf-package-combiner@latest
 
-# Combine two manifests into one
+# Combine 2 manifests into 1
 sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
 ```
 
@@ -43,7 +42,7 @@ You can mix files and directories: use `-f` for specific files and `-d` for dire
 
 ---
 
-## Why use this
+## Why use this?
 
 - **Merge incremental manifests** — Combine output from tools like sfdx-git-delta with other package.xml files before deploying.
 - **Single deploy manifest** — One `package.xml` from many sources (scripts, manual lists, other tools).
@@ -192,16 +191,16 @@ fi
 ## Requirements
 
 - [Salesforce CLI](https://developer.salesforce.com/tools/sf) (`sf`)
-- Node.js **20.x or later** (for the plugin)
+- Node.js **20.x or later**
 
 ---
 
 ## Issues
 
-Bugs and feature requests: [GitHub Issues](https://github.com/mcarvin8/sf-package-combiner/issues).
+Bugs and feature requests? Submit an [issue](https://github.com/mcarvin8/sf-package-combiner/issues).
 
 ---
 
 ## License
 
-MIT. See [LICENSE](LICENSE.md) in this repo.
+[MIT](LICENSE.md)
