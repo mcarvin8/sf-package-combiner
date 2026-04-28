@@ -1,0 +1,16 @@
+.github/workflows/smoke-test.yml
+  h_b104b674256482 1-49
+.github/workflows/release.yml
+  h_b104b674256482 38,52-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "0991917fb58524dc48f85ce3a9617e9f786576f1",
+  "prompts": {},
+  "humans": {
+    "h_b104b674256482": {
+      "author": "Matt Carvin"
+    }
+  }
+}
