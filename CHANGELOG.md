@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.2](https://github.com/mcarvin8/sf-package-combiner/compare/v2.8.1...v2.8.2) (2026-05-26)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/source-deploy-retrieve ([3ba45f2](https://github.com/mcarvin8/sf-package-combiner/commit/3ba45f240c7195c91daa312a21e09c4db314d1d5))
+
 ## [2.8.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.8.0...v2.8.1) (2026-05-26)
 
 
