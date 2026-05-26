@@ -55,10 +55,8 @@ jobs:
 
       - name: Publish to NPM
         id: publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish --access public --tag latest --provenance
+          NODE_AUTH_TOKEN="" npm publish --access public --tag latest --provenance
           echo "published=true" >> "$GITHUB_OUTPUT"
 
   smoke-test:
