@@ -1,8 +1,8 @@
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { mapLimit } from 'async';
 
 import { getConcurrencyThreshold } from './getConcurrencyThreshold.js';
+import { mapLimit } from './mapLimit.js';
 
 export async function findFilesInDirectory(directories: string[]): Promise<{ files: string[]; warnings: string[] }> {
   const files: string[] = [];

@@ -1,7 +1,8 @@
 import { ComponentSet, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
-import { mapLimit } from 'async';
+
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { sfXmlns } from '../utils/constants.js';
+import { mapLimit } from '../utils/mapLimit.js';
 import { determineApiVersion } from './determineApiVersion.js';
 import { writePackage } from './writePackage.js';
 
@@ -9,7 +10,7 @@ export async function mergePackageXmlFiles(
   files: string[] | null,
   combinedPackage: string,
   userApiVersion: string | null,
-  noApiVersion: boolean
+  noApiVersion: boolean,
 ): Promise<string[]> {
   const warnings: string[] = [];
   const apiVersions: string[] = [];
