@@ -50,3 +50,7 @@ node_modules
 .idea
 
 package.xml
+
+# stryker mutation testing
+.stryker-tmp
+reports
