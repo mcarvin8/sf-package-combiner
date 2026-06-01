@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - '**.md'
       - 'defaults/**'
-      - 'test/fixtures/**'
+      - 'test/samples/**'
       - 'messages/**'
   workflow_dispatch:
     inputs:
