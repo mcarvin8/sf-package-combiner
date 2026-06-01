@@ -34,6 +34,9 @@ describe('writePackage', () => {
     const content = await readFile(outputPath, 'utf-8');
     expect(content).not.toContain('<version>');
     expect(content).not.toContain('0.0');
+    // Verify replacement is empty string, not a substituted value
+    const unexpectedLines = content.split(/\r?\n/).filter((l) => l.trim() && !l.trim().startsWith('<'));
+    expect(unexpectedLines).toHaveLength(0);
   });
 
   it('does not corrupt content when stripping 0.0 version', async () => {

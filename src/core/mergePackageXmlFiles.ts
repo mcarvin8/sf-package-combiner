@@ -31,6 +31,7 @@ export async function mergePackageXmlFiles(
         }
 
         const version = componentSet.sourceApiVersion;
+        // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
         if (version && !apiVersions.includes(version)) {
           apiVersions.push(version);
         }

@@ -19,7 +19,8 @@ export async function combinePackages({
   const files = [...packageFiles];
   const warnings: string[] = [];
 
-  if (directories && directories.length > 0) {
+  // Stryker disable next-line ConditionalExpression,EqualityOperator -- findFilesInDirectory([]) is a no-op, making true/>=0 equivalent
+  if (directories.length > 0) {
     const { files: dirFiles, warnings: dirWarnings } = await findFilesInDirectory(directories);
     files.push(...dirFiles);
     warnings.push(...dirWarnings);

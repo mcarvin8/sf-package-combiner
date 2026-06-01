@@ -35,6 +35,9 @@ describe('sfpc combine', () => {
 
     expect(path).toBe(outputPackage);
     expect(warnings).toHaveLength(0);
+    const content = await readFile(outputPackage, 'utf-8');
+    const baselineContent = await readFile(baseline, 'utf-8');
+    expect(content).toEqual(baselineContent);
   });
 
   it('matches baseline output', async () => {
