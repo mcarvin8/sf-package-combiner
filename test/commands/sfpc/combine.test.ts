@@ -84,16 +84,6 @@ describe('sfpc combine', () => {
     expect(testPackage).toEqual(baselinePackage);
   });
 
-  it('uses default packageFiles when none provided', async () => {
-    const warnings: string[] = [];
-    const path = await combinePackages({
-      directories: [packageDir],
-      combinedPackage: outputPackage,
-      warn: (msg) => warnings.push(msg),
-    });
-
-    expect(path).toBe(outputPackage);
-  });
   it('uses default output path when combinedPackage is not specified', async () => {
     const warnings: string[] = [];
     const path = await combinePackages({
@@ -134,7 +124,90 @@ describe('sfpc combine', () => {
 
     expect(path).toBe(outputPackage);
     expect(warnings).toHaveLength(0);
+    const content = await readFile(outputPackage, 'utf-8');
+    expect(content).not.toContain('<version>');
   });
+
+  it('output without noApiVersion includes xml declaration and version tag', async () => {
+    const warnings: string[] = [];
+    await combinePackages({
+      packageFiles: [package2],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+    const content = await readFile(outputPackage, 'utf-8');
+    expect(content.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n')).toBe(true);
+    expect(content).toContain('<version>59.0</version>');
+  });
+
+  it('selects the maximum API version across packages', async () => {
+    const abcPackage = resolve('test/samples/dir_sample/package-abc-object.xml');
+    const warnings: string[] = [];
+    await combinePackages({
+      packageFiles: [package2, abcPackage],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+    const content = await readFile(outputPackage, 'utf-8');
+    expect(content).toContain('<version>59.0</version>');
+  });
+
+  it('sorts types with CustomObject first and non-CustomObject types alphabetically', async () => {
+    const warnings: string[] = [];
+    await combinePackages({
+      packageFiles: [package1, package2, package3],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+    const content = await readFile(outputPackage, 'utf-8');
+    const customObjectIdx = content.indexOf('<name>CustomObject</name>');
+    const customLabelIdx = content.indexOf('<name>CustomLabel</name>');
+    const standardValueSetIdx = content.indexOf('<name>StandardValueSet</name>');
+    expect(customObjectIdx).toBeGreaterThan(-1);
+    expect(customObjectIdx).toBeLessThan(customLabelIdx);
+    expect(customObjectIdx).toBeLessThan(standardValueSetIdx);
+    expect(customLabelIdx).toBeLessThan(standardValueSetIdx);
+  });
+
+  it('deduplicates members that appear in multiple input packages', async () => {
+    const warnings: string[] = [];
+    await combinePackages({
+      packageFiles: [package1, package2],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+    const content = await readFile(outputPackage, 'utf-8');
+    const accountMatches = content.match(/<members>Account<\/members>/g);
+    expect(accountMatches).toHaveLength(1);
+  });
+
+  it('sorts members alphabetically within each type', async () => {
+    const warnings: string[] = [];
+    // package2 first so Case is inserted before Account in processing order
+    await combinePackages({
+      packageFiles: [package2, package1],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+    const content = await readFile(outputPackage, 'utf-8');
+    const accountIdx = content.indexOf('<members>Account</members>');
+    const caseIdx = content.indexOf('<members>Case</members>');
+    expect(accountIdx).toBeGreaterThan(-1);
+    expect(accountIdx).toBeLessThan(caseIdx);
+  });
+
+  it('uses default packageFiles when none provided and only emits expected warnings', async () => {
+    const warnings: string[] = [];
+    const path = await combinePackages({
+      directories: [packageDir],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+    expect(path).toBe(outputPackage);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toContain('Invalid or empty package.xml');
+  });
+
   it('returns no warnings when files is null (skips processing)', async () => {
     const warnings = await mergePackageXmlFiles(null, 'package.xml', null, false);
     expect(warnings).toEqual([]);
