@@ -10,6 +10,7 @@
     "fast-xml-builder": "1.1.7"
   },
   "devDependencies": {
+    "@commitlint/cli": "20.5.0",
     "@commitlint/config-conventional": "20.5.0",
     "@oclif/plugin-command-snapshot": "5.3.8",
     "@salesforce/cli-plugins-testkit": "5.3.41",
