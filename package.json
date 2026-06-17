@@ -1,6 +1,6 @@
 {
   "name": "sf-package-combiner",
-  "description": "Combine multiple Salesforce manifest files (package.xml) into 1 file for deployments.",
+  "description": "Merge multiple Salesforce manifest files (package.xml) into a single file for Salesforce CLI deployments.",
   "version": "2.10.0",
   "dependencies": {
     "@oclif/core": "4.8.0",
@@ -40,16 +40,17 @@
     "/CHANGELOG.md"
   ],
   "keywords": [
-    "force",
     "salesforce",
     "salesforcedx",
     "sf",
     "sf-plugin",
-    "sfdx",
-    "sfdx-plugin",
     "package.xml",
     "manifest",
     "combiner",
+    "combine",
+    "merge",
+    "xml",
+    "sfpc",
     "deployment"
   ],
   "license": "MIT",
@@ -62,7 +63,7 @@
     ],
     "topics": {
       "sfpc": {
-        "description": "description for sfpc"
+        "description": "Merge multiple Salesforce manifest files into a single package.xml"
       }
     },
     "flexibleTaxonomy": true
