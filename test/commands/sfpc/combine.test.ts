@@ -101,7 +101,7 @@ describe('sfpc combine', () => {
       combinePackages({
         packageFiles: [invalidPackage1],
         combinedPackage: outputPackage,
-      })
+      }),
     ).resolves.toBe(outputPackage);
   });
   it('combines valid packages together at specified API version', async () => {
@@ -221,7 +221,7 @@ describe('sfpc combine', () => {
     try {
       const warnings = await mergePackageXmlFiles([invalidPackage1], outputPackage, null, false);
       expect(warnings.join('\n')).toContain(
-        `Invalid or empty package.xml: ${invalidPackage1}. [SDR] boom-string-error`
+        `Invalid or empty package.xml: ${invalidPackage1}. [SDR] boom-string-error`,
       );
     } finally {
       spy.mockRestore();

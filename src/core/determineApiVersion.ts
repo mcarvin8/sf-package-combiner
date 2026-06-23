@@ -1,7 +1,7 @@
 export function determineApiVersion(
   apiVersions: string[],
   userApiVersion: string | null,
-  noApiVersion: boolean
+  noApiVersion: boolean,
 ): string {
   if (noApiVersion) return '0.0';
   if (userApiVersion === null) {
