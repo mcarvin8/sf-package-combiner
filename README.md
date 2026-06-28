@@ -14,7 +14,7 @@
   <summary>Table of Contents</summary>
 
   - [Quick start](#quick-start)
-  - [Command reference](#command-reference)
+  - [Command](#command)
     - [`sf sfpc combine`](#sf-sfpc-combine)
   - [How it works](#how-it-works)
   - [Example](#example)
@@ -40,7 +40,7 @@ Mix files and directories: use `-f` for specific files, `-d` for directories con
 
 ---
 
-## Command reference
+## Command
 
 ### `sf sfpc combine`
 
@@ -169,7 +169,7 @@ fi
 
 ## Requirements
 
-- [Salesforce `sf` CLI](https://developer.salesforce.com/tools/sf)
+- Salesforce CLI (`sf`)
 - Node.js **20.x or later**
 
 ---
