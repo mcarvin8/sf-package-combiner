@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.11.1](https://github.com/mcarvin8/sf-package-combiner/compare/v2.11.0...v2.11.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* **deps:** bump all deps, remove Node 20 support ([#177](https://github.com/mcarvin8/sf-package-combiner/issues/177)) ([da9b1f4](https://github.com/mcarvin8/sf-package-combiner/commit/da9b1f4b810599e37ac32f5db8c96c4e40cd2b79))
+
 ## [2.11.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.10.0...v2.11.0) (2026-06-22)
 
 
