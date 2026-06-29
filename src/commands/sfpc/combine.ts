@@ -1,5 +1,5 @@
-import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
+import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 
 import { combinePackages } from '../../core/combinePackages.js';
 import { SfpcCombineResult } from '../../core/types.js';

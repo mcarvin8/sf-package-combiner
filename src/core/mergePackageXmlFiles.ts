@@ -1,7 +1,6 @@
 import { ComponentSet, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
-
-import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { sfXmlns } from '../utils/constants.js';
+import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { mapLimit } from '../utils/mapLimit.js';
 import { determineApiVersion } from './determineApiVersion.js';
 import { writePackage } from './writePackage.js';

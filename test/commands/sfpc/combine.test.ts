@@ -1,13 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { describe, it, expect, vi } from 'vitest';
 import { ComponentSet } from '@salesforce/source-deploy-retrieve';
+import { describe, expect, it, vi } from 'vitest';
 
 import { combinePackages } from '../../../src/core/combinePackages.js';
 import {
+  CUSTOM_OBJECT_TYPE,
   mergePackageXmlFiles,
   sortTypesWithCustomObjectFirst,
-  CUSTOM_OBJECT_TYPE,
 } from '../../../src/core/mergePackageXmlFiles.js';
 
 describe('sfpc combine', () => {

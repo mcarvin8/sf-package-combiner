@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
-import XMLBuilder from 'fast-xml-builder';
 import { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
+import XMLBuilder from 'fast-xml-builder';
 
 import { xmlConf } from '../utils/constants.js';
 

@@ -3,7 +3,7 @@
 // with the base branch.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const baseBranch = process.env.MUTATION_BASE_BRANCH ?? 'origin/main';
 const reportJsonPath = 'reports/mutation/mutation-testing-report.json';

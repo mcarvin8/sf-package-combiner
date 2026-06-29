@@ -1,9 +1,8 @@
-import { readFile } from 'node:fs/promises';
 import { strictEqual } from 'node:assert';
+import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('sfpc combine NUTs', () => {
   let session: TestSession;

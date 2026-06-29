@@ -1,5 +1,5 @@
 import * as nodeOs from 'node:os';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { getConcurrencyThreshold } from '../../src/utils/getConcurrencyThreshold.js';
 
