@@ -13,16 +13,23 @@
 <details>
   <summary>Table of Contents</summary>
 
+  - [Requirements](#requirements)
   - [Quick start](#quick-start)
   - [Command](#command)
     - [`sf sfpc combine`](#sf-sfpc-combine)
   - [How it works](#how-it-works)
   - [Example](#example)
   - [Invalid package.xml files](#invalid-packagexml-files)
-  - [Requirements](#requirements)
   - [Issues](#issues)
   - [License](#license)
 </details>
+
+---
+
+## Requirements
+
+- Salesforce CLI (`sf`)
+- Node.js **22.x or later**
 
 ---
 
@@ -164,13 +171,6 @@ else
   echo "---- No changes to deploy ----"
 fi
 ```
-
----
-
-## Requirements
-
-- Salesforce CLI (`sf`)
-- Node.js **20.x or later**
 
 ---
 
