@@ -7,7 +7,9 @@ export async function combinePackages({
   directories = [],
   userApiVersion = null,
   noApiVersion = false,
-  warn = (): void => {},
+  warn = (_msg: string): void => {
+    /* noop default */
+  },
 }: {
   packageFiles?: string[];
   combinedPackage?: string;

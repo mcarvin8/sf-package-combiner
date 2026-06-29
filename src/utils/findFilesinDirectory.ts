@@ -16,7 +16,7 @@ export async function findFilesInDirectory(directories: string[]): Promise<{ fil
         .filter((file) => file.isFile() && file.name.endsWith('.xml'))
         .map((file) => join(dir, file.name));
       files.push(...xmlFiles);
-    } catch (error) {
+    } catch (_error) {
       warnings.push(`Failed to read directory ${dir}`);
     }
   });
