@@ -1,6 +1,6 @@
 {
   "name": "sf-package-combiner",
-  "description": "Merge multiple Salesforce manifest files (package.xml) into a single file for Salesforce CLI deployments.",
+  "description": "Merge multiple Salesforce package.xml manifests into a single file for Salesforce CLI deployments.",
   "version": "2.11.1",
   "dependencies": {
     "@oclif/core": "4.11.11",
