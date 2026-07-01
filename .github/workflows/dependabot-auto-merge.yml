@@ -148,5 +148,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
         run: |
+          TITLE=$(cat /tmp/pr-title.txt)
+          gh pr edit "$PR_URL" --title "$TITLE"
           gh pr review --approve "$PR_URL"
           gh pr merge --auto --squash "$PR_URL"
