@@ -19,7 +19,7 @@ Merge multiple `package.xml` manifests into one. Use it in CI/CD pipelines to co
     - [`sf sfpc combine`](#sf-sfpc-combine)
   - [How it works](#how-it-works)
   - [Example](#example)
-  - [Invalid package.xml files](#invalid-packagexml-files)
+  - [Invalid Manifests](#invalid-manifests)
   - [Issues](#issues)
   - [License](#license)
 </details>
@@ -153,7 +153,7 @@ Highest input version (`62.0`) is used.
 
 ---
 
-## Invalid package.xml files
+## Invalid Manifests
 
 Files that don't match the expected manifest structure or have no `<types>` are skipped with a warning. The underlying error from `@salesforce/source-deploy-retrieve` (SDR) is appended:
 
