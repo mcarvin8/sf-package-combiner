@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.13.0...v2.14.0) (2026-07-20)
+
+
+### Features
+
+* **combine:** add dry-run mode, conflict reporting, and combine stats ([#186](https://github.com/mcarvin8/sf-package-combiner/issues/186)) ([4c10705](https://github.com/mcarvin8/sf-package-combiner/commit/4c10705eee4ce4be40c430b1a6923b3f8ba2ca14))
+
 ## [2.13.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.12.0...v2.13.0) (2026-07-20)
 
 
