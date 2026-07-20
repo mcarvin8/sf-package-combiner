@@ -19,6 +19,7 @@ Merge multiple `package.xml` manifests into one. Use it in CI/CD pipelines to co
     - [`sf sfpc combine`](#sf-sfpc-combine)
   - [How it works](#how-it-works)
   - [Example](#example)
+  - [Dry Run, Stats, and Conflict Reporting](#dry-run-stats-and-conflict-reporting)
   - [Invalid Manifests](#invalid-manifests)
   - [Issues](#issues)
   - [License](#license)
@@ -58,7 +59,7 @@ Combine Salesforce manifest files into one `package.xml`.
 
 ```
 USAGE
-  $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [-v <value>] [-n] [--json]
+  $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [-v <value>] [-n] [--dry-run] [--json]
 
 FLAGS
   -f, --package-file=<value>     Path to a package.xml file. Can be repeated.
@@ -66,6 +67,8 @@ FLAGS
   -c, --combined-package=<value> Path for the output file. Default: package.xml
   -v, --api-version=<value>      API version for the combined package (e.g. 62.0).
   -n, --no-api-version           Omit the <version> element in the output.
+  --dry-run                      Preview the combined package summary (types, members, duplicates)
+                                  without writing an output file.
 
 GLOBAL FLAGS
   --json  Output as JSON.
@@ -85,6 +88,9 @@ sf sfpc combine -f pack1.xml -f pack2.xml -v "62.0" -c package.xml
 
 # No version in output
 sf sfpc combine -f pack1.xml -f pack2.xml -n -c package.xml
+
+# Preview only, no file written
+sf sfpc combine -f pack1.xml -f pack2.xml --dry-run
 ```
 
 ---
@@ -150,6 +156,64 @@ sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
 ```
 
 Highest input version (`62.0`) is used.
+
+---
+
+## Dry Run, Stats, and Conflict Reporting
+
+Use `--dry-run` to preview a combine — metadata type/member counts, cross-file duplicate members, and the resolved API version — without writing an output file. Useful for logging what a merge would produce in a CI pipeline before committing to it.
+
+```bash
+sf sfpc combine -f package1.xml -f package2.xml -f package3.xml --dry-run
+```
+
+```
+Input files: 3
+
+Metadata Types: 3
+Members: 4
+
+Duplicate members removed: 1
+API Version: 59.0
+
+Duplicates:
+  CustomObject: Account
+    package1.xml
+    package2.xml
+
+Output would contain:
+  CustomLabel ...... 1
+  CustomObject ...... 2
+  StandardValueSet ...... 1
+
+No file written.
+```
+
+Duplicate members (same metadata type + member name found in more than one input file) are always deduplicated in the final output, whether or not `--dry-run` is used; the `Duplicates:` section just tells you which files caused the removal.
+
+Add `--json` (with or without `--dry-run`) to get the same data as structured output, e.g. for CI dashboards:
+
+```json
+{
+  "status": 0,
+  "result": {
+    "path": null,
+    "dryRun": true,
+    "filesProcessed": 3,
+    "types": 3,
+    "members": 4,
+    "duplicatesRemoved": 1,
+    "duplicates": [
+      { "type": "CustomObject", "member": "Account", "files": ["package1.xml", "package2.xml"] }
+    ],
+    "membersByType": { "CustomLabel": 1, "CustomObject": 2, "StandardValueSet": 1 },
+    "apiVersion": "59.0"
+  },
+  "warnings": []
+}
+```
+
+`path` is `null` on a dry run, and the combined package's path otherwise.
 
 ---
 
