@@ -12,6 +12,7 @@ Read multiple package.xml files, then parse them and combine them to create 1 fi
 - sf sfpc combine -f pack1.xml -d "test/directory" -c package.xml
 - sf sfpc combine -f packag1.xml -f pack2.xml -v 60.0 -c package.xml
 - sf sfpc combine -f packag1.xml -f pack2.xml -c package.xml -n
+- sf sfpc combine -f pack1.xml -f pack2.xml --dry-run
 
 # flags.package-file.summary
 
@@ -32,3 +33,7 @@ Sets the API version to use in the combined package.xml.
 # flags.no-api-version.summary
 
 Explicitly omit the API version in the combined package.xml.
+
+# flags.dry-run.summary
+
+Preview the combined package summary (types, members, duplicates) without writing an output file.

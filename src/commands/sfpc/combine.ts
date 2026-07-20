@@ -39,21 +39,60 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       char: 'n',
       default: false,
     }),
+    'dry-run': Flags.boolean({
+      summary: messages.getMessage('flags.dry-run.summary'),
+      default: false,
+    }),
   };
 
   public async run(): Promise<SfpcCombineResult> {
     const { flags } = await this.parse(SfpcCombine);
 
-    const path = await combinePackages({
+    const result = await combinePackages({
       packageFiles: flags['package-file'],
       combinedPackage: flags['combined-package'],
       directories: flags['directory'],
       userApiVersion: flags['api-version'],
       noApiVersion: flags['no-api-version'],
+      dryRun: flags['dry-run'],
       warn: this.warn.bind(this),
     });
 
-    this.log(`Combined package.xml written to: ${path}`);
-    return { path };
+    this.logSummary(result);
+    return result;
+  }
+
+  private logSummary(result: SfpcCombineResult): void {
+    this.log(`Input files: ${result.filesProcessed}`);
+    this.log('');
+    this.log(`Metadata Types: ${result.types}`);
+    this.log(`Members: ${result.members}`);
+    this.log('');
+    this.log(`Duplicate members removed: ${result.duplicatesRemoved}`);
+    this.log(`API Version: ${result.apiVersion}`);
+
+    if (result.duplicates.length > 0) {
+      this.log('');
+      this.log('Duplicates:');
+      for (const duplicate of result.duplicates) {
+        this.log(`  ${duplicate.type}: ${duplicate.member}`);
+        for (const file of duplicate.files) {
+          this.log(`    ${file}`);
+        }
+      }
+    }
+
+    this.log('');
+    this.log(`${result.dryRun ? 'Output would contain' : 'Output contains'}:`);
+    for (const [type, count] of Object.entries(result.membersByType).sort(([a], [b]) => a.localeCompare(b))) {
+      this.log(`  ${type} ...... ${count}`);
+    }
+
+    this.log('');
+    if (result.dryRun) {
+      this.log('No file written.');
+    } else {
+      this.log(`Combined package.xml written to: ${result.path}`);
+    }
   }
 }
