@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
   "packageManager": "npm",
+  "inPlace": true,
   "testRunner": "vitest",
   "vitest": {
     "configFile": "vitest.config.ts",
@@ -15,7 +16,13 @@
     "!src/core/types.ts",
     "!src/utils/constants.ts"
   ],
-  "reporters": ["html", "json", "clear-text", "progress", "dashboard"],
+  "reporters": [
+    "html",
+    "json",
+    "clear-text",
+    "progress",
+    "dashboard"
+  ],
   "htmlReporter": {
     "fileName": "reports/mutation/index.html"
   },
@@ -41,5 +48,11 @@
   "logLevel": "info",
   "fileLogLevel": "trace",
   "checkers": [],
-  "ignorePatterns": ["lib", "coverage", "test/**/*.nut.ts", ".stryker-tmp", "reports"]
+  "ignorePatterns": [
+    "lib",
+    "coverage",
+    "test/**/*.nut.ts",
+    ".stryker-tmp",
+    "reports"
+  ]
 }
