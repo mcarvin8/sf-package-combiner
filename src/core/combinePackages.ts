@@ -1,5 +1,6 @@
 import { findFilesInDirectory } from '../utils/findFilesinDirectory.js';
 import { mergePackageXmlFiles } from './mergePackageXmlFiles.js';
+import { SfpcCombineResult } from './types.js';
 
 export async function combinePackages({
   packageFiles = [],
@@ -7,6 +8,7 @@ export async function combinePackages({
   directories = [],
   userApiVersion = null,
   noApiVersion = false,
+  dryRun = false,
   warn = (_msg: string): void => {
     /* noop default */
   },
@@ -16,8 +18,9 @@ export async function combinePackages({
   directories?: string[];
   userApiVersion?: string | null;
   noApiVersion?: boolean;
+  dryRun?: boolean;
   warn?: (msg: string) => void;
-}): Promise<string> {
+}): Promise<SfpcCombineResult> {
   const files = [...packageFiles];
   const warnings: string[] = [];
 
@@ -28,9 +31,20 @@ export async function combinePackages({
     warnings.push(...dirWarnings);
   }
 
-  const result = await mergePackageXmlFiles(files, combinedPackage, userApiVersion, noApiVersion);
-  warnings.push(...result);
+  const result = await mergePackageXmlFiles(files, combinedPackage, userApiVersion, noApiVersion, dryRun);
+  warnings.push(...result.warnings);
 
   warnings.forEach(warn);
-  return combinedPackage;
+
+  return {
+    path: dryRun ? null : combinedPackage,
+    dryRun,
+    filesProcessed: files.length,
+    types: result.types,
+    members: result.members,
+    duplicatesRemoved: result.duplicatesRemoved,
+    duplicates: result.duplicates,
+    membersByType: result.membersByType,
+    apiVersion: result.apiVersion,
+  };
 }

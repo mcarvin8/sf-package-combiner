@@ -3,6 +3,7 @@ import { sfXmlns } from '../utils/constants.js';
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { mapLimit } from '../utils/mapLimit.js';
 import { determineApiVersion } from './determineApiVersion.js';
+import { MergePackageResult } from './types.js';
 import { writePackage } from './writePackage.js';
 
 export async function mergePackageXmlFiles(
@@ -10,11 +11,13 @@ export async function mergePackageXmlFiles(
   combinedPackage: string,
   userApiVersion: string | null,
   noApiVersion: boolean,
-): Promise<string[]> {
+  dryRun = false,
+): Promise<MergePackageResult> {
   const warnings: string[] = [];
   const apiVersions: string[] = [];
   const concurrencyLimit = getConcurrencyThreshold();
-  const combinedSet = new ComponentSet();
+  // type -> member -> source files that contained it
+  const origins = new Map<string, Map<string, string[]>>();
 
   if (files) {
     await mapLimit(files, concurrencyLimit, async (filePath: string) => {
@@ -26,7 +29,13 @@ export async function mergePackageXmlFiles(
         }
 
         for (const component of componentSet.toArray()) {
-          combinedSet.add(component);
+          const typeName = component.type.name;
+          const memberName = component.fullName;
+          const members = origins.get(typeName) ?? new Map<string, string[]>();
+          origins.set(typeName, members);
+          const sourceFiles = members.get(memberName) ?? [];
+          members.set(memberName, sourceFiles);
+          sourceFiles.push(filePath);
         }
 
         const version = componentSet.sourceApiVersion;
@@ -41,23 +50,34 @@ export async function mergePackageXmlFiles(
     });
   }
 
-  const metadataTypes = groupComponentsByType(combinedSet.toArray());
-
+  const { duplicates, duplicatesRemoved, membersByType, totalMembers } = summarizeOrigins(origins);
   const version = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
-  const packageContents: PackageManifestObject = {
-    Package: {
-      '@_xmlns': sfXmlns,
-      types: Array.from(metadataTypes.entries())
-        .map(([name, members]) => ({
-          members: Array.from(new Set(members)).sort((a, b) => a.localeCompare(b)),
-          name,
-        }))
-        .sort(sortTypesWithCustomObjectFirst),
-      version,
-    },
+
+  if (!dryRun) {
+    const packageContents: PackageManifestObject = {
+      Package: {
+        '@_xmlns': sfXmlns,
+        types: Array.from(origins.entries())
+          .map(([name, members]) => ({
+            members: Array.from(members.keys()).sort((a, b) => a.localeCompare(b)),
+            name,
+          }))
+          .sort(sortTypesWithCustomObjectFirst),
+        version,
+      },
+    };
+    await writePackage(packageContents, combinedPackage);
+  }
+
+  return {
+    warnings,
+    types: origins.size,
+    members: totalMembers,
+    duplicatesRemoved,
+    duplicates,
+    membersByType,
+    apiVersion: version,
   };
-  await writePackage(packageContents, combinedPackage);
-  return warnings;
 }
 
 export const CUSTOM_OBJECT_TYPE = 'CustomObject';
@@ -68,14 +88,33 @@ export function sortTypesWithCustomObjectFirst(a: { name: string }, b: { name: s
   return a.name.localeCompare(b.name);
 }
 
-function groupComponentsByType(components: ReturnType<ComponentSet['toArray']>): Map<string, string[]> {
-  const map = new Map<string, string[]>();
-  for (const component of components) {
-    const typeName = component.type.name;
-    if (!map.has(typeName)) {
-      map.set(typeName, []);
+function summarizeOrigins(origins: Map<string, Map<string, string[]>>): {
+  duplicates: Array<{ type: string; member: string; files: string[] }>;
+  duplicatesRemoved: number;
+  membersByType: Record<string, number>;
+  totalMembers: number;
+} {
+  const duplicates: Array<{ type: string; member: string; files: string[] }> = [];
+  const membersByType: Record<string, number> = {};
+  let duplicatesRemoved = 0;
+  let totalMembers = 0;
+
+  for (const [typeName, members] of origins.entries()) {
+    membersByType[typeName] = members.size;
+    totalMembers += members.size;
+    for (const [memberName, sourceFiles] of members.entries()) {
+      if (sourceFiles.length > 1) {
+        duplicatesRemoved += sourceFiles.length - 1;
+        duplicates.push({
+          type: typeName,
+          member: memberName,
+          files: [...sourceFiles].sort((a, b) => a.localeCompare(b)),
+        });
+      }
     }
-    map.get(typeName)!.push(component.fullName);
   }
-  return map;
+
+  duplicates.sort((a, b) => a.type.localeCompare(b.type) || a.member.localeCompare(b.member));
+
+  return { duplicates, duplicatesRemoved, membersByType, totalMembers };
 }
