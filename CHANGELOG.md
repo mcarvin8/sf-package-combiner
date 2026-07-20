@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.13.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.12.0...v2.13.0) (2026-07-20)
+
+
+### Features
+
+* **metadata:** refresh SDR registry to 12.37.2 ([e0f50fb](https://github.com/mcarvin8/sf-package-combiner/commit/e0f50fb3db9d3b403fcf8a4708f568831fa726be))
+
 ## [2.12.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.11.1...v2.12.0) (2026-07-01)
 
 
