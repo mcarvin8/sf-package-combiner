@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readFile, unlink } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { ComponentSet } from '@salesforce/source-deploy-retrieve';
 import { describe, expect, it, vi } from 'vitest';
@@ -217,6 +217,13 @@ describe('sfpc combine', () => {
     expect(result.warnings).toEqual([]);
     expect(result.types).toBe(0);
     expect(result.members).toBe(0);
+  });
+
+  it('writes a file when dryRun is omitted (defaults to false)', async () => {
+    const defaultDryRunOutput = resolve('default-dry-run-output.xml');
+    await mergePackageXmlFiles([package1], defaultDryRunOutput, null, false);
+    expect(existsSync(defaultDryRunOutput)).toBe(true);
+    await unlink(defaultDryRunOutput);
   });
 
   it('formats non-Error thrown values using String(err) in warning message', async () => {
