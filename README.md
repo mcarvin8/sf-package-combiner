@@ -7,7 +7,7 @@
 [![codecov](https://codecov.io/gh/mcarvin8/sf-package-combiner/graph/badge.svg?token=7YH0L48X3E)](https://codecov.io/gh/mcarvin8/sf-package-combiner)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fmcarvin8%2Fsf-package-combiner%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/mcarvin8/sf-package-combiner/main)
 
-Merge multiple `package.xml` manifests into one. Use it in CI/CD pipelines to combine sfdx-git-delta output, manual lists, or other tool-generated manifests before a single `sf project deploy start`.
+Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipelines to combine sfdx-git-delta output, manual lists, or other tool-generated manifests before a single `sf project deploy start`.
 
 <!-- TABLE OF CONTENTS -->
 <details>
