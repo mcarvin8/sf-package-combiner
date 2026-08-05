@@ -30,7 +30,7 @@ Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipe
 ## Requirements
 
 - Salesforce CLI (`sf`)
-- Node.js **22.x or later**
+- Node.js **22.19 or later**
 
 ---
 
