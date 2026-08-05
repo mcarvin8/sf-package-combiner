@@ -5,6 +5,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.14.0...v3.0.0) (2026-08-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **engines:** minimum supported node version raised from 22.0.0 to 22.19.0.
+
+### Bug Fixes
+
+* **engines:** raise node engine floor to 22.19.0 to match dep tree ([#189](https://github.com/mcarvin8/sf-package-combiner/issues/189)) ([1b0f04f](https://github.com/mcarvin8/sf-package-combiner/commit/1b0f04ff532602c1e96805f5b8628bacc20c1339))
+
 ## [2.14.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.13.0...v2.14.0) (2026-07-20)
 
 
