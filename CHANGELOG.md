@@ -5,6 +5,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v3.0.0...v3.1.0) (2026-08-16)
+
+
+### Features
+
+* **metadata:** support AiAgentDefinition, AiAgentDefinitionVersion ([603a897](https://github.com/mcarvin8/sf-package-combiner/commit/603a897ab31c50485dfecf97d264bd171c708ae0))
+
+
+### Bug Fixes
+
+* **deps:** bump the dependencies group across 1 directory with 4 updates ([#194](https://github.com/mcarvin8/sf-package-combiner/issues/194)) ([f53d1ca](https://github.com/mcarvin8/sf-package-combiner/commit/f53d1ca3616ce57aec5139a4b9ecdfe8200a8b42))
+
 ## [3.0.0](https://github.com/mcarvin8/sf-package-combiner/compare/v2.14.0...v3.0.0) (2026-08-05)
 
 
