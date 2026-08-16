@@ -40,7 +40,7 @@ Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipe
 sf plugins install sf-package-combiner@latest
 
 # Combine 2 manifests into 1
-sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
+sf sfpc combine -f package1.xml -f package2.xml -c package.xml
 
 # Deploy combined manifest
 sf project deploy start -x package.xml
