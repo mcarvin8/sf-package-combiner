@@ -77,22 +77,22 @@ GLOBAL FLAGS
 
 ```bash
 # Two files → package.xml (overwrites the input)
-sf sfpc combine -f package.xml -f pack2.xml -c package.xml
+sf sfpc combine -f package.xml -f package2.xml -c package.xml
 
 # Files + directory
-sf sfpc combine -f pack1.xml -f pack2.xml -d "test/sample_dir" -c package.xml
+sf sfpc combine -f package1.xml -f package2.xml -d "test/sample_dir" -c package.xml
 
 # Pin API version
-sf sfpc combine -f pack1.xml -f pack2.xml -v "62.0" -c package.xml
+sf sfpc combine -f package1.xml -f package2.xml -v "62.0" -c package.xml
 
 # No version in output
-sf sfpc combine -f pack1.xml -f pack2.xml -n -c package.xml
+sf sfpc combine -f package1.xml -f package2.xml -n -c package.xml
 
 # Preview only, no file written
-sf sfpc combine -f pack1.xml -f pack2.xml --dry-run
+sf sfpc combine -f package1.xml -f package2.xml --dry-run
 
 # Add --json for full stats
-sf sfpc combine -f pack1.xml -f pack2.xml --json
+sf sfpc combine -f package1.xml -f package2.xml --json
 
 {
   "status": 0,
