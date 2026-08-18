@@ -2,7 +2,7 @@ export type PackageManifestObject = {
   Package: {
     '@_xmlns': string;
     types: Array<{ name: string; members: string[] }>;
-    version: string;
+    version?: string;
   };
 };
 
@@ -19,7 +19,7 @@ export type MergePackageResult = {
   duplicatesRemoved: number;
   duplicates: DuplicateMember[];
   membersByType: Record<string, number>;
-  apiVersion: string;
+  apiVersion?: string;
 };
 
 export type SfpcCombineResult = {
@@ -31,5 +31,5 @@ export type SfpcCombineResult = {
   duplicatesRemoved: number;
   duplicates: DuplicateMember[];
   membersByType: Record<string, number>;
-  apiVersion: string;
+  apiVersion?: string;
 };

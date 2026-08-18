@@ -69,7 +69,7 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     this.log(`Members: ${result.members}`);
     this.log('');
     this.log(`Duplicate members removed: ${result.duplicatesRemoved}`);
-    this.log(`API Version: ${result.apiVersion}`);
+    this.log(`API Version: ${result.apiVersion ?? 'none'}`);
 
     if (result.duplicates.length > 0) {
       this.log('');

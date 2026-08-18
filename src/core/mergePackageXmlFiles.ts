@@ -65,7 +65,7 @@ export async function mergePackageXmlFiles(
             name,
           }))
           .sort(sortTypesWithCustomObjectFirst),
-        version,
+        ...(version !== undefined ? { version } : {}),
       },
     };
     await writePackage(packageContents, combinedPackage);
