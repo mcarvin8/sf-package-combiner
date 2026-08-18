@@ -1,3 +1,11 @@
+export type PackageManifestObject = {
+  Package: {
+    '@_xmlns': string;
+    types: Array<{ name: string; members: string[] }>;
+    version: string;
+  };
+};
+
 export type DuplicateMember = {
   type: string;
   member: string;

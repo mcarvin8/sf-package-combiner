@@ -117,7 +117,7 @@ sf sfpc combine -f package1.xml -f package2.xml --json
 
 ## How it works
 
-- **Metadata types** — `<name>` values are normalized via Salesforce's metadata registry (correct casing, deduped).
+- **Metadata types** — `<name>` values are taken as-is and deduplicated by exact, case-sensitive match. They are **not** validated or normalized against Salesforce's metadata registry — see [Invalid Manifests](#invalid-manifests).
 - **Type order** — `CustomObject` is always listed before all other types; remaining types sort alphabetically. This avoids deployment failures when `CustomObject` and its children appear in the same manifest (see [scolladon/sfdx-git-delta#76](https://github.com/scolladon/sfdx-git-delta/pull/76)).
 - **Members** — `<members>` values keep their original case (Salesforce API names are case-sensitive).
 - **API version** — Highest `<version>` from all input manifests is used. Override with `-v`, or omit entirely with `-n`.
@@ -181,13 +181,13 @@ Highest input version (`62.0`) is used.
 
 ## Invalid Manifests
 
-Files that don't match the expected manifest structure or have no `<types>` are skipped with a warning. The underlying error from `@salesforce/source-deploy-retrieve` (SDR) is appended:
+Manifests are parsed in-house and checked only against the Metadata API manifest *structure* — a single `<Package>` root containing zero or more `<types>` blocks (each with exactly one `<name>` and one or more `<members>`) and at most one `<version>`. Metadata type names in `<name>` are **not** validated against Salesforce's metadata registry, so a typo'd or nonexistent type (e.g. `CustomFields` instead of `CustomField`) will pass through to the combined output — deployment will fail on it later, not here. This also means combining is no longer blocked by a metadata type being newer than any bundled registry.
+
+Files that don't match the expected structure, or have no `<types>`, are skipped with a warning and the underlying parse error is appended:
 
 ```
-Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. [SDR] Missing metadata type definition in registry: CustomFields
+Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. unexpected element <type> inside <Package>
 ```
-
-> **Note:** A missing metadata type definition can also occur if the metadata type is newer than the SDR version bundled with this plugin. Dependabot checks for SDR updates weekly and auto-merges updates when the metadata registry changes.
 
 If every input is invalid or empty, the output will have no `<types>`. Guard against deploying an empty package:
 

@@ -1,0 +1,175 @@
+import { describe, expect, it } from 'vitest';
+
+import { parseManifestXml } from '../../src/core/parseManifest.js';
+
+const xmlns = 'http://soap.sforce.com/2006/04/metadata';
+
+describe('parseManifestXml', () => {
+  it('parses types, members, and version', () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="${xmlns}">
+  <types>
+    <members>MyApexClass</members>
+    <name>ApexClass</name>
+  </types>
+  <version>60.0</version>
+</Package>`;
+
+    expect(parseManifestXml(xml)).toEqual({
+      types: [{ name: 'ApexClass', members: ['MyApexClass'] }],
+      version: '60.0',
+    });
+  });
+
+  it('parses multiple members within a single types block', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <types>
+    <members>A</members>
+    <members>B</members>
+    <name>ApexClass</name>
+  </types>
+</Package>`;
+
+    expect(parseManifestXml(xml)).toEqual({
+      types: [{ name: 'ApexClass', members: ['A', 'B'] }],
+      version: null,
+    });
+  });
+
+  it('parses multiple types blocks', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <types>
+    <members>A</members>
+    <name>ApexClass</name>
+  </types>
+  <types>
+    <members>B</members>
+    <name>ApexTrigger</name>
+  </types>
+</Package>`;
+
+    expect(parseManifestXml(xml).types).toEqual([
+      { name: 'ApexClass', members: ['A'] },
+      { name: 'ApexTrigger', members: ['B'] },
+    ]);
+  });
+
+  it('returns a null version and no types for an empty <Package>', () => {
+    const xml = `<Package xmlns="${xmlns}"></Package>`;
+    expect(parseManifestXml(xml)).toEqual({ types: [], version: null });
+  });
+
+  it('does not validate metadata type names against the Salesforce registry', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <types>
+    <members>Account.Rating__c</members>
+    <name>NotARealMetadataType</name>
+  </types>
+</Package>`;
+
+    expect(parseManifestXml(xml)).toEqual({
+      types: [{ name: 'NotARealMetadataType', members: ['Account.Rating__c'] }],
+      version: null,
+    });
+  });
+
+  it('treats type names as case-sensitive literals (no registry casing normalization)', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <types>
+    <members>A</members>
+    <name>apexclass</name>
+  </types>
+  <types>
+    <members>B</members>
+    <name>ApexClass</name>
+  </types>
+</Package>`;
+
+    expect(parseManifestXml(xml).types).toEqual([
+      { name: 'apexclass', members: ['A'] },
+      { name: 'ApexClass', members: ['B'] },
+    ]);
+  });
+
+  it('decodes XML entities in member names', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <types>
+    <members>A &amp; B</members>
+    <name>ApexClass</name>
+  </types>
+</Package>`;
+
+    expect(parseManifestXml(xml).types).toEqual([{ name: 'ApexClass', members: ['A & B'] }]);
+  });
+
+  it('throws when the root element is not <Package>', () => {
+    const xml = `<NotAPackage></NotAPackage>`;
+    expect(() => parseManifestXml(xml)).toThrow(/single <Package> root element/);
+  });
+
+  it('throws when there is more than one root element', () => {
+    const xml = `<Package></Package><Package></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/single <Package> root element/);
+  });
+
+  it('throws on an unexpected element directly inside <Package>', () => {
+    const xml = `<Package>
+  <type>
+    <members>A</members>
+    <name>ApexClass</name>
+  </type>
+</Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/unexpected element <type> inside <Package>/);
+  });
+
+  it('throws when <Package> contains more than one <version>', () => {
+    const xml = `<Package><version>57.0</version><version>59.0</version></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/more than one <version>/);
+  });
+
+  it('throws when <version> is empty', () => {
+    const xml = `<Package><version></version></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/<version> element must not be empty/);
+  });
+
+  it('throws when <types> has no <name>', () => {
+    const xml = `<Package><types><members>A</members></types></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/exactly one <name> element, found 0/);
+  });
+
+  it('throws when <types> has more than one <name>', () => {
+    const xml = `<Package><types><members>A</members><name>ApexClass</name><name>ApexTrigger</name></types></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/exactly one <name> element, found 2/);
+  });
+
+  it('throws when <types><name> is empty', () => {
+    const xml = `<Package><types><members>A</members><name></name></types></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/<name> element must not be empty/);
+  });
+
+  it('throws when <types> has no <members>', () => {
+    const xml = `<Package><types><name>ApexClass</name></types></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/must contain at least one <members> element/);
+  });
+
+  it('throws when a <members> element is empty', () => {
+    const xml = `<Package><types><members>A</members><members></members><name>ApexClass</name></types></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/contains an empty <members> element/);
+  });
+
+  it('throws on an unexpected element inside <types>', () => {
+    const xml = `<Package><types><members>A</members><name>ApexClass</name><extra>x</extra></types></Package>`;
+    expect(() => parseManifestXml(xml)).toThrow(/unexpected element <extra> inside <types>/);
+  });
+
+  it('ignores comments and whitespace-only text', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <!-- a comment -->
+  <types>
+    <members>A</members>
+    <name>ApexClass</name>
+  </types>
+</Package>`;
+    expect(parseManifestXml(xml).types).toEqual([{ name: 'ApexClass', members: ['A'] }]);
+  });
+});

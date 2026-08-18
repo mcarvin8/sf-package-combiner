@@ -6,7 +6,7 @@
     </types>
     <types>
         <members>Case</members>
-        <name>customObject</name>
+        <name>CustomObject</name>
     </types>
     <types>
         <members>Account</members>

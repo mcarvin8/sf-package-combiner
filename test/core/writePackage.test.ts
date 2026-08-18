@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import type { PackageManifestObject } from '@salesforce/source-deploy-retrieve';
 import { describe, expect, it } from 'vitest';
 
+import type { PackageManifestObject } from '../../src/core/types.js';
 import { writePackage } from '../../src/core/writePackage.js';
 import { sfXmlns } from '../../src/utils/constants.js';
 

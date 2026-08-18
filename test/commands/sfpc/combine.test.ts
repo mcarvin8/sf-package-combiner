@@ -1,7 +1,6 @@
 import { existsSync } from 'node:fs';
 import { readFile, unlink } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { ComponentSet } from '@salesforce/source-deploy-retrieve';
 import { describe, expect, it, vi } from 'vitest';
 
 import { combinePackages } from '../../../src/core/combinePackages.js';
@@ -11,13 +10,18 @@ import {
   sortTypesWithCustomObjectFirst,
 } from '../../../src/core/mergePackageXmlFiles.js';
 
+vi.mock('node:fs/promises', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:fs/promises')>();
+  return { ...actual, readFile: vi.fn(actual.readFile) };
+});
+
 describe('sfpc combine', () => {
   const package1 = resolve('test/samples/package-account-only.xml');
   const package2 = resolve('test/samples/package-mixed-types.xml');
   const package3 = resolve('test/samples/package-custom-label.xml');
   const invalidPackage1 = resolve('test/samples/invalid-wrong-tag.xml');
   const invalidPackage2 = resolve('test/samples/invalid-duplicate-version.xml');
-  const invalidPackage3 = resolve('test/samples/invalid-member-name.xml');
+  const nonRegistryTypePackage = resolve('test/samples/invalid-member-name.xml');
   const invalidDir = resolve('test/invalid');
   const outputPackage = resolve('package.xml');
   const baseline = resolve('test/samples/expected-combined.xml');
@@ -47,7 +51,7 @@ describe('sfpc combine', () => {
     expect(testPackage).toEqual(baselinePackage);
   });
 
-  const invalids = [invalidPackage1, invalidPackage2, invalidPackage3];
+  const invalids = [invalidPackage1, invalidPackage2];
   invalids.forEach((invalidFile, index) => {
     it(`handles invalid package ${index + 1}`, async () => {
       const warnings: string[] = [];
@@ -67,6 +71,45 @@ describe('sfpc combine', () => {
       const baselinePackage = await readFile(emptyPackageBaseline, 'utf-8');
       expect(testPackage).toEqual(baselinePackage);
     });
+  });
+
+  it('warns on a structurally valid but empty package.xml (no <types>)', async () => {
+    const warnings: string[] = [];
+    const result = await combinePackages({
+      packageFiles: [emptyPackageBaseline],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+
+    expect(result.path).toBe(outputPackage);
+    expect(warnings.join('\n')).toContain(`Invalid or empty package.xml: ${emptyPackageBaseline}`);
+  });
+
+  it('no longer validates metadata type names against the Salesforce registry (breaking change)', async () => {
+    const warnings: string[] = [];
+    const result = await combinePackages({
+      packageFiles: [nonRegistryTypePackage],
+      combinedPackage: outputPackage,
+      warn: (msg) => warnings.push(msg),
+    });
+
+    expect(warnings).toHaveLength(0);
+    expect(result.membersByType).toMatchObject({ CustomFields: 1 });
+    const content = await readFile(outputPackage, 'utf-8');
+    expect(content).toContain('<name>CustomFields</name>');
+    expect(content).toContain('<members>Account.Rating__c</members>');
+  });
+
+  it('treats metadata type names as case-sensitive literals and does not merge differently-cased types', async () => {
+    const result = await mergePackageXmlFiles(
+      [package1, resolve('test/samples/package-lowercase-customobject.xml')],
+      outputPackage,
+      null,
+      false,
+    );
+
+    expect(result.types).toBe(2);
+    expect(result.membersByType).toMatchObject({ CustomObject: 1, customobject: 1 });
   });
 
   it('combines packages and includes those in a directory', async () => {
@@ -227,15 +270,9 @@ describe('sfpc combine', () => {
   });
 
   it('formats non-Error thrown values using String(err) in warning message', async () => {
-    const spy = vi.spyOn(ComponentSet, 'fromManifest').mockRejectedValueOnce('boom-string-error');
-    try {
-      const result = await mergePackageXmlFiles([invalidPackage1], outputPackage, null, false);
-      expect(result.warnings.join('\n')).toContain(
-        `Invalid or empty package.xml: ${invalidPackage1}. [SDR] boom-string-error`,
-      );
-    } finally {
-      spy.mockRestore();
-    }
+    vi.mocked(readFile).mockRejectedValueOnce('boom-string-error');
+    const result = await mergePackageXmlFiles([invalidPackage1], outputPackage, null, false);
+    expect(result.warnings.join('\n')).toContain(`Invalid or empty package.xml: ${invalidPackage1}. boom-string-error`);
   });
 
   it('sorts non-CustomObject types alphabetically (branch coverage for sortTypesWithCustomObjectFirst)', async () => {

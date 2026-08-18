@@ -1,9 +1,10 @@
-import { ComponentSet, PackageManifestObject } from '@salesforce/source-deploy-retrieve';
+import { readFile } from 'node:fs/promises';
 import { sfXmlns } from '../utils/constants.js';
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { mapLimit } from '../utils/mapLimit.js';
 import { determineApiVersion } from './determineApiVersion.js';
-import { MergePackageResult } from './types.js';
+import { parseManifestXml } from './parseManifest.js';
+import { MergePackageResult, PackageManifestObject } from './types.js';
 import { writePackage } from './writePackage.js';
 
 export async function mergePackageXmlFiles(
@@ -22,30 +23,31 @@ export async function mergePackageXmlFiles(
   if (files) {
     await mapLimit(files, concurrencyLimit, async (filePath: string) => {
       try {
-        const componentSet = await ComponentSet.fromManifest({ manifestPath: filePath });
-        if (componentSet.size === 0) {
+        const xml = await readFile(filePath, 'utf-8');
+        const manifest = parseManifestXml(xml);
+        if (manifest.types.length === 0) {
           warnings.push(`Invalid or empty package.xml: ${filePath}`);
           return;
         }
 
-        for (const component of componentSet.toArray()) {
-          const typeName = component.type.name;
-          const memberName = component.fullName;
-          const members = origins.get(typeName) ?? new Map<string, string[]>();
-          origins.set(typeName, members);
-          const sourceFiles = members.get(memberName) ?? [];
-          members.set(memberName, sourceFiles);
-          sourceFiles.push(filePath);
+        for (const type of manifest.types) {
+          const members = origins.get(type.name) ?? new Map<string, string[]>();
+          origins.set(type.name, members);
+          for (const memberName of type.members) {
+            const sourceFiles = members.get(memberName) ?? [];
+            members.set(memberName, sourceFiles);
+            sourceFiles.push(filePath);
+          }
         }
 
-        const version = componentSet.sourceApiVersion;
+        const version = manifest.version;
         // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
         if (version && !apiVersions.includes(version)) {
           apiVersions.push(version);
         }
       } catch (err) {
-        const sdrMessage = err instanceof Error ? err.message : String(err);
-        warnings.push(`Invalid or empty package.xml: ${filePath}. [SDR] ${sdrMessage}`);
+        const message = err instanceof Error ? err.message : String(err);
+        warnings.push(`Invalid or empty package.xml: ${filePath}. ${message}`);
       }
     });
   }
