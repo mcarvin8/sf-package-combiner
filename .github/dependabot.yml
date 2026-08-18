@@ -4,14 +4,11 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
     versioning-strategy: increase
     commit-message:
       prefix: "fix(deps)"
       prefix-development: "chore(dev-deps)"
-    cooldown:
-      default-days: 1
     groups:
       dependencies:
         dependency-type: "production"
