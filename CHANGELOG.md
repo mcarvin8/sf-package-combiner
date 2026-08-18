@@ -5,6 +5,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/mcarvin8/sf-package-combiner/compare/v3.1.0...v4.0.0) (2026-08-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **manifest:** metadata type names in <name> elements are no longer validated or case-normalized against Salesforce's metadata registry. Manifests are now checked only for structural correctness (a single <Package> root with well-formed <types>/<members>/<version> elements). A misspelled or nonexistent metadata type will pass through to the combined output instead of being rejected here, and type names with inconsistent casing across input files will no longer be merged together.
+
+### Features
+
+* **manifest:** parse package.xml in-house instead of via source-deploy-retrieve ([#197](https://github.com/mcarvin8/sf-package-combiner/issues/197)) ([6e5ae37](https://github.com/mcarvin8/sf-package-combiner/commit/6e5ae37621d588f39c62e83928ce2502008dc879))
+
 ## [3.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v3.0.0...v3.1.0) (2026-08-16)
 
 
