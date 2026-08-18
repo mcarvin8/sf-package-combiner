@@ -9,11 +9,11 @@ import { sfXmlns } from '../../src/utils/constants.js';
 describe('writePackage', () => {
   const outputPath = resolve('package.xml');
 
-  const makePackage = (version: string): PackageManifestObject => ({
+  const makePackage = (version?: string): PackageManifestObject => ({
     Package: {
       '@_xmlns': sfXmlns,
       types: [],
-      version,
+      ...(version !== undefined ? { version } : {}),
     },
   });
 
@@ -29,27 +29,16 @@ describe('writePackage', () => {
     expect(content).toContain('<version>59.0</version>');
   });
 
-  it('removes version element entirely when version is 0.0', async () => {
-    await writePackage(makePackage('0.0'), outputPath);
+  it('omits version element entirely when version is undefined', async () => {
+    await writePackage(makePackage(undefined), outputPath);
     const content = await readFile(outputPath, 'utf-8');
     expect(content).not.toContain('<version>');
-    expect(content).not.toContain('0.0');
-    // Verify replacement is empty string, not a substituted value
-    const unexpectedLines = content.split(/\r?\n/).filter((l) => l.trim() && !l.trim().startsWith('<'));
-    expect(unexpectedLines).toHaveLength(0);
   });
 
-  it('does not corrupt content when stripping 0.0 version', async () => {
-    await writePackage(makePackage('0.0'), outputPath);
+  it('does not corrupt content when version is omitted', async () => {
+    await writePackage(makePackage(undefined), outputPath);
     const content = await readFile(outputPath, 'utf-8');
     expect(content).toContain('<Package');
     expect(content).toContain('</Package>');
-  });
-
-  it('does not strip version when version is not 0.0', async () => {
-    await writePackage(makePackage('61.0'), outputPath);
-    const content = await readFile(outputPath, 'utf-8');
-    expect(content).not.toContain('<version>0.0</version>');
-    expect(content).toContain('<version>61.0</version>');
   });
 });

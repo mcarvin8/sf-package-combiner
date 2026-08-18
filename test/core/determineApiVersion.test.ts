@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { determineApiVersion } from '../../src/core/determineApiVersion.js';
 
 describe('determineApiVersion', () => {
-  it('returns 0.0 when noApiVersion is true', () => {
-    expect(determineApiVersion(['61.0'], null, true)).toBe('0.0');
+  it('returns undefined when noApiVersion is true', () => {
+    expect(determineApiVersion(['61.0'], null, true)).toBeUndefined();
   });
 
   it('noApiVersion takes priority over userApiVersion', () => {
-    expect(determineApiVersion([], '60.0', true)).toBe('0.0');
+    expect(determineApiVersion([], '60.0', true)).toBeUndefined();
   });
 
   it('returns userApiVersion when provided (not null)', () => {
@@ -18,8 +18,8 @@ describe('determineApiVersion', () => {
     expect(determineApiVersion(['59.0', '61.0', '60.0'], null, false)).toBe('61.0');
   });
 
-  it('returns initial 0.0 when apiVersions is empty and userApiVersion is null', () => {
-    expect(determineApiVersion([], null, false)).toBe('0.0');
+  it('returns undefined when apiVersions is empty and userApiVersion is null', () => {
+    expect(determineApiVersion([], null, false)).toBeUndefined();
   });
 
   it('returns the single version in the array', () => {
