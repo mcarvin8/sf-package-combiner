@@ -49,6 +49,7 @@ node_modules
 .idea
 
 package.xml
+write-package-test-output.xml
 
 # stryker mutation testing
 .stryker-tmp
