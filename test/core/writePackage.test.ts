@@ -7,7 +7,7 @@ import { writePackage } from '../../src/core/writePackage.js';
 import { sfXmlns } from '../../src/utils/constants.js';
 
 describe('writePackage', () => {
-  const outputPath = resolve('package.xml');
+  const outputPath = resolve('write-package-test-output.xml');
 
   const makePackage = (version?: string): PackageManifestObject => ({
     Package: {
