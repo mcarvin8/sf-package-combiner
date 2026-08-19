@@ -21,42 +21,52 @@ export async function mergePackageXmlFiles(
   const origins = new Map<string, Map<string, string[]>>();
   // type name (lowercased) -> the casing first seen for it, used for output/reporting
   const canonicalTypeNames = new Map<string, string>();
+  // type name (lowercased) -> index (in `files`) that contributed the current canonical casing.
+  // mapLimit processes files concurrently, so completion order doesn't match `files` order --
+  // track the source index explicitly so the canonical casing is deterministic regardless of
+  // which file's read/parse happens to finish first.
+  const canonicalTypeSourceIndex = new Map<string, number>();
 
   if (files) {
-    await mapLimit(files, concurrencyLimit, async (filePath: string) => {
-      try {
-        const xml = await readFile(filePath, 'utf-8');
-        const manifest = parseManifestXml(xml);
-        if (manifest.types.length === 0) {
-          warnings.push(`Invalid or empty package.xml: ${filePath}`);
-          return;
-        }
-
-        for (const type of manifest.types) {
-          // Stryker disable next-line MethodExpression -- toUpperCase() would group identically; metadata type names are ASCII, so casing of the internal grouping key is unobservable
-          const typeKey = type.name.toLowerCase();
-          if (!canonicalTypeNames.has(typeKey)) {
-            canonicalTypeNames.set(typeKey, type.name);
+    await mapLimit(
+      files.map((filePath, index) => ({ filePath, index })),
+      concurrencyLimit,
+      async ({ filePath, index }) => {
+        try {
+          const xml = await readFile(filePath, 'utf-8');
+          const manifest = parseManifestXml(xml);
+          if (manifest.types.length === 0) {
+            warnings.push(`Invalid or empty package.xml: ${filePath}`);
+            return;
           }
-          const members = origins.get(typeKey) ?? new Map<string, string[]>();
-          origins.set(typeKey, members);
-          for (const memberName of type.members) {
-            const sourceFiles = members.get(memberName) ?? [];
-            members.set(memberName, sourceFiles);
-            sourceFiles.push(filePath);
-          }
-        }
 
-        const version = manifest.version;
-        // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
-        if (version && !apiVersions.includes(version)) {
-          apiVersions.push(version);
+          for (const type of manifest.types) {
+            // Stryker disable next-line MethodExpression -- toUpperCase() would group identically; metadata type names are ASCII, so casing of the internal grouping key is unobservable
+            const typeKey = type.name.toLowerCase();
+            if (isEarlierSource(index, canonicalTypeSourceIndex.get(typeKey))) {
+              canonicalTypeNames.set(typeKey, type.name);
+              canonicalTypeSourceIndex.set(typeKey, index);
+            }
+            const members = origins.get(typeKey) ?? new Map<string, string[]>();
+            origins.set(typeKey, members);
+            for (const memberName of type.members) {
+              const sourceFiles = members.get(memberName) ?? [];
+              members.set(memberName, sourceFiles);
+              sourceFiles.push(filePath);
+            }
+          }
+
+          const version = manifest.version;
+          // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
+          if (version && !apiVersions.includes(version)) {
+            apiVersions.push(version);
+          }
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          warnings.push(`Invalid or empty package.xml: ${filePath}. ${message}`);
         }
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        warnings.push(`Invalid or empty package.xml: ${filePath}. ${message}`);
-      }
-    });
+      },
+    );
   }
 
   const { duplicates, duplicatesRemoved, membersByType, totalMembers } = summarizeOrigins(origins, canonicalTypeNames);
@@ -87,6 +97,15 @@ export async function mergePackageXmlFiles(
     membersByType,
     apiVersion: version,
   };
+}
+
+/**
+ * Whether a type name's source file index should replace the current canonical casing.
+ * Exported so it's directly unit-testable -- `mapLimit` processes files concurrently, so
+ * exercising this via the real merge would depend on nondeterministic completion timing.
+ */
+export function isEarlierSource(candidateIndex: number, existingIndex: number | undefined): boolean {
+  return existingIndex === undefined || candidateIndex < existingIndex;
 }
 
 export const CUSTOM_OBJECT_TYPE = 'CustomObject';
