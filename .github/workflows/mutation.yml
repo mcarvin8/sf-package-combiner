@@ -6,7 +6,6 @@ on:
       - main
     paths-ignore:
       - '**.md'
-      - 'defaults/**'
       - 'test/samples/**'
       - 'messages/**'
   workflow_dispatch:
@@ -47,6 +46,9 @@ jobs:
 
       - name: Build
         run: npm run compile
+
+      - name: Pin TypeScript for Stryker (TS7 unsupported)
+        run: npm install typescript@6.0.3 --no-save
 
       - name: Run incremental mutation testing
         env:
@@ -91,6 +93,9 @@ jobs:
 
       - name: Build
         run: npm run compile
+
+      - name: Pin TypeScript for Stryker (TS7 unsupported)
+        run: npm install typescript@6.0.3 --no-save
 
       - name: Run mutation testing
         # GitHub-hosted ubuntu-latest runners have 4 cores (as of 2026). Stryker
