@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.2](https://github.com/mcarvin8/sf-package-combiner/compare/v4.0.1...v4.0.2) (2026-08-19)
+
+
+### Bug Fixes
+
+* **merge:** normalize metadata type names case-insensitively ([#201](https://github.com/mcarvin8/sf-package-combiner/issues/201)) ([6797b32](https://github.com/mcarvin8/sf-package-combiner/commit/6797b32499a4d314fbb98f51854d503552b66685))
+* **merge:** pick canonical type casing deterministically ([#203](https://github.com/mcarvin8/sf-package-combiner/issues/203)) ([5a7e2df](https://github.com/mcarvin8/sf-package-combiner/commit/5a7e2df95452c6dccddf660b697f4d333cb474e5))
+
 ## [4.0.1](https://github.com/mcarvin8/sf-package-combiner/compare/v4.0.0...v4.0.1) (2026-08-18)
 
 
