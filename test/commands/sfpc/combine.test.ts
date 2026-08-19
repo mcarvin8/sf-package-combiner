@@ -100,7 +100,7 @@ describe('sfpc combine', () => {
     expect(content).toContain('<members>Account.Rating__c</members>');
   });
 
-  it('treats metadata type names as case-sensitive literals and does not merge differently-cased types', async () => {
+  it('normalizes metadata type names case-insensitively and merges differently-cased types', async () => {
     const result = await mergePackageXmlFiles(
       [package1, resolve('test/samples/package-lowercase-customobject.xml')],
       outputPackage,
@@ -108,8 +108,12 @@ describe('sfpc combine', () => {
       false,
     );
 
-    expect(result.types).toBe(2);
-    expect(result.membersByType).toMatchObject({ CustomObject: 1, customobject: 1 });
+    expect(result.types).toBe(1);
+    expect(result.membersByType).toMatchObject({ CustomObject: 2 });
+    const content = await readFile(outputPackage, 'utf-8');
+    expect(content).toContain('<name>CustomObject</name>');
+    expect(content).toContain('<members>Account</members>');
+    expect(content).toContain('<members>Lead</members>');
   });
 
   it('combines packages and includes those in a directory', async () => {

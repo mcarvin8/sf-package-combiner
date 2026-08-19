@@ -117,8 +117,8 @@ sf sfpc combine -f package1.xml -f package2.xml --json
 
 ## How it works
 
-- **Metadata types** — `<name>` values are taken as-is and deduplicated by exact, case-sensitive match. They are **not** validated or normalized against Salesforce's metadata registry — see [Invalid Manifests](#invalid-manifests).
-- **Type order** — `CustomObject` is always listed before all other types; remaining types sort alphabetically. This avoids deployment failures when `CustomObject` and its children appear in the same manifest (see [scolladon/sfdx-git-delta#76](https://github.com/scolladon/sfdx-git-delta/pull/76)).
+- **Metadata types** — `<name>` values are deduplicated case-insensitively (`CustomObject` and `customobject` merge into one `<types>` block, using the casing first encountered). They are **not** validated or normalized against Salesforce's metadata registry — see [Invalid Manifests](#invalid-manifests).
+- **Type order** — `CustomObject` (any casing) is always listed before all other types; remaining types sort alphabetically. This avoids deployment failures when `CustomObject` and its children appear in the same manifest (see [scolladon/sfdx-git-delta#76](https://github.com/scolladon/sfdx-git-delta/pull/76)).
 - **Members** — `<members>` values keep their original case (Salesforce API names are case-sensitive).
 - **API version** — Highest `<version>` from all input manifests is used. Override with `-v`, or omit entirely with `-n`.
 

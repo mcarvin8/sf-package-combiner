@@ -17,8 +17,10 @@ export async function mergePackageXmlFiles(
   const warnings: string[] = [];
   const apiVersions: string[] = [];
   const concurrencyLimit = getConcurrencyThreshold();
-  // type -> member -> source files that contained it
+  // type name (lowercased) -> member -> source files that contained it
   const origins = new Map<string, Map<string, string[]>>();
+  // type name (lowercased) -> the casing first seen for it, used for output/reporting
+  const canonicalTypeNames = new Map<string, string>();
 
   if (files) {
     await mapLimit(files, concurrencyLimit, async (filePath: string) => {
@@ -31,8 +33,12 @@ export async function mergePackageXmlFiles(
         }
 
         for (const type of manifest.types) {
-          const members = origins.get(type.name) ?? new Map<string, string[]>();
-          origins.set(type.name, members);
+          const typeKey = type.name.toLowerCase();
+          if (!canonicalTypeNames.has(typeKey)) {
+            canonicalTypeNames.set(typeKey, type.name);
+          }
+          const members = origins.get(typeKey) ?? new Map<string, string[]>();
+          origins.set(typeKey, members);
           for (const memberName of type.members) {
             const sourceFiles = members.get(memberName) ?? [];
             members.set(memberName, sourceFiles);
@@ -52,7 +58,7 @@ export async function mergePackageXmlFiles(
     });
   }
 
-  const { duplicates, duplicatesRemoved, membersByType, totalMembers } = summarizeOrigins(origins);
+  const { duplicates, duplicatesRemoved, membersByType, totalMembers } = summarizeOrigins(origins, canonicalTypeNames);
   const version = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
 
   if (!dryRun) {
@@ -60,9 +66,9 @@ export async function mergePackageXmlFiles(
       Package: {
         '@_xmlns': sfXmlns,
         types: Array.from(origins.entries())
-          .map(([name, members]) => ({
+          .map(([typeKey, members]) => ({
             members: Array.from(members.keys()).sort((a, b) => a.localeCompare(b)),
-            name,
+            name: canonicalTypeNames.get(typeKey) ?? typeKey,
           }))
           .sort(sortTypesWithCustomObjectFirst),
         ...(version !== undefined ? { version } : {}),
@@ -85,12 +91,17 @@ export async function mergePackageXmlFiles(
 export const CUSTOM_OBJECT_TYPE = 'CustomObject';
 
 export function sortTypesWithCustomObjectFirst(a: { name: string }, b: { name: string }): number {
-  if (a.name === CUSTOM_OBJECT_TYPE && b.name !== CUSTOM_OBJECT_TYPE) return -1;
-  if (a.name !== CUSTOM_OBJECT_TYPE && b.name === CUSTOM_OBJECT_TYPE) return 1;
+  const aIsCustomObject = a.name.toLowerCase() === CUSTOM_OBJECT_TYPE.toLowerCase();
+  const bIsCustomObject = b.name.toLowerCase() === CUSTOM_OBJECT_TYPE.toLowerCase();
+  if (aIsCustomObject && !bIsCustomObject) return -1;
+  if (!aIsCustomObject && bIsCustomObject) return 1;
   return a.name.localeCompare(b.name);
 }
 
-function summarizeOrigins(origins: Map<string, Map<string, string[]>>): {
+function summarizeOrigins(
+  origins: Map<string, Map<string, string[]>>,
+  canonicalTypeNames: Map<string, string>,
+): {
   duplicates: Array<{ type: string; member: string; files: string[] }>;
   duplicatesRemoved: number;
   membersByType: Record<string, number>;
@@ -101,7 +112,8 @@ function summarizeOrigins(origins: Map<string, Map<string, string[]>>): {
   let duplicatesRemoved = 0;
   let totalMembers = 0;
 
-  for (const [typeName, members] of origins.entries()) {
+  for (const [typeKey, members] of origins.entries()) {
+    const typeName = canonicalTypeNames.get(typeKey) ?? typeKey;
     membersByType[typeName] = members.size;
     totalMembers += members.size;
     for (const [memberName, sourceFiles] of members.entries()) {
