@@ -33,6 +33,7 @@ export async function mergePackageXmlFiles(
         }
 
         for (const type of manifest.types) {
+          // Stryker disable next-line MethodExpression -- toUpperCase() would group identically; metadata type names are ASCII, so casing of the internal grouping key is unobservable
           const typeKey = type.name.toLowerCase();
           if (!canonicalTypeNames.has(typeKey)) {
             canonicalTypeNames.set(typeKey, type.name);
