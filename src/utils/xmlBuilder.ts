@@ -45,8 +45,7 @@ function buildElement(key: string, value: unknown, depth: number): string {
   if (value === null) return `${indent}<${key}/>\n`;
 
   if (typeof value !== 'object') {
-    const text = toText(value);
-    return text === '' ? `${indent}<${key}></${key}>\n` : `${indent}<${key}>${escapeXmlValue(text)}</${key}>\n`;
+    return `${indent}<${key}>${escapeXmlValue(toText(value))}</${key}>\n`;
   }
 
   const node = value as XmlNode;

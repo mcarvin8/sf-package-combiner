@@ -43,4 +43,20 @@ describe('buildXml', () => {
     const xml = buildXml({ Package: { '@_xmlns': 'ns', types: [], version: undefined } });
     expect(xml).not.toContain('<version>');
   });
+
+  it('escapes >, \', and " in text nodes', () => {
+    const xml = buildXml({ Package: { '@_xmlns': 'ns', types: [], version: `a>b'c"d` } });
+    expect(xml).toContain('<version>a&gt;b&apos;c&quot;d</version>');
+  });
+
+  it('renders a null value as a self-closing tag', () => {
+    const xml = buildXml({ Package: { '@_xmlns': 'ns', types: [], version: null } });
+    expect(xml).toContain('<version/>');
+  });
+
+  it('renders an empty-string text value as a paired tag, not self-closing', () => {
+    const xml = buildXml({ Package: { '@_xmlns': 'ns', types: [], version: '' } });
+    expect(xml).toContain('<version></version>');
+    expect(xml).not.toContain('<version/>');
+  });
 });
