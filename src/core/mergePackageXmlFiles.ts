@@ -79,6 +79,7 @@ export async function mergePackageXmlFiles(
         types: Array.from(origins.entries())
           .map(([typeKey, members]) => ({
             members: Array.from(members.keys()).sort((a, b) => a.localeCompare(b)),
+            // v8 ignore next -- canonicalTypeNames is always populated for every typeKey in origins (see isEarlierSource loop above), so this fallback is unreachable
             name: canonicalTypeNames.get(typeKey) ?? typeKey,
           }))
           .sort(sortTypesWithCustomObjectFirst),
@@ -133,6 +134,7 @@ function summarizeOrigins(
   let totalMembers = 0;
 
   for (const [typeKey, members] of origins.entries()) {
+    // v8 ignore next -- canonicalTypeNames is always populated for every typeKey in origins (see isEarlierSource loop in mergePackageXmlFiles), so this fallback is unreachable
     const typeName = canonicalTypeNames.get(typeKey) ?? typeKey;
     membersByType[typeName] = members.size;
     totalMembers += members.size;
