@@ -64,6 +64,7 @@ describe('sfpc combine', () => {
 
       expect(result.path).toBe(outputPackage);
       expect(warnings.join('\n')).toContain(`Invalid or empty package.xml: ${invalidFile}`);
+      expect(warnings.join('\n')).toContain(`Failed to read directory ${invalidDir}`);
     });
 
     it(`invalid package ${index + 1} matches empty baseline`, async () => {
