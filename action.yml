@@ -1,0 +1,57 @@
+name: 'SF Package Combiner'
+description: 'Combine multiple Salesforce package.xml manifests into one.'
+author: 'Matt Carvin'
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  package-file:
+    description: 'Path to a package.xml file to combine, one per line.'
+    required: false
+  directory:
+    description: 'Directory to look for package.xml files in, one per line.'
+    required: false
+  combined-package:
+    description: 'Path to the combined package.xml that will be created by this action.'
+    required: false
+    default: 'package.xml'
+  api-version:
+    description: >-
+      API version to use in the combined package.xml. Defaults to the highest version found
+      across the input manifests.
+    required: false
+  no-api-version:
+    description: 'Explicitly omit the API version in the combined package.xml.'
+    required: false
+    default: 'false'
+  dry-run:
+    description: 'Preview the combined package summary (types, members, duplicates) without writing an output file.'
+    required: false
+    default: 'false'
+  fail-on-empty:
+    description: >-
+      Fail the action if the combined package.xml has no <types> (e.g. every input was invalid
+      or empty).
+    required: false
+    default: 'false'
+
+outputs:
+  combined-package-path:
+    description: 'Path to the combined package.xml (empty on a dry run).'
+  files-processed:
+    description: 'Number of input package.xml files processed.'
+  types:
+    description: 'Number of distinct metadata types in the combined package.'
+  members:
+    description: 'Number of members in the combined package.'
+  duplicates-removed:
+    description: 'Number of duplicate members removed while combining.'
+  api-version:
+    description: 'API version used in the combined package.xml (empty when omitted).'
+  warnings:
+    description: 'Newline-separated list of warnings emitted while combining, if any.'
+
+runs:
+  using: 'node24'
+  main: 'dist/action/index.cjs'
