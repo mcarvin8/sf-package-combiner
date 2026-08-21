@@ -102,6 +102,25 @@ describe('parseManifestXml', () => {
     expect(parseManifestXml(xml).types).toEqual([{ name: 'ApexClass', members: ['A & B'] }]);
   });
 
+  it('parses dot-notation custom field members and decodes ampersands', () => {
+    const xml = `<Package xmlns="${xmlns}">
+  <types>
+    <members>Account.Rating__c</members>
+    <members>Account.Sales_Region__c</members>
+    <name>CustomField</name>
+  </types>
+  <types>
+    <members>Sales &amp; Marketing</members>
+    <name>Group</name>
+  </types>
+</Package>`;
+
+    expect(parseManifestXml(xml).types).toEqual([
+      { name: 'CustomField', members: ['Account.Rating__c', 'Account.Sales_Region__c'] },
+      { name: 'Group', members: ['Sales & Marketing'] },
+    ]);
+  });
+
   it('throws when the root element is not <Package>', () => {
     const xml = `<NotAPackage></NotAPackage>`;
     expect(() => parseManifestXml(xml)).toThrow(/single <Package> root element/);

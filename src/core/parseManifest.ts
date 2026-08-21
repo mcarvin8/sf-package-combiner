@@ -1,4 +1,4 @@
-import { parse, TNode } from 'txml';
+import { parseXml, XmlNode } from './xmlParser.js';
 
 export type ParsedManifestType = {
   name: string;
@@ -10,18 +10,18 @@ export type ParsedManifest = {
   version: string | null;
 };
 
-function isElement(node: TNode | string): node is TNode {
+function isElement(node: XmlNode | string): node is XmlNode {
   return typeof node !== 'string';
 }
 
-function getText(node: TNode): string {
+function getText(node: XmlNode): string {
   return node.children
     .filter((child): child is string => typeof child === 'string')
     .join('')
     .trim();
 }
 
-function parseTypesElement(typesEl: TNode): ParsedManifestType {
+function parseTypesElement(typesEl: XmlNode): ParsedManifestType {
   const children = typesEl.children.filter(isElement);
   const nameEls = children.filter((el) => el.tagName === 'name');
   const memberEls = children.filter((el) => el.tagName === 'members');
@@ -60,7 +60,7 @@ function parseTypesElement(typesEl: TNode): ParsedManifestType {
  * type names are not checked against the Salesforce metadata registry.
  */
 export function parseManifestXml(xml: string): ParsedManifest {
-  const roots = parse(xml, { decodeEntities: true, skipXmlDeclaration: true }).filter(isElement);
+  const roots = parseXml(xml);
 
   if (roots.length !== 1 || roots[0].tagName !== 'Package') {
     throw new Error('manifest must have a single <Package> root element');
