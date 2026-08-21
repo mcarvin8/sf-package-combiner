@@ -81,6 +81,7 @@
     "postpack": "shx rm -f oclif.manifest.json oclif.lock",
     "prepack": "wireit",
     "prepare": "husky",
+    "readme": "wireit",
     "test": "wireit",
     "test:mutation": "wireit",
     "test:mutation:incremental": "wireit",
@@ -180,6 +181,21 @@
         "package-lock.json"
       ],
       "output": []
+    },
+    "readme": {
+      "command": "oclif readme",
+      "files": [
+        "src/commands/**/*.ts",
+        "messages/*.md",
+        "README.md"
+      ],
+      "dependencies": [
+        "build"
+      ],
+      "output": [
+        "README.md"
+      ],
+      "clean": false
     },
     "test:compile": {
       "command": "tsc -p \"./test\" --pretty",

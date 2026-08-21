@@ -8,11 +8,11 @@ Read multiple package.xml files, then parse them and combine them to create 1 fi
 
 # examples
 
-- sf sfpc combine -f pack1.xml -f pack2.xml -c package.xml
-- sf sfpc combine -f pack1.xml -d "test/directory" -c package.xml
-- sf sfpc combine -f packag1.xml -f pack2.xml -v 60.0 -c package.xml
-- sf sfpc combine -f packag1.xml -f pack2.xml -c package.xml -n
-- sf sfpc combine -f pack1.xml -f pack2.xml --dry-run
+- sf sfpc combine -f package1.xml -f package2.xml -c package.xml
+- sf sfpc combine -f package1.xml -d "test/directory" -c package.xml
+- sf sfpc combine -f package1.xml -f package2.xml -v 60.0 -c package.xml
+- sf sfpc combine -f package1.xml -f package2.xml -c package.xml -n
+- sf sfpc combine -f package1.xml -f package2.xml --dry-run --json
 
 # flags.package-file.summary
 

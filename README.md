@@ -52,66 +52,55 @@ Mix files and directories: use `-f` for specific files, `-d` for directories con
 
 ## Command
 
-### `sf sfpc combine`
+<!-- commands -->
+* [`sf sfpc combine`](#sf-sfpc-combine)
 
-Combine Salesforce manifest files into one `package.xml`.
+## `sf sfpc combine`
+
+Combine multiple package.xml files together.
 
 ```
 USAGE
-  $ sf sfpc combine [-f <value>] [-d <value>] [-c <value>] [-v <value>] [-n] [--dry-run] [--json]
+  $ sf sfpc combine [--json] [--flags-dir <value>] [-f <value>...] [-c <value>] [-d <value>...] [-v <value>] [-n]
+    [--dry-run]
 
 FLAGS
-  -f, --package-file=<value>     Path to a package.xml file. Can be repeated.
-  -d, --directory=<value>        Path to a directory containing package.xml files. Can be repeated.
-  -c, --combined-package=<value> Path for the output file. Default: package.xml
-  -v, --api-version=<value>      API version for the combined package (e.g. 62.0).
-  -n, --no-api-version           Omit the <version> element in the output.
-  --dry-run                      Preview the combined package summary (types, members, duplicates)
-                                  without writing an output file.
+  -c, --combined-package=<value>  [default: package.xml] Combined package file path.
+  -d, --directory=<value>...      Directory to look for package.xml files in.
+  -f, --package-file=<value>...   Path to a package.xml file.
+  -n, --no-api-version            Explicitly omit the API version in the combined package.xml.
+  -v, --api-version=<value>       Sets the API version to use in the combined package.xml.
+      --dry-run                   Preview the combined package summary (types, members, duplicates) without writing an
+                                  output file.
 
 GLOBAL FLAGS
-  --json  Output as JSON.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+DESCRIPTION
+  Combine multiple package.xml files together.
+
+  Read multiple package.xml files, then parse them and combine them to create 1 final package for deployments.
+
+EXAMPLES
+  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml
+
+  $ sf sfpc combine -f package1.xml -d "test/directory" -c package.xml
+
+  $ sf sfpc combine -f package1.xml -f package2.xml -v 60.0 -c package.xml
+
+  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml -n
+
+  $ sf sfpc combine -f package1.xml -f package2.xml --dry-run --json
+
+FLAG DESCRIPTIONS
+  -v, --api-version=<value>  Sets the API version to use in the combined package.xml.
+
+    Override the api version used for api requests made by this command
 ```
 
-**Examples**
-
-```bash
-# Two files → package.xml (overwrites the input)
-sf sfpc combine -f package.xml -f package2.xml -c package.xml
-
-# Files + directory
-sf sfpc combine -f package1.xml -f package2.xml -d "test/sample_dir" -c package.xml
-
-# Pin API version
-sf sfpc combine -f package1.xml -f package2.xml -v "62.0" -c package.xml
-
-# No version in output
-sf sfpc combine -f package1.xml -f package2.xml -n -c package.xml
-
-# Preview only, no file written
-sf sfpc combine -f package1.xml -f package2.xml --dry-run
-
-# Add --json for full stats
-sf sfpc combine -f package1.xml -f package2.xml --json
-
-{
-  "status": 0,
-  "result": {
-    "path": null,
-    "dryRun": true,
-    "filesProcessed": 3,
-    "types": 3,
-    "members": 4,
-    "duplicatesRemoved": 1,
-    "duplicates": [
-      { "type": "CustomObject", "member": "Account", "files": ["package1.xml", "package2.xml"] }
-    ],
-    "membersByType": { "CustomLabel": 1, "CustomObject": 2, "StandardValueSet": 1 },
-    "apiVersion": "59.0"
-  },
-  "warnings": []
-}
-```
+_See code: [src/commands/sfpc/combine.ts](https://github.com/mcarvin8/sf-package-combiner/blob/v4.0.3/src/commands/sfpc/combine.ts)_
+<!-- commandsstop -->
 
 ---
 
