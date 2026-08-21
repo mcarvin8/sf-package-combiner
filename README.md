@@ -2,6 +2,7 @@
 
 [![NPM](https://img.shields.io/npm/v/sf-package-combiner.svg?label=sf-package-combiner)](https://www.npmjs.com/package/sf-package-combiner)
 [![Downloads/week](https://img.shields.io/npm/dw/sf-package-combiner.svg)](https://npmjs.org/package/sf-package-combiner)
+[![GitHub Marketplace](https://img.shields.io/badge/marketplace-sf--package--combiner-blue?logo=github)](https://github.com/marketplace/actions/sf-package-combiner)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/mcarvin8/sf-package-combiner/refs/heads/main/LICENSE.md)
 [![Maintainability](https://qlty.sh/badges/c16e960e-68ce-4dc9-b0d1-47116b0b04da/maintainability.svg)](https://qlty.sh/gh/mcarvin8/projects/sf-package-combiner)
 [![codecov](https://codecov.io/gh/mcarvin8/sf-package-combiner/graph/badge.svg?token=7YH0L48X3E)](https://codecov.io/gh/mcarvin8/sf-package-combiner)
@@ -53,7 +54,7 @@ Mix files and directories: use `-f` for specific files, `-d` for directories con
 
 ## GitHub Action
 
-For GitHub Actions, this is also available as a native Action — no `sf` CLI or plugin install required:
+For GitHub Actions, this is also available as a [native Action](https://github.com/marketplace/actions/sf-package-combiner) - no `sf` CLI or plugin install required:
 
 ```yaml
 - name: Combine packages
