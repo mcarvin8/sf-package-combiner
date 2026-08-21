@@ -1,6 +1,7 @@
 export default {
   entry: [
     'src/commands/sfpc/*.ts',
+    'src/action/*.ts',
     'bin/dev.js',
     'bin/run.js',
     'scripts/**/*.{ts,mjs}',

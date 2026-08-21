@@ -1,0 +1,144 @@
+# Manual smoke test: exercises the Action end to end on real GitHub Actions
+# infra using the repo's own test/samples fixtures.
+#
+# Two sources, deliberately not the same:
+# - pull_request: uses `./` (this checkout's actual action.yml/dist/action) -
+#   validates what's about to be merged before it ever reaches @v4.
+# - workflow_dispatch: uses `@v4` (the live published tag) - an on-demand
+#   check that what's actually public still works, run manually post-release.
+name: Smoke test (published Action)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/smoke-test-action.yml'
+      - 'action.yml'
+      - 'dist/action/**'
+      - 'src/action/**'
+      - 'src/core/**'
+      - 'src/utils/**'
+
+permissions:
+  contents: read
+
+jobs:
+  success-path-local:
+    name: Success path (local checkout)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Combine packages
+        id: combine
+        uses: ./
+        with:
+          package-file: |
+            test/samples/package-account-only.xml
+            test/samples/package-mixed-types.xml
+          combined-package: combined.xml
+
+      - name: Show outputs and report
+        run: |
+          echo "combined-package-path: ${{ steps.combine.outputs.combined-package-path }}"
+          echo "types: ${{ steps.combine.outputs.types }}"
+          echo "members: ${{ steps.combine.outputs.members }}"
+          echo "duplicates-removed: ${{ steps.combine.outputs.duplicates-removed }}"
+          echo "api-version: ${{ steps.combine.outputs.api-version }}"
+          echo "---"
+          cat combined.xml
+
+  fail-on-empty-failure-path-local:
+    name: fail-on-empty failure path (local checkout)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Combine packages (expected to fail on an empty result)
+        id: combine
+        continue-on-error: true
+        uses: ./
+        with:
+          package-file: test/samples/invalid-wrong-tag.xml
+          combined-package: combined.xml
+          fail-on-empty: 'true'
+
+      - name: Confirm the step actually failed
+        run: |
+          if [ "${{ steps.combine.outcome }}" != "failure" ]; then
+            echo "Expected the fail-on-empty step to fail (outcome was '${{ steps.combine.outcome }}')."
+            exit 1
+          fi
+          echo "Confirmed: fail-on-empty correctly failed the step."
+
+      - name: Confirm outputs are still set despite the failure
+        run: |
+          if [ -z "${{ steps.combine.outputs.warnings }}" ]; then
+            echo "Expected warnings to still be set on a fail-on-empty failure."
+            exit 1
+          fi
+          echo "warnings: ${{ steps.combine.outputs.warnings }}"
+
+  success-path-published:
+    name: Success path (published @v4)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Combine packages
+        id: combine
+        uses: mcarvin8/sf-package-combiner@v4
+        with:
+          package-file: |
+            test/samples/package-account-only.xml
+            test/samples/package-mixed-types.xml
+          combined-package: combined.xml
+
+      - name: Show outputs and report
+        run: |
+          echo "combined-package-path: ${{ steps.combine.outputs.combined-package-path }}"
+          echo "types: ${{ steps.combine.outputs.types }}"
+          echo "members: ${{ steps.combine.outputs.members }}"
+          echo "duplicates-removed: ${{ steps.combine.outputs.duplicates-removed }}"
+          echo "api-version: ${{ steps.combine.outputs.api-version }}"
+          echo "---"
+          cat combined.xml
+
+  fail-on-empty-failure-path-published:
+    name: fail-on-empty failure path (published @v4)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Combine packages (expected to fail on an empty result)
+        id: combine
+        continue-on-error: true
+        uses: mcarvin8/sf-package-combiner@v4
+        with:
+          package-file: test/samples/invalid-wrong-tag.xml
+          combined-package: combined.xml
+          fail-on-empty: 'true'
+
+      - name: Confirm the step actually failed
+        run: |
+          if [ "${{ steps.combine.outcome }}" != "failure" ]; then
+            echo "Expected the fail-on-empty step to fail (outcome was '${{ steps.combine.outcome }}')."
+            exit 1
+          fi
+          echo "Confirmed: fail-on-empty correctly failed the step."
+
+      - name: Confirm outputs are still set despite the failure
+        run: |
+          if [ -z "${{ steps.combine.outputs.warnings }}" ]; then
+            echo "Expected warnings to still be set on a fail-on-empty failure."
+            exit 1
+          fi
+          echo "warnings: ${{ steps.combine.outputs.warnings }}"

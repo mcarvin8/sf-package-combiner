@@ -7,7 +7,7 @@
 [![codecov](https://codecov.io/gh/mcarvin8/sf-package-combiner/graph/badge.svg?token=7YH0L48X3E)](https://codecov.io/gh/mcarvin8/sf-package-combiner)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fmcarvin8%2Fsf-package-combiner%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/mcarvin8/sf-package-combiner/main)
 
-Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipelines to combine sfdx-git-delta output, manual lists, or other tool-generated manifests before a single `sf project deploy start`.
+Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipelines to combine sfdx-git-delta output, manual lists, or other tool-generated manifests before a single `sf project deploy start`. Available as a **Salesforce CLI plugin** for any provider, and as a **native GitHub Action** for GitHub Actions users who want to skip installing the CLI.
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -15,6 +15,7 @@ Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipe
 
   - [Requirements](#requirements)
   - [Quick start](#quick-start)
+  - [GitHub Action](#github-action)
   - [Command](#command)
     - [`sf sfpc combine`](#sf-sfpc-combine)
   - [How it works](#how-it-works)
@@ -47,6 +48,63 @@ sf project deploy start -x package.xml
 ```
 
 Mix files and directories: use `-f` for specific files, `-d` for directories containing `package.xml` files.
+
+---
+
+## GitHub Action
+
+For GitHub Actions, this is also available as a native Action — no `sf` CLI or plugin install required:
+
+```yaml
+- name: Combine packages
+  uses: mcarvin8/sf-package-combiner@v4
+  with:
+    package-file: |
+      package1.xml
+      package2.xml
+    combined-package: package.xml
+```
+
+### Inputs
+
+| Input               | Description                                                                     | Required | Default        |
+| -------------------- | -------------------------------------------------------------------------------- | -------- | -------------- |
+| `package-file`        | Path to a `package.xml` file to combine, one per line.                           | No       |                 |
+| `directory`           | Directory to look for `package.xml` files in, one per line.                      | No       |                 |
+| `combined-package`     | Path to the combined `package.xml` that will be created by this action.          | No       | `package.xml`   |
+| `api-version`         | API version to use in the combined `package.xml`. Defaults to the highest version found across the input manifests. | No       |                 |
+| `no-api-version`       | Explicitly omit the API version in the combined `package.xml`.                   | No       | `false`         |
+| `dry-run`             | Preview the combined package summary without writing an output file.             | No       | `false`         |
+| `fail-on-empty`        | Fail the action if the combined `package.xml` has no `<types>` (e.g. every input was invalid or empty). | No       | `false`         |
+
+### Outputs
+
+| Output                | Description                                                          |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `combined-package-path` | Path to the combined `package.xml` (empty on a dry run).             |
+| `files-processed`      | Number of input `package.xml` files processed.                       |
+| `types`                | Number of distinct metadata types in the combined package.           |
+| `members`              | Number of members in the combined package.                           |
+| `duplicates-removed`    | Number of duplicate members removed while combining.                 |
+| `api-version`          | API version used in the combined `package.xml` (empty when omitted). |
+| `warnings`             | Newline-separated list of warnings emitted while combining, if any.  |
+
+### Example: fail the build on an empty combined package
+
+```yaml
+- name: Combine packages
+  id: combine
+  uses: mcarvin8/sf-package-combiner@v4
+  with:
+    package-file: |
+      package1.xml
+      package2.xml
+    directory: manifests/
+    fail-on-empty: 'true'
+
+- name: Deploy combined manifest
+  run: sf project deploy start -x "${{ steps.combine.outputs.combined-package-path }}"
+```
 
 ---
 
