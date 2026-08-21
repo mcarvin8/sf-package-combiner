@@ -280,6 +280,16 @@ describe('sfpc combine', () => {
     expect(result.warnings.join('\n')).toContain(`Invalid or empty package.xml: ${invalidPackage1}. boom-string-error`);
   });
 
+  it('round-trips XML entities and dot-notation custom field members', async () => {
+    const specialCharsPackage = resolve('test/samples/package-special-chars.xml');
+    await mergePackageXmlFiles([specialCharsPackage], outputPackage, null, false);
+
+    const output = await readFile(outputPackage, 'utf-8');
+    expect(output).toContain('<members>Account.Rating__c</members>');
+    expect(output).toContain('<members>Account.Sales_Region__c</members>');
+    expect(output).toContain('<members>Sales &amp; Marketing</members>');
+  });
+
   it('sorts non-CustomObject types alphabetically (branch coverage for sortTypesWithCustomObjectFirst)', async () => {
     const packageNonObjectTypes = resolve('test/samples/package-non-object-types.xml');
     await mergePackageXmlFiles([packageNonObjectTypes], outputPackage, null, false);

@@ -5,8 +5,7 @@
   "dependencies": {
     "@oclif/core": "4.13.5",
     "@salesforce/core": "9.1.2",
-    "@salesforce/sf-plugins-core": "13.0.0",
-    "txml": "6.0.1"
+    "@salesforce/sf-plugins-core": "13.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.9",
