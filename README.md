@@ -157,7 +157,7 @@ FLAG DESCRIPTIONS
     Override the api version used for api requests made by this command
 ```
 
-_See code: [src/commands/sfpc/combine.ts](https://github.com/mcarvin8/sf-package-combiner/blob/v4.0.3/src/commands/sfpc/combine.ts)_
+_See code: [src/commands/sfpc/combine.ts](https://github.com/mcarvin8/sf-package-combiner/blob/v4.1.0/src/commands/sfpc/combine.ts)_
 <!-- commandsstop -->
 
 ---
