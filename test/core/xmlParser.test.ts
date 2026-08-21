@@ -124,4 +124,52 @@ describe('parseXml', () => {
   it('throws on a missing element name', () => {
     expect(() => parseXml('<>')).toThrow(/expected element name/);
   });
+
+  it('throws when a tag name runs to the end of input with no closing bracket', () => {
+    expect(() => parseXml('<foo')).toThrow(/unexpected end of input inside a tag/);
+  });
+
+  it('throws when an attribute name runs to the end of input with no "="', () => {
+    expect(() => parseXml('<Package xmlns')).toThrow(/expected "=" in attribute/);
+  });
+
+  it('skips whitespace around "=" in an attribute', () => {
+    const roots = parseXml('<Package xmlns = "http://soap.sforce.com/2006/04/metadata" ></Package>');
+    expect(roots).toEqual([{ tagName: 'Package', children: [] }]);
+  });
+
+  it('parses a single-quoted attribute value', () => {
+    const roots = parseXml("<Package xmlns='http://soap.sforce.com/2006/04/metadata'></Package>");
+    expect(roots).toEqual([{ tagName: 'Package', children: [] }]);
+  });
+
+  it('does not mistake a "-->" sequence inside a preceding comment for the next one\'s closing', () => {
+    const roots = parseXml('<Package><!--x--><!--y--><version>1</version></Package>');
+    expect(roots).toEqual([
+      {
+        tagName: 'Package',
+        children: [{ tagName: 'version', children: ['1'] }],
+      },
+    ]);
+  });
+
+  it('does not mistake a "?>" sequence inside a preceding declaration for the next one\'s closing', () => {
+    const roots = parseXml('<?xml version="1.0"?><?xml version="1.0"?><Package></Package>');
+    expect(roots).toEqual([{ tagName: 'Package', children: [] }]);
+  });
+
+  it('trims whitespace inside a closing tag', () => {
+    const roots = parseXml('<Package></Package >');
+    expect(roots).toEqual([{ tagName: 'Package', children: [] }]);
+  });
+
+  it('decodes the &apos; entity', () => {
+    const roots = parseXml('<members>It&apos;s</members>');
+    expect(roots).toEqual([{ tagName: 'members', children: ["It's"] }]);
+  });
+
+  it('decodes the &lt;, &gt;, and &quot; entities', () => {
+    const roots = parseXml('<members>&lt;a&gt; says &quot;hi&quot;</members>');
+    expect(roots).toEqual([{ tagName: 'members', children: ['<a> says "hi"'] }]);
+  });
 });

@@ -31,11 +31,13 @@ export function parseXml(xml: string): XmlNode[] {
   let i = 0;
 
   function skipWhitespace(): void {
+    // Stryker disable next-line ConditionalExpression,EqualityOperator -- at i===length, xml[i] is undefined and /\s/.test(undefined) is false, so the loop always stops there regardless of the bound check
     while (i < length && /\s/.test(xml[i])) i++;
   }
 
   function parseName(): string {
     const start = i;
+    // Stryker disable next-line EqualityOperator -- an off-by-one bound (i<=length) only lets the loop run one extra step to length+1; xml.slice clamps beyond the string end and every later bound check uses >=, so the extra step is unobservable
     while (i < length && !/[\s/>]/.test(xml[i])) i++;
     if (i === start) {
       throw new Error(`expected element name at position ${i}`);
@@ -52,6 +54,7 @@ export function parseXml(xml: string): XmlNode[] {
       const ch = xml[i];
       if (ch === '>' || ch === '/') return;
 
+      // Stryker disable next-line EqualityOperator -- same off-by-one equivalence as parseName's loop: the extra step to length+1 is unobservable
       while (i < length && !/[\s=/>]/.test(xml[i])) i++;
       skipWhitespace();
       if (xml[i] !== '=') {
@@ -133,6 +136,7 @@ export function parseXml(xml: string): XmlNode[] {
   }
 
   const roots: XmlNode[] = [];
+  // Stryker disable next-line EqualityOperator -- an off-by-one bound (i<=length) just defers the loop exit from the while-condition to the `i >= length` break on the next iteration; the outcome is identical
   while (i < length) {
     skipWhitespace();
     if (i >= length) break;
