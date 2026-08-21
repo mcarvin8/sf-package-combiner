@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/mcarvin8/sf-package-combiner/compare/v4.0.3...v4.1.0) (2026-08-21)
+
+
+### Features
+
+* **parser:** replace txml with an in-house XML parser ([#206](https://github.com/mcarvin8/sf-package-combiner/issues/206)) ([5bf818c](https://github.com/mcarvin8/sf-package-combiner/commit/5bf818cfb69a07a5689955788d57313708556d4d))
+* publish as a native GitHub Action ([#208](https://github.com/mcarvin8/sf-package-combiner/issues/208)) ([1f8938d](https://github.com/mcarvin8/sf-package-combiner/commit/1f8938d5b3b0a28666974a6b21701d19eccddb14))
+
 ## [4.0.3](https://github.com/mcarvin8/sf-package-combiner/compare/v4.0.2...v4.0.3) (2026-08-19)
 
 
