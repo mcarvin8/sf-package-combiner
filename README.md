@@ -14,11 +14,8 @@ Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipe
 <details>
   <summary>Table of Contents</summary>
 
-  - [Requirements](#requirements)
-  - [Quick start](#quick-start)
+  - [Salesforce CLI](#salesforce-cli)
   - [GitHub Action](#github-action)
-  - [Command](#command)
-    - [`sf sfpc combine`](#sf-sfpc-combine)
   - [How it works](#how-it-works)
   - [Example](#example)
   - [Invalid Manifests](#invalid-manifests)
@@ -28,14 +25,14 @@ Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipe
 
 ---
 
-## Requirements
+## Salesforce CLI
+
+### Requirements
 
 - Salesforce CLI (`sf`)
 - Node.js **22.19 or later**
 
----
-
-## Quick start
+### Quick start
 
 ```bash
 # Install
@@ -49,6 +46,58 @@ sf project deploy start -x package.xml
 ```
 
 Mix files and directories: use `-f` for specific files, `-d` for directories containing `package.xml` files.
+
+### CLI Command Reference
+
+<!-- commands -->
+* [`sf sfpc combine`](#sf-sfpc-combine)
+
+## `sf sfpc combine`
+
+Combine multiple package.xml files together.
+
+```
+USAGE
+  $ sf sfpc combine [--json] [--flags-dir <value>] [-f <value>...] [-c <value>] [-d <value>...] [-v <value>] [-n]
+    [--dry-run]
+
+FLAGS
+  -c, --combined-package=<value>  [default: package.xml] Combined package file path.
+  -d, --directory=<value>...      Directory to look for package.xml files in.
+  -f, --package-file=<value>...   Path to a package.xml file.
+  -n, --no-api-version            Explicitly omit the API version in the combined package.xml.
+  -v, --api-version=<value>       Sets the API version to use in the combined package.xml.
+      --dry-run                   Preview the combined package summary (types, members, duplicates) without writing an
+                                  output file.
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+DESCRIPTION
+  Combine multiple package.xml files together.
+
+  Read multiple package.xml files, then parse them and combine them to create 1 final package for deployments.
+
+EXAMPLES
+  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml
+
+  $ sf sfpc combine -f package1.xml -d "test/directory" -c package.xml
+
+  $ sf sfpc combine -f package1.xml -f package2.xml -v 60.0 -c package.xml
+
+  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml -n
+
+  $ sf sfpc combine -f package1.xml -f package2.xml --dry-run --json
+
+FLAG DESCRIPTIONS
+  -v, --api-version=<value>  Sets the API version to use in the combined package.xml.
+
+    Override the api version used for api requests made by this command
+```
+
+_See code: [src/commands/sfpc/combine.ts](https://github.com/mcarvin8/sf-package-combiner/blob/v4.1.0/src/commands/sfpc/combine.ts)_
+<!-- commandsstop -->
 
 ---
 
@@ -109,60 +158,6 @@ For GitHub Actions, this is also available as a [native Action](https://github.c
 
 ---
 
-## Command
-
-<!-- commands -->
-* [`sf sfpc combine`](#sf-sfpc-combine)
-
-## `sf sfpc combine`
-
-Combine multiple package.xml files together.
-
-```
-USAGE
-  $ sf sfpc combine [--json] [--flags-dir <value>] [-f <value>...] [-c <value>] [-d <value>...] [-v <value>] [-n]
-    [--dry-run]
-
-FLAGS
-  -c, --combined-package=<value>  [default: package.xml] Combined package file path.
-  -d, --directory=<value>...      Directory to look for package.xml files in.
-  -f, --package-file=<value>...   Path to a package.xml file.
-  -n, --no-api-version            Explicitly omit the API version in the combined package.xml.
-  -v, --api-version=<value>       Sets the API version to use in the combined package.xml.
-      --dry-run                   Preview the combined package summary (types, members, duplicates) without writing an
-                                  output file.
-
-GLOBAL FLAGS
-  --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as json.
-
-DESCRIPTION
-  Combine multiple package.xml files together.
-
-  Read multiple package.xml files, then parse them and combine them to create 1 final package for deployments.
-
-EXAMPLES
-  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml
-
-  $ sf sfpc combine -f package1.xml -d "test/directory" -c package.xml
-
-  $ sf sfpc combine -f package1.xml -f package2.xml -v 60.0 -c package.xml
-
-  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml -n
-
-  $ sf sfpc combine -f package1.xml -f package2.xml --dry-run --json
-
-FLAG DESCRIPTIONS
-  -v, --api-version=<value>  Sets the API version to use in the combined package.xml.
-
-    Override the api version used for api requests made by this command
-```
-
-_See code: [src/commands/sfpc/combine.ts](https://github.com/mcarvin8/sf-package-combiner/blob/v4.1.0/src/commands/sfpc/combine.ts)_
-<!-- commandsstop -->
-
----
-
 ## How it works
 
 - **Metadata types** — `<name>` values are deduplicated case-insensitively (`CustomObject` and `customobject` merge into one `<types>` block, using the casing first encountered). They are **not** validated or normalized against Salesforce's metadata registry — see [Invalid Manifests](#invalid-manifests).
@@ -200,7 +195,7 @@ _See code: [src/commands/sfpc/combine.ts](https://github.com/mcarvin8/sf-package
 </Package>
 ```
 
-**Command**
+**CLI Command**
 
 ```bash
 sf sfpc combine -f "package1.xml" -f "package2.xml" -c "package.xml"
