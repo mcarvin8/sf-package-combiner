@@ -11,147 +11,181 @@ const NAMED_ENTITIES: Record<string, string> = {
   apos: "'",
 };
 
+function decodeNumericEntity(entity: string): string {
+  const codePoint = entity[1] === 'x' ? Number.parseInt(entity.slice(2), 16) : Number.parseInt(entity.slice(1), 10);
+  return String.fromCodePoint(codePoint);
+}
+
 function decodeEntities(text: string): string {
-  return text.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (match, entity: string) => {
-    if (entity.startsWith('#')) {
-      const codePoint = entity[1] === 'x' ? Number.parseInt(entity.slice(2), 16) : Number.parseInt(entity.slice(1), 10);
-      return String.fromCodePoint(codePoint);
-    }
-    return NAMED_ENTITIES[entity] ?? match;
-  });
+  return text.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (match, entity: string) =>
+    entity.startsWith('#') ? decodeNumericEntity(entity) : (NAMED_ENTITIES[entity] ?? match),
+  );
 }
 
 /**
  * Minimal recursive-descent XML parser scoped to Salesforce package.xml manifests:
  * elements, attributes (skipped -- unused by callers), text, entities, comments,
  * and the leading <?xml ?> declaration. No DTD/CDATA support since manifests don't use them.
+ *
+ * Implemented as flat methods (not nested closures) so each parsing concern is its own unit.
  */
-export function parseXml(xml: string): XmlNode[] {
-  const length = xml.length;
-  let i = 0;
+class XmlCursor {
+  private i = 0;
+  private readonly length: number;
 
-  function skipWhitespace(): void {
+  constructor(private readonly xml: string) {
+    this.length = xml.length;
+  }
+
+  // Stryker disable next-line EqualityOperator -- an off-by-one bound (i<=length) just defers the loop exit from the while-condition to this same check on the next iteration; the outcome is identical
+  private atEnd(): boolean {
+    return this.i >= this.length;
+  }
+
+  private startsWith(token: string): boolean {
+    return this.xml.startsWith(token, this.i);
+  }
+
+  private skipWhitespace(): void {
     // Stryker disable next-line ConditionalExpression,EqualityOperator -- at i===length, xml[i] is undefined and /\s/.test(undefined) is false, so the loop always stops there regardless of the bound check
-    while (i < length && /\s/.test(xml[i])) i++;
+    while (this.i < this.length && /\s/.test(this.xml[this.i])) this.i++;
   }
 
-  function parseName(): string {
-    const start = i;
+  private parseName(): string {
+    const start = this.i;
     // Stryker disable next-line EqualityOperator -- an off-by-one bound (i<=length) only lets the loop run one extra step to length+1; xml.slice clamps beyond the string end and every later bound check uses >=, so the extra step is unobservable
-    while (i < length && !/[\s/>]/.test(xml[i])) i++;
-    if (i === start) {
-      throw new Error(`expected element name at position ${i}`);
+    while (this.i < this.length && !/[\s/>]/.test(this.xml[this.i])) this.i++;
+    if (this.i === start) {
+      throw new Error(`expected element name at position ${this.i}`);
     }
-    return xml.slice(start, i);
+    return this.xml.slice(start, this.i);
   }
 
-  function skipAttributes(): void {
+  private parseAttribute(): void {
+    while (this.i < this.length && !/[\s=/>]/.test(this.xml[this.i])) this.i++;
+    this.skipWhitespace();
+    if (this.xml[this.i] !== '=') {
+      throw new Error(`expected "=" in attribute at position ${this.i}`);
+    }
+    this.i++;
+    this.skipWhitespace();
+    const quote = this.xml[this.i];
+    if (quote !== '"' && quote !== "'") {
+      throw new Error(`expected quoted attribute value at position ${this.i}`);
+    }
+    this.i++;
+    const end = this.xml.indexOf(quote, this.i);
+    if (end === -1) {
+      throw new Error('unterminated attribute value');
+    }
+    this.i = end + 1;
+  }
+
+  private skipAttributes(): void {
     while (true) {
-      skipWhitespace();
-      if (i >= length) {
+      this.skipWhitespace();
+      if (this.atEnd()) {
         throw new Error('unexpected end of input inside a tag');
       }
-      const ch = xml[i];
+      const ch = this.xml[this.i];
       if (ch === '>' || ch === '/') return;
-
-      // Stryker disable next-line EqualityOperator -- same off-by-one equivalence as parseName's loop: the extra step to length+1 is unobservable
-      while (i < length && !/[\s=/>]/.test(xml[i])) i++;
-      skipWhitespace();
-      if (xml[i] !== '=') {
-        throw new Error(`expected "=" in attribute at position ${i}`);
-      }
-      i++;
-      skipWhitespace();
-      const quote = xml[i];
-      if (quote !== '"' && quote !== "'") {
-        throw new Error(`expected quoted attribute value at position ${i}`);
-      }
-      i++;
-      const end = xml.indexOf(quote, i);
-      if (end === -1) {
-        throw new Error('unterminated attribute value');
-      }
-      i = end + 1;
+      this.parseAttribute();
     }
   }
 
-  function skipComment(): void {
-    const end = xml.indexOf('-->', i + 4);
+  private skipComment(): void {
+    const end = this.xml.indexOf('-->', this.i + 4);
     if (end === -1) {
       throw new Error('unterminated comment');
     }
-    i = end + 3;
+    this.i = end + 3;
   }
 
-  function skipDeclaration(): void {
-    const end = xml.indexOf('?>', i + 2);
+  private skipDeclaration(): void {
+    const end = this.xml.indexOf('?>', this.i + 2);
     if (end === -1) {
       throw new Error('unterminated processing instruction');
     }
-    i = end + 2;
+    this.i = end + 2;
   }
 
-  function parseElement(): XmlNode {
-    i++; // consume '<'
-    const tagName = parseName();
-    skipAttributes();
-
-    if (xml[i] === '/') {
-      i += 2; // consume '/>'
-      return { tagName, children: [] };
+  private parseClosingTag(tagName: string): void {
+    const closeEnd = this.xml.indexOf('>', this.i + 2);
+    if (closeEnd === -1) {
+      throw new Error(`unterminated closing tag for <${tagName}>`);
     }
-    i++; // consume '>'
+    const closeName = this.xml.slice(this.i + 2, closeEnd).trim();
+    if (closeName !== tagName) {
+      throw new Error(`mismatched closing tag </${closeName}> for <${tagName}>`);
+    }
+    this.i = closeEnd + 1;
+  }
 
+  private parseTextNode(children: Array<XmlNode | string>): void {
+    const nextTag = this.xml.indexOf('<', this.i);
+    const textEnd = nextTag === -1 ? this.length : nextTag;
+    children.push(decodeEntities(this.xml.slice(this.i, textEnd)));
+    this.i = textEnd;
+  }
+
+  private parseChildren(tagName: string): Array<XmlNode | string> {
     const children: Array<XmlNode | string> = [];
     while (true) {
-      if (i >= length) {
+      if (this.atEnd()) {
         throw new Error(`unterminated element <${tagName}>`);
       }
-      if (xml.startsWith('<!--', i)) {
-        skipComment();
+      if (this.startsWith('<!--')) {
+        this.skipComment();
         continue;
       }
-      if (xml.startsWith('</', i)) {
-        const closeEnd = xml.indexOf('>', i + 2);
-        if (closeEnd === -1) {
-          throw new Error(`unterminated closing tag for <${tagName}>`);
-        }
-        const closeName = xml.slice(i + 2, closeEnd).trim();
-        if (closeName !== tagName) {
-          throw new Error(`mismatched closing tag </${closeName}> for <${tagName}>`);
-        }
-        i = closeEnd + 1;
-        return { tagName, children };
+      if (this.startsWith('</')) {
+        this.parseClosingTag(tagName);
+        return children;
       }
-      if (xml[i] === '<') {
-        children.push(parseElement());
+      if (this.xml[this.i] === '<') {
+        children.push(this.parseElement());
         continue;
       }
-
-      const nextTag = xml.indexOf('<', i);
-      const textEnd = nextTag === -1 ? length : nextTag;
-      children.push(decodeEntities(xml.slice(i, textEnd)));
-      i = textEnd;
+      this.parseTextNode(children);
     }
   }
 
-  const roots: XmlNode[] = [];
-  // Stryker disable next-line EqualityOperator -- an off-by-one bound (i<=length) just defers the loop exit from the while-condition to the `i >= length` break on the next iteration; the outcome is identical
-  while (i < length) {
-    skipWhitespace();
-    if (i >= length) break;
-    if (xml.startsWith('<!--', i)) {
-      skipComment();
-      continue;
+  private parseElement(): XmlNode {
+    this.i++; // consume '<'
+    const tagName = this.parseName();
+    this.skipAttributes();
+
+    if (this.xml[this.i] === '/') {
+      this.i += 2; // consume '/>'
+      return { tagName, children: [] };
     }
-    if (xml.startsWith('<?', i)) {
-      skipDeclaration();
-      continue;
-    }
-    if (xml[i] !== '<') {
-      throw new Error(`unexpected content outside the root element at position ${i}`);
-    }
-    roots.push(parseElement());
+    this.i++; // consume '>'
+
+    return { tagName, children: this.parseChildren(tagName) };
   }
-  return roots;
+
+  parseDocument(): XmlNode[] {
+    const roots: XmlNode[] = [];
+    while (!this.atEnd()) {
+      this.skipWhitespace();
+      if (this.atEnd()) break;
+      if (this.startsWith('<!--')) {
+        this.skipComment();
+        continue;
+      }
+      if (this.startsWith('<?')) {
+        this.skipDeclaration();
+        continue;
+      }
+      if (this.xml[this.i] !== '<') {
+        throw new Error(`unexpected content outside the root element at position ${this.i}`);
+      }
+      roots.push(this.parseElement());
+    }
+    return roots;
+  }
+}
+
+export function parseXml(xml: string): XmlNode[] {
+  return new XmlCursor(xml).parseDocument();
 }
