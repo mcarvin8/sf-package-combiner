@@ -3,9 +3,100 @@ import { sfXmlns } from '../utils/constants.js';
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { mapLimit } from '../utils/mapLimit.js';
 import { determineApiVersion } from './determineApiVersion.js';
-import { parseManifestXml } from './parseManifest.js';
+import { ParsedManifestType, parseManifestXml } from './parseManifest.js';
 import { MergePackageResult, PackageManifestObject } from './types.js';
 import { writePackage } from './writePackage.js';
+
+/**
+ * Mutable state shared across the concurrent per-file processing in `mergePackageXmlFiles`.
+ * Bundled into one object so each processing step is its own top-level function rather than
+ * a closure nested inside `mergePackageXmlFiles` -- keeps that function's own complexity low.
+ */
+type MergeState = {
+  warnings: string[];
+  apiVersions: string[];
+  // type name (lowercased) -> member -> source files that contained it
+  origins: Map<string, Map<string, string[]>>;
+  // type name (lowercased) -> the casing first seen for it, used for output/reporting
+  canonicalTypeNames: Map<string, string>;
+  // type name (lowercased) -> index (in `files`) that contributed the current canonical casing.
+  // mapLimit processes files concurrently, so completion order doesn't match `files` order --
+  // track the source index explicitly so the canonical casing is deterministic regardless of
+  // which file's read/parse happens to finish first.
+  canonicalTypeSourceIndex: Map<string, number>;
+};
+
+function createMergeState(): MergeState {
+  return {
+    warnings: [],
+    apiVersions: [],
+    origins: new Map(),
+    canonicalTypeNames: new Map(),
+    canonicalTypeSourceIndex: new Map(),
+  };
+}
+
+function recordManifestType(type: ParsedManifestType, filePath: string, index: number, state: MergeState): void {
+  // Stryker disable next-line MethodExpression -- toUpperCase() would group identically; metadata type names are ASCII, so casing of the internal grouping key is unobservable
+  const typeKey = type.name.toLowerCase();
+  if (isEarlierSource(index, state.canonicalTypeSourceIndex.get(typeKey))) {
+    state.canonicalTypeNames.set(typeKey, type.name);
+    state.canonicalTypeSourceIndex.set(typeKey, index);
+  }
+  const members = state.origins.get(typeKey) ?? new Map<string, string[]>();
+  state.origins.set(typeKey, members);
+  for (const memberName of type.members) {
+    const sourceFiles = members.get(memberName) ?? [];
+    members.set(memberName, sourceFiles);
+    sourceFiles.push(filePath);
+  }
+}
+
+function recordApiVersion(version: string | null, apiVersions: string[]): void {
+  // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
+  if (version && !apiVersions.includes(version)) {
+    apiVersions.push(version);
+  }
+}
+
+async function processManifestFile(filePath: string, index: number, state: MergeState): Promise<void> {
+  try {
+    const xml = await readFile(filePath, 'utf-8');
+    const manifest = parseManifestXml(xml);
+    if (manifest.types.length === 0) {
+      state.warnings.push(`Invalid or empty package.xml: ${filePath}`);
+      return;
+    }
+
+    for (const type of manifest.types) {
+      recordManifestType(type, filePath, index, state);
+    }
+    recordApiVersion(manifest.version, state.apiVersions);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    state.warnings.push(`Invalid or empty package.xml: ${filePath}. ${message}`);
+  }
+}
+
+function buildPackageContents(
+  origins: Map<string, Map<string, string[]>>,
+  canonicalTypeNames: Map<string, string>,
+  version: string | undefined,
+): PackageManifestObject {
+  return {
+    Package: {
+      '@_xmlns': sfXmlns,
+      types: Array.from(origins.entries())
+        .map(([typeKey, members]) => ({
+          members: Array.from(members.keys()).sort((a, b) => a.localeCompare(b)),
+          // v8 ignore next -- canonicalTypeNames is always populated for every typeKey in origins (see isEarlierSource loop above), so this fallback is unreachable
+          name: canonicalTypeNames.get(typeKey) ?? typeKey,
+        }))
+        .sort(sortTypesWithCustomObjectFirst),
+      ...(version !== undefined ? { version } : {}),
+    },
+  };
+}
 
 export async function mergePackageXmlFiles(
   files: string[] | null,
@@ -14,84 +105,31 @@ export async function mergePackageXmlFiles(
   noApiVersion: boolean,
   dryRun = false,
 ): Promise<MergePackageResult> {
-  const warnings: string[] = [];
-  const apiVersions: string[] = [];
+  const state = createMergeState();
   const concurrencyLimit = getConcurrencyThreshold();
-  // type name (lowercased) -> member -> source files that contained it
-  const origins = new Map<string, Map<string, string[]>>();
-  // type name (lowercased) -> the casing first seen for it, used for output/reporting
-  const canonicalTypeNames = new Map<string, string>();
-  // type name (lowercased) -> index (in `files`) that contributed the current canonical casing.
-  // mapLimit processes files concurrently, so completion order doesn't match `files` order --
-  // track the source index explicitly so the canonical casing is deterministic regardless of
-  // which file's read/parse happens to finish first.
-  const canonicalTypeSourceIndex = new Map<string, number>();
 
   if (files) {
     await mapLimit(
       files.map((filePath, index) => ({ filePath, index })),
       concurrencyLimit,
-      async ({ filePath, index }) => {
-        try {
-          const xml = await readFile(filePath, 'utf-8');
-          const manifest = parseManifestXml(xml);
-          if (manifest.types.length === 0) {
-            warnings.push(`Invalid or empty package.xml: ${filePath}`);
-            return;
-          }
-
-          for (const type of manifest.types) {
-            // Stryker disable next-line MethodExpression -- toUpperCase() would group identically; metadata type names are ASCII, so casing of the internal grouping key is unobservable
-            const typeKey = type.name.toLowerCase();
-            if (isEarlierSource(index, canonicalTypeSourceIndex.get(typeKey))) {
-              canonicalTypeNames.set(typeKey, type.name);
-              canonicalTypeSourceIndex.set(typeKey, index);
-            }
-            const members = origins.get(typeKey) ?? new Map<string, string[]>();
-            origins.set(typeKey, members);
-            for (const memberName of type.members) {
-              const sourceFiles = members.get(memberName) ?? [];
-              members.set(memberName, sourceFiles);
-              sourceFiles.push(filePath);
-            }
-          }
-
-          const version = manifest.version;
-          // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
-          if (version && !apiVersions.includes(version)) {
-            apiVersions.push(version);
-          }
-        } catch (err) {
-          const message = err instanceof Error ? err.message : String(err);
-          warnings.push(`Invalid or empty package.xml: ${filePath}. ${message}`);
-        }
-      },
+      ({ filePath, index }) => processManifestFile(filePath, index, state),
     );
   }
 
-  const { duplicates, duplicatesRemoved, membersByType, totalMembers } = summarizeOrigins(origins, canonicalTypeNames);
-  const version = determineApiVersion(apiVersions, userApiVersion, noApiVersion);
+  const { duplicates, duplicatesRemoved, membersByType, totalMembers } = summarizeOrigins(
+    state.origins,
+    state.canonicalTypeNames,
+  );
+  const version = determineApiVersion(state.apiVersions, userApiVersion, noApiVersion);
 
   if (!dryRun) {
-    const packageContents: PackageManifestObject = {
-      Package: {
-        '@_xmlns': sfXmlns,
-        types: Array.from(origins.entries())
-          .map(([typeKey, members]) => ({
-            members: Array.from(members.keys()).sort((a, b) => a.localeCompare(b)),
-            // v8 ignore next -- canonicalTypeNames is always populated for every typeKey in origins (see isEarlierSource loop above), so this fallback is unreachable
-            name: canonicalTypeNames.get(typeKey) ?? typeKey,
-          }))
-          .sort(sortTypesWithCustomObjectFirst),
-        ...(version !== undefined ? { version } : {}),
-      },
-    };
+    const packageContents = buildPackageContents(state.origins, state.canonicalTypeNames, version);
     await writePackage(packageContents, combinedPackage);
   }
 
   return {
-    warnings,
-    types: origins.size,
+    warnings: state.warnings,
+    types: state.origins.size,
     members: totalMembers,
     duplicatesRemoved,
     duplicates,
