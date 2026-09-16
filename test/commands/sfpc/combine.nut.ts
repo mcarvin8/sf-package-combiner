@@ -56,7 +56,7 @@ describe('sfpc combine NUTs', () => {
 
   it('--fail-on-empty exits non-zero when the combined package.xml has no types.', () => {
     const command = `sfpc combine -f ${emptyPackage} -c ${outputPackage} --fail-on-empty`;
-    const output = execCmd(command, { ensureExitCode: 2 }).shellOutput.stderr;
+    const output = execCmd(command, { ensureExitCode: 1 }).shellOutput.stderr;
     expect(output).toContain('The combined package.xml has no <types> -- every input was invalid or empty.');
   });
 
