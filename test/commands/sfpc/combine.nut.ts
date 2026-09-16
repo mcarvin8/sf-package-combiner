@@ -12,6 +12,7 @@ describe('sfpc combine NUTs', () => {
   const package1 = resolve('test/samples/package-account-only.xml');
   const package2 = resolve('test/samples/package-mixed-types.xml');
   const package3 = resolve('test/samples/package-custom-label.xml');
+  const emptyPackage = resolve('test/samples/package-empty.xml');
   const outputPackage = resolve('package.xml');
   const baseline = resolve('test/samples/expected-combined.xml');
   const dryRunOutputPackage = resolve('dry-run-nut-output.xml');
@@ -51,5 +52,17 @@ describe('sfpc combine NUTs', () => {
     expect(jsonOutput?.result.filesProcessed).toBe(3);
     expect(jsonOutput?.result.duplicatesRemoved).toBe(1);
     expect(existsSync(dryRunOutputPackage)).toBe(false);
+  });
+
+  it('--fail-on-empty exits non-zero when the combined package.xml has no types.', () => {
+    const command = `sfpc combine -f ${emptyPackage} -c ${outputPackage} --fail-on-empty`;
+    const output = execCmd(command, { ensureExitCode: 1 }).shellOutput.stderr;
+    expect(output).toContain('The combined package.xml has no <types> -- every input was invalid or empty.');
+  });
+
+  it('--fail-on-empty does not fail when the combined package.xml has types.', () => {
+    const command = `sfpc combine -f ${package1} -c ${outputPackage} --fail-on-empty`;
+    const output = execCmd(command, { ensureExitCode: 0 }).shellOutput.stdout;
+    expect(output).toContain(`Combined package.xml written to: ${outputPackage}`);
   });
 });
