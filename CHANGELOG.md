@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/mcarvin8/sf-package-combiner/compare/v4.1.1...v4.2.0) (2026-09-16)
+
+
+### Features
+
+* add --fail-on-empty flag to sfpc combine CLI ([#212](https://github.com/mcarvin8/sf-package-combiner/issues/212)) ([2784868](https://github.com/mcarvin8/sf-package-combiner/commit/2784868770cd9342806807644801c0757115fc05))
+
 ## [4.1.1](https://github.com/mcarvin8/sf-package-combiner/compare/v4.1.0...v4.1.1) (2026-08-24)
 
 
