@@ -236,11 +236,11 @@ Files that don't match the expected structure, or have no `<types>`, are skipped
 Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. unexpected element <type> inside <Package>
 ```
 
-If every input is invalid or empty, the output will have no `<types>`. Use `--fail-on-empty` to guard against deploying an empty package instead of manually scanning the output:
+If every input is invalid or empty, the output will have no `<types>`. Use `--fail-on-empty` to guard against deploying an empty package:
 
 ```bash
-sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml" --fail-on-empty && \
-  sf project deploy start -x package.xml
+sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml" --fail-on-empty
+sf project deploy start -x package.xml
 ```
 
 ---
