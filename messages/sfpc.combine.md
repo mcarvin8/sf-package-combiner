@@ -13,6 +13,7 @@ Read multiple package.xml files, then parse them and combine them to create 1 fi
 - sf sfpc combine -f package1.xml -f package2.xml -v 60.0 -c package.xml
 - sf sfpc combine -f package1.xml -f package2.xml -c package.xml -n
 - sf sfpc combine -f package1.xml -f package2.xml --dry-run --json
+- sf sfpc combine -f package1.xml -f package2.xml -c package.xml --fail-on-empty
 
 # flags.package-file.summary
 
@@ -37,3 +38,7 @@ Explicitly omit the API version in the combined package.xml.
 # flags.dry-run.summary
 
 Preview the combined package summary (types, members, duplicates) without writing an output file.
+
+# flags.fail-on-empty.summary
+
+Fail the command if the combined package.xml has no <types> (e.g. every input was invalid or empty).

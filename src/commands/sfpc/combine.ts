@@ -1,4 +1,4 @@
-import { Messages } from '@salesforce/core';
+import { Messages, SfError } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 
 import { combinePackages } from '../../core/combinePackages.js';
@@ -43,6 +43,10 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
       summary: messages.getMessage('flags.dry-run.summary'),
       default: false,
     }),
+    'fail-on-empty': Flags.boolean({
+      summary: messages.getMessage('flags.fail-on-empty.summary'),
+      default: false,
+    }),
   };
 
   public async run(): Promise<SfpcCombineResult> {
@@ -59,6 +63,11 @@ export default class SfpcCombine extends SfCommand<SfpcCombineResult> {
     });
 
     this.logSummary(result);
+
+    if (flags['fail-on-empty'] && result.types === 0) {
+      throw new SfError('The combined package.xml has no <types> -- every input was invalid or empty.');
+    }
+
     return result;
   }
 

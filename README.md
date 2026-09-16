@@ -59,7 +59,7 @@ Combine multiple package.xml files together.
 ```
 USAGE
   $ sf sfpc combine [--json] [--flags-dir <value>] [-f <value>...] [-c <value>] [-d <value>...] [-v <value>] [-n]
-    [--dry-run]
+    [--dry-run] [--fail-on-empty]
 
 FLAGS
   -c, --combined-package=<value>  [default: package.xml] Combined package file path.
@@ -69,6 +69,8 @@ FLAGS
   -v, --api-version=<value>       Sets the API version to use in the combined package.xml.
       --dry-run                   Preview the combined package summary (types, members, duplicates) without writing an
                                   output file.
+      --fail-on-empty             Fail the command if the combined package.xml has no <types> (e.g. every input was
+                                  invalid or empty).
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -89,6 +91,8 @@ EXAMPLES
   $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml -n
 
   $ sf sfpc combine -f package1.xml -f package2.xml --dry-run --json
+
+  $ sf sfpc combine -f package1.xml -f package2.xml -c package.xml --fail-on-empty
 
 FLAG DESCRIPTIONS
   -v, --api-version=<value>  Sets the API version to use in the combined package.xml.
@@ -232,16 +236,11 @@ Files that don't match the expected structure, or have no `<types>`, are skipped
 Warning: Invalid or empty package.xml: .\test\samples\invalid2.xml. unexpected element <type> inside <Package>
 ```
 
-If every input is invalid or empty, the output will have no `<types>`. Guard against deploying an empty package:
+If every input is invalid or empty, the output will have no `<types>`. Use `--fail-on-empty` to guard against deploying an empty package instead of manually scanning the output:
 
 ```bash
-sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml"
-if grep -q '<types>' ./package.xml; then
-  echo "---- Deploying added and modified metadata ----"
+sf sfpc combine -f "package/package.xml" -f "package.xml" -c "package.xml" --fail-on-empty && \
   sf project deploy start -x package.xml
-else
-  echo "---- No changes to deploy ----"
-fi
 ```
 
 ---
