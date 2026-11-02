@@ -126,7 +126,7 @@ For GitHub Actions, this is also available as a [native Action](https://github.c
 | `directory`           | Directory to look for `package.xml` files in, one per line.                      | No       |                 |
 | `combined-package`     | Path to the combined `package.xml` that will be created by this action.          | No       | `package.xml`   |
 | `api-version`         | API version to use in the combined `package.xml`. Defaults to the highest version found across the input manifests. | No       |                 |
-| `no-api-version`       | Explicitly omit the API version in the combined `package.xml`.                   | No       | `false`         |
+| `no-api-version` | Omit `<version>` from the combined `package.xml` so Salesforce CLI can apply its [source API version precedence](https://developer.salesforce.com/docs/platform/sfdx-setup/guide/sfdx-setup-apiversion.html#sourceapiversion-order-of-precedence). | No | `false` |
 | `dry-run`             | Preview the combined package summary without writing an output file.             | No       | `false`         |
 | `fail-on-empty`        | Fail the action if the combined `package.xml` has no `<types>` (e.g. every input was invalid or empty). | No       | `false`         |
 
