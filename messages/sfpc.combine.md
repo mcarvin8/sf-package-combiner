@@ -33,7 +33,7 @@ Sets the API version to use in the combined package.xml.
 
 # flags.no-api-version.summary
 
-Explicitly omit the API version in the combined package.xml.
+Explicitly omit the API version in the combined package.xml so Salesforce CLI can apply its source API version precedence.
 
 # flags.dry-run.summary
 

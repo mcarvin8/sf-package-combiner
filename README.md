@@ -64,7 +64,8 @@ FLAGS
   -c, --combined-package=<value>  [default: package.xml] Combined package file path.
   -d, --directory=<value>...      Directory to look for package.xml files in.
   -f, --package-file=<value>...   Path to a package.xml file.
-  -n, --no-api-version            Explicitly omit the API version in the combined package.xml.
+  -n, --no-api-version            Explicitly omit the API version in the combined package.xml so Salesforce CLI can
+                                  apply its source API version precedence.
   -v, --api-version=<value>       Sets the API version to use in the combined package.xml.
       --dry-run                   Preview the combined package summary (types, members, duplicates) without writing an
                                   output file.
