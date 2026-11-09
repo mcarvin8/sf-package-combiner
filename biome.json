@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,7 +7,10 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!test/fixtures/**"]
+    "includes": [
+      "**",
+      "!test/fixtures/**"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -98,7 +101,12 @@
         "useNamespaceKeyword": "error"
       }
     },
-    "includes": ["**", "!**/*.cjs", "!scripts/", "!lib/"]
+    "includes": [
+      "**",
+      "!**/*.cjs",
+      "!scripts/",
+      "!lib/"
+    ]
   },
   "javascript": {
     "formatter": {
@@ -110,7 +118,12 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "includes": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.mts",
+        "**/*.cts"
+      ],
       "linter": {
         "rules": {
           "complexity": {
@@ -147,9 +160,21 @@
       }
     },
     {
-      "includes": ["test/**/*.ts"],
+      "includes": [
+        "test/**/*.ts"
+      ],
       "javascript": {
-        "globals": ["describe", "beforeAll", "beforeEach", "afterAll", "expect", "it", "afterEach", "vi", "test"]
+        "globals": [
+          "describe",
+          "beforeAll",
+          "beforeEach",
+          "afterAll",
+          "expect",
+          "it",
+          "afterEach",
+          "vi",
+          "test"
+        ]
       },
       "linter": {
         "rules": {

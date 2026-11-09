@@ -45,7 +45,7 @@
     "break": null
   },
   "logLevel": "info",
-  "fileLogLevel": "trace",
+  "fileLogLevel": "info",
   "checkers": [],
   "ignorePatterns": [
     "lib",

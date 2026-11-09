@@ -4,11 +4,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import { combinePackages } from '../../../src/core/combinePackages.js';
-import {
-  CUSTOM_OBJECT_TYPE,
-  mergePackageXmlFiles,
-  sortTypesWithCustomObjectFirst,
-} from '../../../src/core/mergePackageXmlFiles.js';
+import { mergePackageXmlFiles } from '../../../src/core/mergePackageXmlFiles.js';
 
 vi.mock('node:fs/promises', async (importOriginal) => {
   const actual = await importOriginal<typeof import('node:fs/promises')>();
@@ -204,7 +200,7 @@ describe('sfpc combine', () => {
     expect(content).toContain('<version>59.0</version>');
   });
 
-  it('sorts types with CustomObject first and non-CustomObject types alphabetically', async () => {
+  it('sorts types alphabetically', async () => {
     const warnings: string[] = [];
     await combinePackages({
       packageFiles: [package1, package2, package3],
@@ -215,10 +211,9 @@ describe('sfpc combine', () => {
     const customObjectIdx = content.indexOf('<name>CustomObject</name>');
     const customLabelIdx = content.indexOf('<name>CustomLabel</name>');
     const standardValueSetIdx = content.indexOf('<name>StandardValueSet</name>');
-    expect(customObjectIdx).toBeGreaterThan(-1);
-    expect(customObjectIdx).toBeLessThan(customLabelIdx);
+    expect(customLabelIdx).toBeGreaterThan(-1);
+    expect(customLabelIdx).toBeLessThan(customObjectIdx);
     expect(customObjectIdx).toBeLessThan(standardValueSetIdx);
-    expect(customLabelIdx).toBeLessThan(standardValueSetIdx);
   });
 
   it('deduplicates members that appear in multiple input packages', async () => {
@@ -290,12 +285,11 @@ describe('sfpc combine', () => {
     expect(output).toContain('<members>Sales &amp; Marketing</members>');
   });
 
-  it('sorts non-CustomObject types alphabetically (branch coverage for sortTypesWithCustomObjectFirst)', async () => {
+  it('sorts types alphabetically within a single package', async () => {
     const packageNonObjectTypes = resolve('test/samples/package-non-object-types.xml');
     await mergePackageXmlFiles([packageNonObjectTypes], outputPackage, null, false);
 
     const output = await readFile(outputPackage, 'utf-8');
-    // CustomLabel comes before StandardValueSet alphabetically when neither is CustomObject
     expect(output.indexOf('CustomLabel')).toBeLessThan(output.indexOf('StandardValueSet'));
   });
 
@@ -352,7 +346,7 @@ describe('sfpc combine', () => {
       expect(result.duplicatesRemoved).toBe(2);
       expect(result.duplicates).toEqual([
         { type: 'CustomLabel', member: 'Auto', files: [package3, package3] },
-        { type: CUSTOM_OBJECT_TYPE, member: 'Account', files: [package1, package2].sort() },
+        { type: 'CustomObject', member: 'Account', files: [package1, package2].sort() },
       ]);
     });
 
@@ -363,7 +357,7 @@ describe('sfpc combine', () => {
         dryRun: true,
       });
 
-      const customObjectDuplicates = result.duplicates.filter((d) => d.type === CUSTOM_OBJECT_TYPE);
+      const customObjectDuplicates = result.duplicates.filter((d) => d.type === 'CustomObject');
       expect(customObjectDuplicates.map((d) => d.member)).toEqual(['Account', 'Case']);
     });
 
@@ -376,21 +370,6 @@ describe('sfpc combine', () => {
 
       expect(result.duplicates).toEqual([]);
       expect(result.duplicatesRemoved).toBe(0);
-    });
-  });
-
-  describe('sortTypesWithCustomObjectFirst', () => {
-    it('returns -1 when a is CustomObject and b is not (CustomObject first)', () => {
-      expect(sortTypesWithCustomObjectFirst({ name: CUSTOM_OBJECT_TYPE }, { name: 'CustomLabel' })).toBe(-1);
-    });
-    it('returns 1 when a is not CustomObject and b is (CustomObject first)', () => {
-      expect(sortTypesWithCustomObjectFirst({ name: 'CustomLabel' }, { name: CUSTOM_OBJECT_TYPE })).toBe(1);
-    });
-    it('returns localeCompare result when neither is CustomObject', () => {
-      expect(sortTypesWithCustomObjectFirst({ name: 'CustomLabel' }, { name: 'StandardValueSet' })).toBeLessThan(0); // CustomLabel < StandardValueSet
-    });
-    it('returns localeCompare result when both are CustomObject', () => {
-      expect(sortTypesWithCustomObjectFirst({ name: CUSTOM_OBJECT_TYPE }, { name: CUSTOM_OBJECT_TYPE })).toBe(0);
     });
   });
 });

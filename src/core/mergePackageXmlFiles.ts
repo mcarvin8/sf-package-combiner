@@ -92,7 +92,7 @@ function buildPackageContents(
           // v8 ignore next -- canonicalTypeNames is always populated for every typeKey in origins (see isEarlierSource loop above), so this fallback is unreachable
           name: canonicalTypeNames.get(typeKey) ?? typeKey,
         }))
-        .sort(sortTypesWithCustomObjectFirst),
+        .sort((a, b) => a.name.localeCompare(b.name)),
       ...(version !== undefined ? { version } : {}),
     },
   };
@@ -145,16 +145,6 @@ export async function mergePackageXmlFiles(
  */
 export function isEarlierSource(candidateIndex: number, existingIndex: number | undefined): boolean {
   return existingIndex === undefined || candidateIndex < existingIndex;
-}
-
-export const CUSTOM_OBJECT_TYPE = 'CustomObject';
-
-export function sortTypesWithCustomObjectFirst(a: { name: string }, b: { name: string }): number {
-  const aIsCustomObject = a.name.toLowerCase() === CUSTOM_OBJECT_TYPE.toLowerCase();
-  const bIsCustomObject = b.name.toLowerCase() === CUSTOM_OBJECT_TYPE.toLowerCase();
-  if (aIsCustomObject && !bIsCustomObject) return -1;
-  if (!aIsCustomObject && bIsCustomObject) return 1;
-  return a.name.localeCompare(b.name);
 }
 
 function summarizeOrigins(

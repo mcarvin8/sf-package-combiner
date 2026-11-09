@@ -165,7 +165,7 @@ For GitHub Actions, this is also available as a [native Action](https://github.c
 ## How it works
 
 - **Metadata types** — `<name>` values are deduplicated case-insensitively (`CustomObject` and `customobject` merge into one `<types>` block, using the casing first encountered). They are **not** validated or normalized against Salesforce's metadata registry — see [Invalid Manifests](#invalid-manifests).
-- **Type order** — `CustomObject` (any casing) is always listed before all other types; remaining types sort alphabetically. This avoids deployment failures when `CustomObject` and its children appear in the same manifest (see [scolladon/sfdx-git-delta#76](https://github.com/scolladon/sfdx-git-delta/pull/76)).
+- **Type order** — types are sorted alphabetically by name, matching the order the Salesforce CLI uses when it builds a deploy manifest.
 - **Members** — `<members>` values keep their original case (Salesforce API names are case-sensitive).
 - **API version** — By default, the highest `<version>` found in the input manifests is used. Override it with `-v`. Use `-n` to omit `<version>` from the output manifest and let Salesforce CLI use the next applicable value in its [source API version precedence](https://developer.salesforce.com/docs/platform/sfdx-setup/guide/sfdx-setup-apiversion.html#sourceapiversion-order-of-precedence), such as `sourceApiVersion` in `sfdx-project.json`.
 
