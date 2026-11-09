@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.1](https://github.com/mcarvin8/sf-package-combiner/compare/v4.2.0...v4.2.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* sort manifest types alphabetically, drop CustomObject-first rule ([#214](https://github.com/mcarvin8/sf-package-combiner/issues/214)) ([1272186](https://github.com/mcarvin8/sf-package-combiner/commit/127218623f637c4e1262bfd9388d0cc49eb7c958))
+
 ## [4.2.0](https://github.com/mcarvin8/sf-package-combiner/compare/v4.1.1...v4.2.0) (2026-09-16)
 
 
