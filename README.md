@@ -183,7 +183,7 @@ const result = await combinePackages({
 console.log(`${result.types} types, ${result.members} members -> ${result.path}`);
 ```
 
-All options are optional and mirror the CLI flags. The `CombinePackagesOptions`, `SfpcCombineResult` and `DuplicateMember` types are exported too. The API does not validate `userApiVersion` and has no `fail-on-empty` option: check `result.types === 0` yourself.
+All options are optional and mirror the CLI flags. The `CombinePackagesOptions`, `SfpcCombineResult` and `DuplicateMember` types are exported too. `userApiVersion` gets the same check as `--api-version`: `combinePackages` throws if it is not formatted like `62.0` or is below `21.0`. Input manifests with a malformed or retired `<version>` are still merged, but that version is ignored and reported through `warn`. There is no `fail-on-empty` option: check `result.types === 0` yourself.
 
 ---
 
@@ -192,7 +192,7 @@ All options are optional and mirror the CLI flags. The `CombinePackagesOptions`,
 - **Metadata types** — `<name>` values are deduplicated case-insensitively (`CustomObject` and `customobject` merge into one `<types>` block, using the casing first encountered). They are **not** validated or normalized against Salesforce's metadata registry — see [Invalid Manifests](#invalid-manifests).
 - **Type order** — types are sorted alphabetically by name, matching the order the Salesforce CLI uses when it builds a deploy manifest.
 - **Members** — `<members>` values keep their original case (Salesforce API names are case-sensitive).
-- **API version** — By default, the highest `<version>` found in the input manifests is used. Override it with `-v`. Use `-n` to omit `<version>` from the output manifest and let Salesforce CLI use the next applicable value in its [source API version precedence](https://developer.salesforce.com/docs/platform/sfdx-setup/guide/sfdx-setup-apiversion.html#sourceapiversion-order-of-precedence), such as `sourceApiVersion` in `sfdx-project.json`.
+- **API version** — By default, the highest `<version>` found in the input manifests is used. Override it with `-v`. Use `-n` to omit `<version>` from the output manifest and let Salesforce CLI use the next applicable value in its [source API version precedence](https://developer.salesforce.com/docs/platform/sfdx-setup/guide/sfdx-setup-apiversion.html#sourceapiversion-order-of-precedence), such as `sourceApiVersion` in `sfdx-project.json`. An input `<version>` that is malformed (not like `62.0`) or retired (below `21.0`) is ignored with a warning; that manifest's types are still merged.
 
 ---
 

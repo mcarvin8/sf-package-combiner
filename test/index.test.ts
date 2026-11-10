@@ -27,4 +27,18 @@ describe('public API', () => {
     expect(result.filesProcessed).toBe(0);
     expect(result.types).toBe(0);
   });
+
+  it.each([
+    ['62', 'Invalid API version "62". Expected a format like "62.0".'],
+    ['20.0', 'API version 20.0 is retired. The minimum supported version is 21.0.'],
+  ])('rejects userApiVersion %s before reading any files', async (userApiVersion, message) => {
+    await expect(
+      api.combinePackages({ packageFiles: ['does-not-exist.xml'], userApiVersion, dryRun: true }),
+    ).rejects.toThrow(message);
+  });
+
+  it('accepts an explicit null userApiVersion', async () => {
+    const result = await api.combinePackages({ userApiVersion: null, dryRun: true });
+    expect(result.apiVersion).toBeUndefined();
+  });
 });

@@ -41,7 +41,10 @@ export type CombinePackagesOptions = {
   combinedPackage?: string;
   /** Directories to scan (non-recursively) for package.xml files. */
   directories?: string[];
-  /** API version for the combined manifest. Defaults to the highest version found in the inputs. */
+  /**
+   * API version for the combined manifest, like `"62.0"`. Defaults to the highest valid version found in the inputs.
+   * Throws if it is malformed or retired (below 21.0).
+   */
   userApiVersion?: string | null;
   /** Omit `<version>` from the combined manifest. */
   noApiVersion?: boolean;
