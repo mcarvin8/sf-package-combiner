@@ -1,6 +1,6 @@
 import { findFilesInDirectory } from '../utils/findFilesinDirectory.js';
 import { mergePackageXmlFiles } from './mergePackageXmlFiles.js';
-import { SfpcCombineResult } from './types.js';
+import { CombinePackagesOptions, SfpcCombineResult } from './types.js';
 
 export async function combinePackages({
   packageFiles = [],
@@ -12,15 +12,7 @@ export async function combinePackages({
   warn = (_msg: string): void => {
     /* noop default */
   },
-}: {
-  packageFiles?: string[];
-  combinedPackage?: string;
-  directories?: string[];
-  userApiVersion?: string | null;
-  noApiVersion?: boolean;
-  dryRun?: boolean;
-  warn?: (msg: string) => void;
-}): Promise<SfpcCombineResult> {
+}: CombinePackagesOptions = {}): Promise<SfpcCombineResult> {
   const files = [...packageFiles];
   const warnings: string[] = [];
 

@@ -15,6 +15,7 @@ Merge multiple Salesforce `package.xml` manifests into one. Use it in CI/CD pipe
 
   - [Salesforce CLI](#salesforce-cli)
   - [GitHub Action](#github-action)
+  - [Programmatic API](#programmatic-api)
   - [How it works](#how-it-works)
   - [Example](#example)
   - [Invalid Manifests](#invalid-manifests)
@@ -159,6 +160,30 @@ For GitHub Actions, this is also available as a [native Action](https://github.c
 - name: Deploy combined manifest
   run: sf project deploy start -x "${{ steps.combine.outputs.combined-package-path }}"
 ```
+
+---
+
+## Programmatic API
+
+Call the combiner from Node.js without going through `sf`:
+
+```typescript
+import { combinePackages } from 'sf-package-combiner';
+
+const result = await combinePackages({
+  packageFiles: ['package1.xml', 'package2.xml'],
+  directories: ['manifests/'],
+  combinedPackage: 'package.xml',
+  // userApiVersion: '62.0',
+  // noApiVersion: false,
+  // dryRun: false,
+  warn: (msg) => console.warn(msg),
+});
+
+console.log(`${result.types} types, ${result.members} members -> ${result.path}`);
+```
+
+All options are optional and mirror the CLI flags. The `CombinePackagesOptions`, `SfpcCombineResult` and `DuplicateMember` types are exported too. The API does not validate `userApiVersion` and has no `fail-on-empty` option: check `result.types === 0` yourself.
 
 ---
 
