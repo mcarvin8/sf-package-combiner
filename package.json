@@ -306,7 +306,14 @@
       "clean": false
     }
   },
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./lib/index.d.ts",
   "type": "module",
   "author": "Matt Carvin",
   "repository": {
