@@ -1,4 +1,5 @@
 import { findFilesInDirectory } from '../utils/findFilesinDirectory.js';
+import { validateApiVersion } from './determineApiVersion.js';
 import { mergePackageXmlFiles } from './mergePackageXmlFiles.js';
 import { CombinePackagesOptions, SfpcCombineResult } from './types.js';
 
@@ -13,6 +14,11 @@ export async function combinePackages({
     /* noop default */
   },
 }: CombinePackagesOptions = {}): Promise<SfpcCombineResult> {
+  // Fail before reading any files. The CLI flag already validates this; API callers get the same check.
+  if (userApiVersion !== null) {
+    validateApiVersion(userApiVersion);
+  }
+
   const files = [...packageFiles];
   const warnings: string[] = [];
 

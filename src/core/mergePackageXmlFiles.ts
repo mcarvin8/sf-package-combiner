@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { sfXmlns } from '../utils/constants.js';
 import { getConcurrencyThreshold } from '../utils/getConcurrencyThreshold.js';
 import { mapLimit } from '../utils/mapLimit.js';
-import { determineApiVersion } from './determineApiVersion.js';
+import { determineApiVersion, getApiVersionError } from './determineApiVersion.js';
 import { ParsedManifestType, parseManifestXml } from './parseManifest.js';
 import { MergePackageResult, PackageManifestObject } from './types.js';
 import { writePackage } from './writePackage.js';
@@ -52,10 +52,16 @@ function recordManifestType(type: ParsedManifestType, filePath: string, index: n
   }
 }
 
-function recordApiVersion(version: string | null, apiVersions: string[]): void {
-  // Stryker disable next-line ConditionalExpression,LogicalOperator -- null/undefined version doesn't affect max computation in determineApiVersion
-  if (version && !apiVersions.includes(version)) {
-    apiVersions.push(version);
+function recordApiVersion(version: string | null, filePath: string, state: MergeState): void {
+  if (version === null) return;
+  const error = getApiVersionError(version);
+  if (error !== undefined) {
+    state.warnings.push(`Ignoring <version> in ${filePath}. ${error}`);
+    return;
+  }
+  // Stryker disable next-line ConditionalExpression -- pushing a duplicate doesn't change the max computed in determineApiVersion
+  if (!state.apiVersions.includes(version)) {
+    state.apiVersions.push(version);
   }
 }
 
@@ -71,7 +77,7 @@ async function processManifestFile(filePath: string, index: number, state: Merge
     for (const type of manifest.types) {
       recordManifestType(type, filePath, index, state);
     }
-    recordApiVersion(manifest.version, state.apiVersions);
+    recordApiVersion(manifest.version, filePath, state);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     state.warnings.push(`Invalid or empty package.xml: ${filePath}. ${message}`);

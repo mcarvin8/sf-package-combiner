@@ -100,6 +100,12 @@ await check('only invalid input yields an empty result, not an error', async () 
   assert.equal(warnings.length, 1);
 });
 
+await check('userApiVersion is validated', async () => {
+  for (const userApiVersion of ['62', '62.5', '20.0']) {
+    await assert.rejects(combinePackages({ packageFiles: twoFiles, userApiVersion, dryRun: true }), Error);
+  }
+});
+
 await check('no options', async () => {
   const result = await combinePackages({ dryRun: true });
   assert.equal(result.filesProcessed, 0);

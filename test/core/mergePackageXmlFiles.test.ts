@@ -1,3 +1,6 @@
+import { mkdtemp, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PackageManifestObject } from '../../src/core/types.js';
@@ -43,5 +46,51 @@ describe('mergePackageXmlFiles version key', () => {
 
     const [packageContents] = writePackageMock.mock.calls.at(-1)!;
     expect(packageContents.Package.version).toBe('61.0');
+  });
+});
+
+describe('mergePackageXmlFiles input <version> validation', () => {
+  const manifest = (version: string): string =>
+    `<?xml version="1.0" encoding="UTF-8"?>\n<Package xmlns="http://soap.sforce.com/2006/04/metadata">\n  <types>\n    <members>Account</members>\n    <name>CustomObject</name>\n  </types>\n  <version>${version}</version>\n</Package>\n`;
+
+  async function writeManifests(versions: string[]): Promise<string[]> {
+    const dir = await mkdtemp(join(tmpdir(), 'sfpc-version-'));
+    return Promise.all(
+      versions.map(async (version, i) => {
+        const file = join(dir, `package${i}.xml`);
+        await writeFile(file, manifest(version));
+        return file;
+      }),
+    );
+  }
+
+  it('ignores a malformed version with a warning but still merges the types', async () => {
+    const [bad, good] = await writeManifests(['62', '59.0']);
+    const result = await mergePackageXmlFiles([bad, good], 'package.xml', null, false, true);
+
+    expect(result.apiVersion).toBe('59.0');
+    expect(result.types).toBe(1);
+    expect(result.warnings).toEqual([
+      `Ignoring <version> in ${bad}. Invalid API version "62". Expected a format like "62.0".`,
+    ]);
+  });
+
+  it('ignores a retired version with a warning', async () => {
+    const [retired] = await writeManifests(['20.0']);
+    const result = await mergePackageXmlFiles([retired], 'package.xml', null, false, true);
+
+    expect(result.apiVersion).toBeUndefined();
+    expect(result.members).toBe(1);
+    expect(result.warnings).toEqual([
+      `Ignoring <version> in ${retired}. API version 20.0 is retired. The minimum supported version is 21.0.`,
+    ]);
+  });
+
+  it('picks the numerically highest valid version', async () => {
+    const files = await writeManifests(['99.0', '100.0']);
+    const result = await mergePackageXmlFiles(files, 'package.xml', null, false, true);
+
+    expect(result.apiVersion).toBe('100.0');
+    expect(result.warnings).toEqual([]);
   });
 });
