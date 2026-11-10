@@ -57,3 +57,7 @@ write-package-test-output.xml
 # stryker mutation testing
 .stryker-tmp
 reports
+
+# sf-package-combiner-core build output (built from src/ by `npm run build:core`)
+packages/core/lib
+packages/core/LICENSE.md
