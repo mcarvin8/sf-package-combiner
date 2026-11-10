@@ -5,6 +5,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/mcarvin8/sf-package-combiner/compare/v4.3.0...v4.4.0) (2026-11-10)
+
+
+### Features
+
+* publish dependency-free sf-package-combiner-core package ([#220](https://github.com/mcarvin8/sf-package-combiner/issues/220)) ([2c1b2b7](https://github.com/mcarvin8/sf-package-combiner/commit/2c1b2b7a2967cb1b69c447200022d96779491fe4))
+
 ## [4.3.0](https://github.com/mcarvin8/sf-package-combiner/compare/v4.2.1...v4.3.0) (2026-11-10)
 
 

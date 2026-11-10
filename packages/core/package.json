@@ -1,7 +1,7 @@
 {
   "name": "sf-package-combiner-core",
   "description": "Dependency-free library that merges multiple Salesforce package.xml manifests into a single file",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "type": "module",
   "exports": {
     ".": {
