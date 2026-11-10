@@ -5,6 +5,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/mcarvin8/sf-package-combiner/compare/v4.2.1...v4.3.0) (2026-11-10)
+
+
+### Features
+
+* expose programmatic API ([#217](https://github.com/mcarvin8/sf-package-combiner/issues/217)) ([aa1250e](https://github.com/mcarvin8/sf-package-combiner/commit/aa1250e7b6a56b2f560b3cc96ff7854ae39fb92d))
+* validate API versions in the programmatic API ([#219](https://github.com/mcarvin8/sf-package-combiner/issues/219)) ([364c950](https://github.com/mcarvin8/sf-package-combiner/commit/364c95069d975647da31051cfc451b964706cc5a))
+
 ## [4.2.1](https://github.com/mcarvin8/sf-package-combiner/compare/v4.2.0...v4.2.1) (2026-11-09)
 
 
