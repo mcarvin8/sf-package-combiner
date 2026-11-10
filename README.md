@@ -165,7 +165,16 @@ For GitHub Actions, this is also available as a [native Action](https://github.c
 
 ## Programmatic API
 
-Call the combiner from Node.js without going through `sf`:
+Call the combiner from Node.js without going through `sf`. The API is ESM-only and ships in two npm packages, built from the same source and released with the same version:
+
+- **`sf-package-combiner-core`** (recommended for libraries and scripts): the API only, with **no runtime dependencies**.
+- **`sf-package-combiner`**: the Salesforce CLI plugin package, which also exports the API but installs the plugin's dependencies (`@salesforce/core`, `@oclif/core` and others).
+
+```bash
+npm install sf-package-combiner-core
+```
+
+The example below imports from `sf-package-combiner`; with the core package, import from `sf-package-combiner-core` instead. Everything else is identical.
 
 ```typescript
 import { combinePackages } from 'sf-package-combiner';
